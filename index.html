@@ -3800,45 +3800,64 @@
         `;
 
       } else {
-        // 🍰 TORTENDIAGRAMM (SVG Donut + Klick-Ausklappmenü)
-        const size = 200;
-        const center = size / 2;
-        const radius = 72;
-        const strokeWidth = 28;
-        const circumference = 2 * Math.PI * radius;
-        let cumulativeAngle = 0;
+        // 🍰 TORTENDIAGRAMM (Echte SVG-Wedges für 100% präzise Klicks)
+        const size = 210;
+        const cx = size / 2;
+        const cy = size / 2;
+        const rOuter = 85;
+        const rInner = 48;
 
         const activeBuckets = buckets.filter(b => b.count > 0);
+        let currentAngle = -Math.PI / 2; // 12 Uhr Start
 
-        const slicesSvg = activeBuckets.map(b => {
-          const pct = totalCount > 0 ? (b.count / totalCount) : 0;
-          const strokeDasharray = `${pct * circumference} ${circumference}`;
-          const strokeDashoffset = -cumulativeAngle * circumference;
-          cumulativeAngle += pct;
-
-          return `
-            <circle cx="${center}" cy="${center}" r="${radius}"
-              fill="transparent"
-              stroke="${b.color}"
-              stroke-width="${strokeWidth}"
-              stroke-dasharray="${strokeDasharray}"
-              stroke-dashoffset="${strokeDashoffset}"
-              style="cursor:pointer; transition: transform 0.2s;"
-              onclick="toggleTierAccordion('${b.id}')"
-            />
+        let slicesSvg = '';
+        if (activeBuckets.length === 1) {
+          const b = activeBuckets[0];
+          slicesSvg = `
+            <circle cx="${cx}" cy="${cy}" r="${(rInner + rOuter) / 2}" fill="none" stroke="${b.color}" stroke-width="${rOuter - rInner}" style="cursor:pointer;" onclick="toggleTierAccordion('${b.id}')" />
           `;
-        }).join('');
+        } else {
+          slicesSvg = activeBuckets.map(b => {
+            const angleSpan = (totalCount > 0) ? ((b.count / totalCount) * 2 * Math.PI) : 0;
+            const startAngle = currentAngle;
+            const endAngle = currentAngle + angleSpan;
+            currentAngle = endAngle;
+
+            const x1 = cx + rOuter * Math.cos(startAngle);
+            const y1 = cy + rOuter * Math.sin(startAngle);
+            const x2 = cx + rOuter * Math.cos(endAngle);
+            const y2 = cy + rOuter * Math.sin(endAngle);
+
+            const x3 = cx + rInner * Math.cos(endAngle);
+            const y3 = cy + rInner * Math.sin(endAngle);
+            const x4 = cx + rInner * Math.cos(startAngle);
+            const y4 = cy + rInner * Math.sin(startAngle);
+
+            const largeArc = (angleSpan > Math.PI) ? 1 : 0;
+            const d = `M ${x1} ${y1} A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${rInner} ${rInner} 0 ${largeArc} 0 ${x4} ${y4} Z`;
+
+            return `
+              <path d="${d}" fill="${b.color}" stroke="#090d16" stroke-width="2.5"
+                    style="cursor:pointer; transition: all 0.2s ease;"
+                    onmouseenter="this.style.filter='brightness(1.25) drop-shadow(0 0 10px ${b.color})';"
+                    onmouseleave="this.style.filter='none';"
+                    onclick="toggleTierAccordion('${b.id}')"
+                    title="${b.label}: ${b.count} Karten"
+              />
+            `;
+          }).join('');
+        }
 
         renderArea.innerHTML = `
           <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
             
             <!-- SVG Donut -->
             <div style="position:relative; width:${size}px; height:${size}px;">
-              <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform: rotate(-90deg); overflow:visible;">
+              <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="overflow:visible;">
                 ${slicesSvg}
               </svg>
               <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align:center; pointer-events:none;">
-                <div style="font-size:1.35rem; font-weight:900; color:#fff;">${totalCount}</div>
+                <div style="font-size:1.4rem; font-weight:900; color:#fff;">${totalCount}</div>
                 <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Karten</div>
               </div>
             </div>
