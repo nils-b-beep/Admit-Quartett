@@ -301,17 +301,15 @@
       border-bottom: 1px solid var(--border-color);
       cursor: pointer;
       overflow: hidden;
+      aspect-ratio: 3 / 4;
       display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .card-artwork-img {
       width: 100%;
-      height: auto;
-      max-height: 440px;
+      height: 100%;
       aspect-ratio: 3 / 4;
-      object-fit: contain;
+      object-fit: cover;
       display: block;
       transition: transform 0.25s ease;
     }
