@@ -997,9 +997,15 @@
       color: var(--text-muted);
     }
 
-    /* DECK VIEW */
+    /* ==================== DECK VIEW & CONTROLS ==================== */
+    .deck-controls-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
     .search-bar {
-      width: 100%;
+      flex: 1;
       padding: 9px 12px;
       border-radius: 10px;
       border: 1px solid var(--border-color);
@@ -1007,36 +1013,59 @@
       color: var(--text-main);
       font-size: 0.88rem;
       outline: none;
-      margin-bottom: 8px;
     }
 
-    .sort-scroll {
+    .sort-dir-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-main);
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
       display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      scrollbar-width: none;
-      margin-bottom: 8px;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.15s;
     }
 
-    .sort-scroll::-webkit-scrollbar { display: none; }
+    .sort-dir-btn:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    /* Wrap Sort Chips (Solves desktop horizontal scroll problem) */
+    .sort-chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
 
     .sort-btn {
-      flex: 0 0 auto;
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 6px 11px;
+      border-radius: 18px;
       border: 1px solid var(--border-color);
       background: var(--bg-secondary);
       color: var(--text-muted);
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-size: 0.73rem;
+      font-weight: 700;
       cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .sort-btn:hover {
+      border-color: var(--accent-primary);
+      color: #fff;
     }
 
     .sort-btn.active {
       background: var(--accent-primary);
       color: #090d16;
       border-color: var(--accent-primary);
+      font-weight: 800;
     }
 
     .deck-list {
@@ -1060,6 +1089,50 @@
       justify-content: space-between;
       align-items: center;
       background: var(--bg-card-header);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Stylish Action Buttons */
+    .img-open-btn {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--accent-primary);
+      border-radius: 8px;
+      padding: 4px 9px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .img-open-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: var(--accent-primary);
+      color: #fff;
+    }
+
+    .adjust-card-btn {
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      color: var(--gold);
+      border-radius: 8px;
+      padding: 4px 9px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .adjust-card-btn:hover {
+      background: rgba(251, 191, 36, 0.25);
+      border-color: var(--gold);
+      color: #fff;
     }
 
     .coll-stats-grid {
@@ -1282,17 +1355,25 @@
 
   <!-- ==================== TAB 5: DECK ==================== -->
   <section id="deckView" class="view-section">
-    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rolle, Fähigkeit oder Tier suchen..." autocomplete="off">
     
-    <div class="sort-scroll" id="sortContainer">
+    <!-- Search Bar & Order Toggle Row -->
+    <div class="deck-controls-row">
+      <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rolle, Fähigkeit oder Tier suchen..." autocomplete="off">
+      <button id="sortDirBtn" class="sort-dir-btn" onclick="toggleSortDirection()" title="Sortierreihenfolge umkehren">
+        <span id="sortDirIcon">⬇️</span> <span id="sortDirText">Absteigend</span>
+      </button>
+    </div>
+
+    <!-- Wrapped Sort Chips (Full visibility on desktop & mobile) -->
+    <div class="sort-chips-grid" id="sortContainer">
       <button class="sort-btn active" data-sort="default">Standard</button>
       <button class="sort-btn" data-sort="mgmt">👔 Mgmt-Attention</button>
-      <button class="sort-btn" data-sort="meeting">⏱️ Meeting</button>
       <button class="sort-btn" data-sort="blast">💥 Blast Radius</button>
+      <button class="sort-btn" data-sort="meeting">⏱️ Meeting</button>
+      <button class="sort-btn" data-sort="salary">💰 Reallohn</button>
       <button class="sort-btn" data-sort="teamplay">🤝 Team-Play</button>
       <button class="sort-btn" data-sort="ux">😊 Enduser</button>
       <button class="sort-btn" data-sort="security">🛡️ Sicherheit</button>
-      <button class="sort-btn" data-sort="salary">💰 Reallohn</button>
     </div>
 
     <div class="deck-list" id="deckList"></div>
@@ -1620,7 +1701,7 @@
 
       const colors = ['#38bdf8', '#818cf8', '#f59e0b', '#10b981', '#ef4444', '#fbbf24', '#f43f5e', '#a855f7'];
 
-      // Left Cannon (Bottom Left shooting up-right towards center)
+      // Left Cannon
       for (let i = 0; i < 60; i++) {
         confettiParticles.push({
           x: 0,
@@ -1637,7 +1718,7 @@
         });
       }
 
-      // Right Cannon (Bottom Right shooting up-left towards center)
+      // Right Cannon
       for (let i = 0; i < 60; i++) {
         confettiParticles.push({
           x: canvas.width,
@@ -2912,19 +2993,30 @@
       }
     }
 
-    // ==================== DECK VIEW ====================
+    // ==================== DECK VIEW & SORTING ====================
     let deckSort = 'default';
+    let deckSortDir = 'desc'; // 'desc' | 'asc'
+
+    function toggleSortDirection() {
+      deckSortDir = (deckSortDir === 'desc') ? 'asc' : 'desc';
+      document.getElementById('sortDirIcon').textContent = (deckSortDir === 'desc') ? '⬇️' : '⬆️';
+      document.getElementById('sortDirText').textContent = (deckSortDir === 'desc') ? 'Absteigend' : 'Aufsteigend';
+      renderDeck();
+    }
+
     function renderDeck() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
       let list = CARDS.filter(c => !q || c.name.toLowerCase().includes(q) || c.ability.toLowerCase().includes(q) || c.flavour.toLowerCase().includes(q));
 
-      if (deckSort !== 'default') {
+      if (deckSort === 'default') {
+        if (deckSortDir === 'asc') list.reverse();
+      } else {
         list.sort((a, b) => {
           let va, vb;
           if (deckSort === 'mgmt') { va = MGMT_RANK[a.mgmt].rank; vb = MGMT_RANK[b.mgmt].rank; }
           else if (deckSort === 'blast') { va = BLAST_RANK[a.blast].rank; vb = BLAST_RANK[b.blast].rank; }
           else { va = a[deckSort]; vb = b[deckSort]; }
-          return vb - va;
+          return (deckSortDir === 'desc') ? (vb - va) : (va - vb);
         });
       }
 
@@ -2936,21 +3028,19 @@
               <span style="font-weight:700; font-size:0.9rem; color:#fff;">${c.name}</span>
             </div>
             <div style="display:flex; gap:6px;">
-              ${c.image ? `<button class="img-open-btn" onclick="openImg('${c.image}')">🖼️ Bild</button>` : ''}
-              <button onclick="openCardFeedbackModal(${c.id})" style="background:rgba(56,189,248,0.15); border:1px solid var(--accent-primary); color:var(--accent-primary); border-radius:6px; padding:3px 8px; font-size:0.72rem; font-weight:800; cursor:pointer;" title="Kriterien dieser Karte anpassen">💬 Anpassen</button>
+              ${c.image ? `<button class="img-open-btn" onclick="openImg('${c.image}')">🖼️ Artwork</button>` : ''}
+              <button class="adjust-card-btn" onclick="openCardFeedbackModal(${c.id})" title="Kriterien dieser Karte anpassen">💬 Anpassen</button>
             </div>
           </div>
 
-          <div style="padding: 8px 12px; font-size: 0.74rem; color: #cbd5e1; font-style: italic; border-bottom: 1px solid var(--border-color); background: rgba(9,13,22,0.3); white-space: pre-line;">
-            ${c.flavour}
-          </div>
+          <div style="padding: 8px 12px; font-size: 0.74rem; color: #cbd5e1; font-style: italic; border-bottom: 1px solid var(--border-color); background: rgba(9,13,22,0.3); white-space: pre-line;">${c.flavour.trim()}</div>
 
           <div style="padding: 6px 12px; font-size: 0.72rem; color: var(--accent-primary); border-bottom: 1px solid var(--border-color);">
-            ⚡ <b>${c.ability}</b>
+            ⚡ <b>${c.ability.trim()}</b>
           </div>
 
-          <div style="padding: 4px 12px 6px 12px; font-size: 0.72rem; color: #fef08a; font-style: italic; border-bottom: 1px solid var(--border-color);">
-            ${c.quote}
+          <div style="padding: 6px 12px; font-size: 0.72rem; color: #fef08a; font-style: italic; border-bottom: 1px solid var(--border-color);">
+            ${c.quote.trim()}
           </div>
 
           <div class="coll-stats-grid">
@@ -2977,7 +3067,7 @@
 
     document.getElementById('searchInput').addEventListener('input', renderDeck);
 
-    // ==================== MODALS & CLOUD-ENABLED PROPOSALS ====================
+    // ==================== MODALS & PROPOSALS ====================
     function openImg(src) {
       document.getElementById('modalImg').src = src;
       document.getElementById('imageModal').style.display = 'flex';
