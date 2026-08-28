@@ -1653,7 +1653,12 @@
   <section id="metricsView" class="view-section">
     
     <div class="metrics-header-panel">
-      <div style="font-size: 0.95rem; font-weight: 900; color: #fff;">📊 Deck- & Sammlungs-Metriken</div>
+      <div style="font-size: 0.95rem; font-weight: 900; color: #fff; display:flex; justify-content:space-between; align-items:center;">
+        <span>📊 Deck- & Sammlungs-Metriken</span>
+        <span id="metricScopeBadge" style="font-size:0.7rem; color:var(--accent-primary); font-weight:800; background:rgba(56,189,248,0.15); padding:2px 8px; border-radius:12px; border:1px solid rgba(56,189,248,0.3);">
+          Aktives Deck
+        </span>
+      </div>
       
       <!-- Scope Selector: Active Deck vs All Collection -->
       <div class="scope-toggle-wrap">
@@ -1669,14 +1674,25 @@
       <div>
         <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Zu analysierendes Kriterium:</label>
         <select id="metricCatSelect" class="form-control" onchange="renderMetricsView()" style="margin-top: 3px; font-weight: 800;">
+          <option value="salary">💰 Reallohn (k€)</option>
           <option value="mgmt">👔 Management-Attention (Stufen)</option>
           <option value="blast">💥 Blast Radius (Schadensstufen)</option>
           <option value="meeting">⏱️ Durchschn. Meetingdauer (min)</option>
-          <option value="salary">💰 Reallohn (k€)</option>
           <option value="teamplay">🤝 IT-Team-Play (1–100)</option>
           <option value="ux">😊 Enduser-Freude (1–100)</option>
           <option value="security">🛡️ Sicherheitsniveau (0–100)</option>
         </select>
+      </div>
+
+      <!-- Chart Type Switcher -->
+      <div>
+        <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Diagramm-Typ:</label>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:4px; margin-top:3px;">
+          <button id="chartType_pie" class="preset-chip" onclick="setChartType('pie')">🍰 Torte</button>
+          <button id="chartType_bar" class="preset-chip active" onclick="setChartType('bar')">📊 Stufen</button>
+          <button id="chartType_stack" class="preset-chip" onclick="setChartType('stack')">📏 Säule</button>
+          <button id="chartType_list" class="preset-chip" onclick="setChartType('list')">📋 Liste</button>
+        </div>
       </div>
     </div>
 
@@ -1687,32 +1703,38 @@
         <span class="metric-summary-label" id="kpiAvgLabel">Mittelwert</span>
       </div>
       <div class="metric-summary-card">
-        <span class="metric-summary-val" id="kpiMaxVal" style="color: var(--gold);">0</span>
-        <span class="metric-summary-label">Maximum</span>
+        <span class="metric-summary-val" id="kpiMaxVal" style="color: var(--gold); font-size: 0.92rem; line-height: 1.2;">-</span>
+        <span class="metric-summary-label" id="kpiMaxLabel">Höchster Wert</span>
       </div>
       <div class="metric-summary-card">
-        <span class="metric-summary-val" id="kpiMinVal" style="color: var(--text-muted);">0</span>
-        <span class="metric-summary-label">Minimum</span>
+        <span class="metric-summary-val" id="kpiMinVal" style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.2;">-</span>
+        <span class="metric-summary-label" id="kpiMinLabel">Niedrigster Wert</span>
       </div>
     </div>
 
-    <!-- Interactive Frequency & Level Overlay Chart -->
+    <!-- Interactive Visualization Box -->
     <div class="chart-container-box">
       <div class="chart-title-row">
-        <span class="chart-title-text" id="chartMainTitle">Verteilung & Stufen-Overlay</span>
-        <span style="font-size: 0.7rem; color: var(--text-muted);" id="chartSubtitleText">Kartenanzahl pro Stufe</span>
+        <span class="chart-title-text" id="chartMainTitle">Verteilung</span>
+        <span style="font-size: 0.7rem; color: var(--text-muted);" id="chartSubtitleText">Kartenanzahl</span>
       </div>
 
       <!-- Tier / Level Overlay Legend -->
       <div class="tier-overlay-guide">
-        <span class="tier-guide-cell tier-c-max">🔥 Maximum</span>
-        <span class="tier-guide-cell tier-c-high">⚡ Hoch / Mittel-H</span>
-        <span class="tier-guide-cell tier-c-mid">⚖️ Mittel-N</span>
-        <span class="tier-guide-cell tier-c-low">🔻 Niedrig / Min</span>
+        <span class="tier-guide-cell tier-c-max">🔥 Max (91-100%)</span>
+        <span class="tier-guide-cell tier-c-high">⚡ Hoch (71-90%)</span>
+        <span class="tier-guide-cell tier-c-mid">⚖️ Mittel (31-70%)</span>
+        <span class="tier-guide-cell tier-c-low">🔻 Niedrig (0-30%)</span>
       </div>
 
-      <!-- Dynamic Bar Distribution -->
-      <div id="metricDistributionBars" style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;"></div>
+      <!-- Interactive Highlight / Hover Inspection Card -->
+      <div id="chartHoverInspector" style="background: rgba(9,13,22,0.85); border:1px solid var(--border-color); border-radius:10px; padding:8px 12px; font-size:0.75rem; display:none; flex-direction:column; gap:4px; transition:all 0.2s;">
+        <div id="inspectorTitle" style="font-weight:900; color:#fff;"></div>
+        <div id="inspectorCards" style="color:var(--text-muted); font-size:0.72rem; line-height:1.35;"></div>
+      </div>
+
+      <!-- Dynamic Chart Content Area -->
+      <div id="metricChartRenderArea" style="min-height: 220px; display:flex; flex-direction:column; justify-content:center;"></div>
     </div>
 
   </section>
@@ -2651,20 +2673,20 @@
     ];
 
     function getStatLevel(card, category) {
-      if (category === 'mgmt') return MGMT_RANK[card.mgmt].level;
-      if (category === 'blast') return BLAST_RANK[card.blast].level;
+      if (category === 'mgmt') return (MGMT_RANK[card.mgmt] && MGMT_RANK[card.mgmt].level) || "Mittel";
+      if (category === 'blast') return (BLAST_RANK[card.blast] && BLAST_RANK[card.blast].level) || "Mittel";
       
       let pct = 50;
       if (category === 'meeting') pct = (card.meeting / 240) * 100;
       else if (category === 'salary') pct = (card.salary / 210) * 100;
-      else pct = card[category];
+      else pct = card[category]; // 0–100
 
-      if (pct >= 95) return "Maximum";
-      if (pct >= 75) return "Hoch";
-      if (pct >= 55) return "Mittel-hoch";
-      if (pct >= 35) return "Mittel-niedrig";
-      if (pct >= 15) return "Niedrig";
-      return "Minimum";
+      if (pct > 90) return "Maximum";        // 91–100%
+      if (pct > 70) return "Hoch";           // 71–90%
+      if (pct > 50) return "Mittel-hoch";    // 51–70%
+      if (pct > 30) return "Mittel-niedrig"; // 31–50%
+      if (pct > 10) return "Niedrig";        // 11–30%
+      return "Minimum";                      // 0–10%
     }
 
     // ==================== DECK BUILDER STATE ====================
@@ -3529,14 +3551,46 @@
 
     document.getElementById('searchInput').addEventListener('input', renderDeck);
 
-    // ==================== METRICS & ANALYTICS VIEW ====================
+    // ==================== METRICS & ANALYTICS SUITE ====================
     let metricScope = 'active'; // 'active' | 'all'
+    let currentChartType = 'bar'; // 'bar' | 'pie' | 'stack' | 'list'
+
+    const TIER_COLORS = {
+      "Maximum": "#fbbf24",       // Gold
+      "Hoch": "#818cf8",          // Indigo
+      "Mittel-hoch": "#38bdf8",   // Sky Blue
+      "Mittel-niedrig": "#34d399",// Emerald Green
+      "Niedrig": "#94a3b8",       // Slate / Muted
+      "Minimum": "#f43f5e"        // Rose / Danger
+    };
 
     function setMetricScope(scope) {
       metricScope = scope;
       document.getElementById('scopeActiveBtn').className = `scope-toggle-btn ${scope === 'active' ? 'active' : ''}`;
       document.getElementById('scopeAllBtn').className = `scope-toggle-btn ${scope === 'all' ? 'active' : ''}`;
+      document.getElementById('metricScopeBadge').textContent = (scope === 'active') ? 'Aktives Deck' : 'Gesamte Sammlung';
       renderMetricsView();
+    }
+
+    function setChartType(type) {
+      currentChartType = type;
+      ['pie', 'bar', 'stack', 'list'].forEach(t => {
+        const btn = document.getElementById(`chartType_${t}`);
+        if (btn) btn.className = `preset-chip ${t === type ? 'active' : ''}`;
+      });
+      renderMetricsView();
+    }
+
+    function showChartHoverInfo(title, cardsListHtml) {
+      const inspector = document.getElementById('chartHoverInspector');
+      if (!inspector) return;
+      document.getElementById('inspectorTitle').innerHTML = title;
+      document.getElementById('inspectorCards').innerHTML = cardsListHtml;
+      inspector.style.display = 'flex';
+    }
+
+    function hideChartHoverInfo() {
+      // Optional: keep last selected or hide
     }
 
     function renderMetricsView() {
@@ -3553,47 +3607,224 @@
       document.getElementById('chartMainTitle').textContent = `Verteilung: ${meta.name}`;
       document.getElementById('chartSubtitleText').textContent = `Basis: ${totalCount} Karten (${metricScope === 'active' ? 'Aktives Deck' : 'Gesamte Sammlung'})`;
 
-      const barsContainer = document.getElementById('metricDistributionBars');
+      const renderArea = document.getElementById('metricChartRenderArea');
+
+      // TIER ORDER (From Top to Bottom)
+      const TIER_ORDER = ["Maximum", "Hoch", "Mittel-hoch", "Mittel-niedrig", "Niedrig", "Minimum"];
+      const tierBuckets = {};
+      TIER_ORDER.forEach(t => {
+        tierBuckets[t] = { level: t, label: t, cards: [], count: 0, color: TIER_COLORS[t] };
+      });
 
       if (meta.type === 'tier') {
-        // TIER METRICS (Management-Attention & Blast Radius)
-        const counts = {};
-        meta.tiers.forEach(t => counts[t.label] = { count: 0, level: t.level, cards: [] });
-
-        cardsToAnalyze.forEach(c => {
-          const val = c[cat];
-          if (counts[val]) {
-            counts[val].count++;
-            counts[val].cards.push(`${c.emoji} ${c.name}`);
+        // Map Tier labels to bucket
+        meta.tiers.forEach(t => {
+          if (tierBuckets[t.level]) {
+            tierBuckets[t.level].label = t.label;
           }
         });
 
-        // KPI calculations
-        const maxTier = meta.tiers.find(t => counts[t.label].count > 0) || meta.tiers[0];
-        const minTier = [...meta.tiers].reverse().find(t => counts[t.label].count > 0) || meta.tiers[meta.tiers.length - 1];
+        cardsToAnalyze.forEach(c => {
+          const val = c[cat];
+          const level = getStatLevel(c, cat);
+          if (tierBuckets[level]) {
+            tierBuckets[level].count++;
+            tierBuckets[level].cards.push({ name: c.name, emoji: c.emoji, val: val });
+          }
+        });
 
-        document.getElementById('kpiAvgVal').textContent = `${totalCount}`;
-        document.getElementById('kpiAvgLabel').textContent = "Karten im Fokus";
-        document.getElementById('kpiMaxVal').textContent = maxTier.level;
-        document.getElementById('kpiMinVal').textContent = minTier.level;
+        // Specific KPIs for Tier categories (showing actual highest/lowest present category labels)
+        const presentTiers = meta.tiers.filter(t => (tierBuckets[t.level] && tierBuckets[t.level].count > 0));
+        const highestCategoryPresent = presentTiers[0] ? presentTiers[0].label : "-";
+        const lowestCategoryPresent = presentTiers.length > 0 ? presentTiers[presentTiers.length - 1].label : "-";
 
-        barsContainer.innerHTML = meta.tiers.map(t => {
-          const info = counts[t.label] || { count: 0, cards: [] };
-          const pct = totalCount > 0 ? ((info.count / totalCount) * 100).toFixed(0) : 0;
-          const isGold = (t.level === 'Maximum');
+        document.getElementById('kpiAvgVal').textContent = `${totalCount} Karten`;
+        document.getElementById('kpiAvgLabel').textContent = "Umfang";
+
+        document.getElementById('kpiMaxVal').textContent = highestCategoryPresent;
+        document.getElementById('kpiMaxLabel').textContent = "Höchste Stufe";
+
+        document.getElementById('kpiMinVal').textContent = lowestCategoryPresent;
+        document.getElementById('kpiMinLabel').textContent = "Niedrigste Stufe";
+
+      } else {
+        // Numeric Categories
+        const values = cardsToAnalyze.map(c => c[cat]);
+        const sum = values.reduce((a, b) => a + b, 0);
+        const avg = totalCount > 0 ? (sum / totalCount).toFixed(1) : 0;
+        const maxVal = values.length > 0 ? Math.max(...values) : 0;
+        const minVal = values.length > 0 ? Math.min(...values) : 0;
+
+        cardsToAnalyze.forEach(c => {
+          const val = c[cat];
+          const level = getStatLevel(c, cat);
+          if (tierBuckets[level]) {
+            tierBuckets[level].count++;
+            tierBuckets[level].cards.push({ name: c.name, emoji: c.emoji, val: `${val} ${meta.unit || ''}` });
+          }
+        });
+
+        const topCard = cardsToAnalyze.find(c => c[cat] === maxVal);
+        const minCard = cardsToAnalyze.find(c => c[cat] === minVal);
+
+        document.getElementById('kpiAvgVal').textContent = `${avg} ${meta.unit || ''}`;
+        document.getElementById('kpiAvgLabel').textContent = "Mittelwert";
+
+        document.getElementById('kpiMaxVal').textContent = `${maxVal} ${meta.unit || ''} ${topCard ? `(${topCard.emoji})` : ''}`;
+        document.getElementById('kpiMaxLabel').textContent = "Höchster Wert";
+
+        document.getElementById('kpiMinVal').textContent = `${minVal} ${meta.unit || ''} ${minCard ? `(${minCard.emoji})` : ''}`;
+        document.getElementById('kpiMinLabel').textContent = "Niedrigster Wert";
+      }
+
+      // Default inspector content
+      const firstActiveBucket = TIER_ORDER.map(t => tierBuckets[t]).find(b => b.count > 0);
+      if (firstActiveBucket) {
+        showChartHoverInfo(
+          `🔍 ${firstActiveBucket.label} (${firstActiveBucket.level}) – ${firstActiveBucket.count} Karten`,
+          firstActiveBucket.cards.map(c => `<b>${c.emoji} ${c.name}</b>: <span style="color:#fff;">${c.val}</span>`).join(' • ')
+        );
+      }
+
+      // ==================== RENDER SELECTED CHART ====================
+
+      if (currentChartType === 'pie') {
+        // 🍰 DONUT PIE CHART (SVG)
+        const size = 220;
+        const center = size / 2;
+        const radius = 80;
+        const strokeWidth = 32;
+        const circumference = 2 * Math.PI * radius;
+        let cumulativeAngle = 0;
+
+        const activeBuckets = TIER_ORDER.map(t => tierBuckets[t]).filter(b => b.count > 0);
+
+        const slicesSvg = activeBuckets.map((b, idx) => {
+          const pct = b.count / totalCount;
+          const strokeDasharray = `${pct * circumference} ${circumference}`;
+          const strokeDashoffset = -cumulativeAngle * circumference;
+          cumulativeAngle += pct;
+
+          const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b> (${c.val})`).join(' • ');
 
           return `
-            <div class="bar-chart-row">
+            <circle cx="${center}" cy="${center}" r="${radius}"
+              fill="transparent"
+              stroke="${b.color}"
+              stroke-width="${strokeWidth}"
+              stroke-dasharray="${strokeDasharray}"
+              stroke-dashoffset="${strokeDashoffset}"
+              style="cursor:pointer; transition: stroke-width 0.2s, filter 0.2s;"
+              onmouseenter="this.style.strokeWidth='38'; showChartHoverInfo('🍰 ${b.label} (${b.level}): ${b.count} Karten (${(pct*100).toFixed(0)}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
+              onmouseleave="this.style.strokeWidth='32';"
+              onclick="showChartHoverInfo('🍰 ${b.label} (${b.level}): ${b.count} Karten (${(pct*100).toFixed(0)}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
+            />
+          `;
+        }).join('');
+
+        renderArea.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:12px; padding:8px 0;">
+            <div style="position:relative; width:${size}px; height:${size}px;">
+              <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform: rotate(-90deg); overflow:visible;">
+                ${slicesSvg}
+              </svg>
+              <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align:center; pointer-events:none;">
+                <div style="font-size:1.4rem; font-weight:900; color:#fff;">${totalCount}</div>
+                <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Karten</div>
+              </div>
+            </div>
+
+            <!-- Mini Legend Grid -->
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:6px; max-width:440px;">
+              ${TIER_ORDER.map(t => {
+                const b = tierBuckets[t];
+                if (b.count === 0) return '';
+                const pct = ((b.count / totalCount) * 100).toFixed(0);
+                const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b>: ${c.val}`).join(' • ');
+                return `
+                  <div class="preset-chip" style="border-left: 4px solid ${b.color}; cursor:pointer;" 
+                       onmouseenter="showChartHoverInfo('🍰 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
+                       onclick="showChartHoverInfo('🍰 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');">
+                    <span style="color:#fff; font-weight:800;">${b.label}</span>
+                    <span style="color:var(--text-muted); font-size:0.68rem;">(${b.count} | ${pct}%)</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+
+      } else if (currentChartType === 'stack') {
+        // 📏 GESTAPELTE SÄULE (100% Continuous Multi-Segment Bar)
+        const activeBuckets = TIER_ORDER.map(t => tierBuckets[t]).filter(b => b.count > 0);
+
+        const segmentsHtml = activeBuckets.map(b => {
+          const pct = ((b.count / totalCount) * 100).toFixed(1);
+          const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b>: ${c.val}`).join(' • ');
+
+          return `
+            <div style="width: ${pct}%; height: 100%; background: ${b.color}; position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#090d16; font-weight:900; font-size:0.72rem; overflow:hidden; transition:opacity 0.15s;"
+                 title="${b.label}: ${b.count} Karten (${pct}%)"
+                 onmouseenter="this.style.opacity='0.8'; showChartHoverInfo('📏 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
+                 onmouseleave="this.style.opacity='1';"
+                 onclick="showChartHoverInfo('📏 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');">
+              ${pct > 8 ? `${b.count}` : ''}
+            </div>
+          `;
+        }).join('');
+
+        renderArea.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:12px; padding:10px 0;">
+            <div style="width:100%; height:32px; border-radius:10px; background:#090d16; border:1px solid var(--border-color); display:flex; overflow:hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+              ${segmentsHtml}
+            </div>
+
+            <!-- Segment details list -->
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              ${activeBuckets.map(b => {
+                const pct = ((b.count / totalCount) * 100).toFixed(0);
+                const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b>: ${c.val}`).join(' • ');
+                return `
+                  <div class="stat-row-btn clickable" style="border-left: 4px solid ${b.color};"
+                       onmouseenter="showChartHoverInfo('📏 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
+                       onclick="showChartHoverInfo('📏 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');">
+                    <div class="stat-btn-left">
+                      <span class="stat-btn-name" style="color:${b.color};">${b.level}</span>
+                      <span class="stat-btn-val" style="font-size:0.82rem;">${b.label}</span>
+                    </div>
+                    <div class="stat-btn-right" style="color:#fff; background:rgba(255,255,255,0.08);">${b.count} Karten (${pct}%)</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+
+      } else if (currentChartType === 'bar') {
+        // 📊 STUFEN-BALKENDIAGRAMM (Grouped Tier Histogram with exact values on hover)
+        renderArea.innerHTML = TIER_ORDER.map(t => {
+          const b = tierBuckets[t];
+          const pct = totalCount > 0 ? ((b.count / totalCount) * 100).toFixed(0) : 0;
+          const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b>: <span style="color:#fff;">${c.val}</span>`).join(' • ');
+
+          return `
+            <div class="bar-chart-row" style="cursor:pointer;"
+                 onmouseenter="showChartHoverInfo('📊 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
+                 onclick="showChartHoverInfo('📊 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');">
               <div class="bar-row-label-wrap">
-                <span><b>${t.label}</b> <span style="color:var(--text-muted); font-size:0.68rem;">(${t.level})</span></span>
-                <span><b>${info.count} Karten</b> (${pct}%)</span>
+                <span><b style="color:${b.color};">■</b> <b>${b.label}</b> <span style="color:var(--text-muted); font-size:0.68rem;">(${b.level})</span></span>
+                <span><b>${b.count} Karten</b> (${pct}%)</span>
               </div>
               <div class="bar-track">
-                <div class="bar-fill ${isGold ? 'bar-fill-gold' : ''}" style="width: ${Math.max(2, pct)}%;"></div>
+                <div class="bar-fill" style="width: ${Math.max(b.count > 0 ? 3 : 0, pct)}%; background: ${b.color};"></div>
               </div>
-              ${info.cards.length > 0 ? `
-                <div style="font-size:0.68rem; color:var(--text-muted); line-height:1.2; margin-top:1px;">
-                  ${info.cards.join(', ')}
+              ${b.cards.length > 0 ? `
+                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:2px;">
+                  ${b.cards.map(c => `
+                    <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); padding:1px 6px; border-radius:4px; font-size:0.66rem; color:#cbd5e1;">
+                      ${c.emoji} ${c.name}: <b>${c.val}</b>
+                    </span>
+                  `).join('')}
                 </div>
               ` : ''}
             </div>
@@ -3601,42 +3832,27 @@
         }).join('');
 
       } else {
-        // NUMERIC METRICS (Meeting, Salary, Team-Play, UX, Security)
-        const values = cardsToAnalyze.map(c => c[cat]);
-        const sum = values.reduce((a, b) => a + b, 0);
-        const avg = totalCount > 0 ? (sum / totalCount).toFixed(1) : 0;
-        const maxVal = values.length > 0 ? Math.max(...values) : 0;
-        const minVal = values.length > 0 ? Math.min(...values) : 0;
+        // 📋 EINZELKARTEN-RANGLISTE (Full Card Sorted List)
+        const sortedCards = [...cardsToAnalyze].sort((a, b) => {
+          const va = (meta.type === 'tier') ? getStatRankVal(a, cat) : a[cat];
+          const vb = (meta.type === 'tier') ? getStatRankVal(b, cat) : b[cat];
+          return vb - va;
+        });
 
-        document.getElementById('kpiAvgVal').textContent = `${avg} ${meta.unit || ''}`;
-        document.getElementById('kpiAvgLabel').textContent = "Durchschnitt";
-        document.getElementById('kpiMaxVal').textContent = `${maxVal} ${meta.unit || ''}`;
-        document.getElementById('kpiMinVal').textContent = `${minVal} ${meta.unit || ''}`;
-
-        // Sort cards by this criterion
-        const sortedCards = [...cardsToAnalyze].sort((a, b) => b[cat] - a[cat]);
-
-        barsContainer.innerHTML = sortedCards.map(c => {
-          const val = c[cat];
-          let pct = 50;
-          if (cat === 'meeting') pct = (val / 240) * 100;
-          else if (cat === 'salary') pct = (val / 210) * 100;
-          else pct = val;
-
+        renderArea.innerHTML = sortedCards.map((c, idx) => {
+          const val = formatStatDisplay(c, cat);
           const level = getStatLevel(c, cat);
-          let badgeClass = 'tier-c-mid';
-          if (level === 'Maximum') badgeClass = 'tier-c-max';
-          else if (level === 'Hoch' || level === 'Mittel-hoch') badgeClass = 'tier-c-high';
-          else if (level === 'Niedrig' || level === 'Minimum') badgeClass = 'tier-c-low';
+          const color = TIER_COLORS[level] || 'var(--accent-primary)';
 
           return `
-            <div class="bar-chart-row">
-              <div class="bar-row-label-wrap">
-                <span>${c.emoji} <b>${c.name}</b> <span class="tier-guide-cell ${badgeClass}" style="padding:1px 5px; font-size:0.62rem;">${level}</span></span>
-                <span><b>${val} ${meta.unit || ''}</b></span>
+            <div class="hof-row" style="border-left: 3px solid ${color}; padding: 6px 8px; margin-bottom: 3px; background: rgba(9,13,22,0.4); border-radius: 6px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-weight:900; color:var(--text-muted); font-size:0.72rem;">#${idx + 1}</span>
+                <span>${c.emoji} <b>${c.name}</b></span>
               </div>
-              <div class="bar-track">
-                <div class="bar-fill ${level === 'Maximum' ? 'bar-fill-gold' : ''}" style="width: ${Math.max(3, pct)}%;"></div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:0.65rem; padding:1px 6px; border-radius:4px; background:rgba(255,255,255,0.08); color:${color}; font-weight:800;">${level}</span>
+                <span style="font-weight:900; color:#fff;">${val}</span>
               </div>
             </div>
           `;
