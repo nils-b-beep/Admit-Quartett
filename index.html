@@ -394,12 +394,47 @@
     .stat-btn-right {
       z-index: 2;
       font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--accent-primary);
-      background: rgba(56, 189, 248, 0.1);
+      font-weight: 800;
       padding: 3px 8px;
       border-radius: 6px;
-      border: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.15s;
+    }
+
+    .stat-btn-right.tier-Maximum {
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      box-shadow: 0 0 8px rgba(251, 191, 36, 0.15);
+    }
+
+    .stat-btn-right.tier-Hoch {
+      color: #818cf8;
+      background: rgba(129, 140, 248, 0.15);
+      border: 1px solid rgba(129, 140, 248, 0.4);
+    }
+
+    .stat-btn-right.tier-Mittel-hoch {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .stat-btn-right.tier-Mittel-niedrig {
+      color: #34d399;
+      background: rgba(52, 211, 153, 0.15);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+
+    .stat-btn-right.tier-Niedrig {
+      color: #94a3b8;
+      background: rgba(148, 163, 184, 0.15);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .stat-btn-right.tier-Minimum {
+      color: #f43f5e;
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.4);
     }
 
     /* Bot Controls */
@@ -625,6 +660,39 @@
       background: rgba(56, 189, 248, 0.15);
       color: var(--accent-primary);
       border: 1px solid rgba(56, 189, 248, 0.3);
+      transition: all 0.15s;
+    }
+
+    .wager-level-badge.tier-Maximum {
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      box-shadow: 0 0 8px rgba(251, 191, 36, 0.2);
+    }
+    .wager-level-badge.tier-Hoch {
+      color: #818cf8;
+      background: rgba(129, 140, 248, 0.15);
+      border: 1px solid rgba(129, 140, 248, 0.4);
+    }
+    .wager-level-badge.tier-Mittel-hoch {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    .wager-level-badge.tier-Mittel-niedrig {
+      color: #34d399;
+      background: rgba(52, 211, 153, 0.15);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+    .wager-level-badge.tier-Niedrig {
+      color: #94a3b8;
+      background: rgba(148, 163, 184, 0.15);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+    .wager-level-badge.tier-Minimum {
+      color: #f43f5e;
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.4);
     }
 
     .tier-ladder-container {
@@ -2851,7 +2919,7 @@
                 <span class="stat-btn-name">👔 Management-Attention</span>
                 <span class="stat-btn-val">${card.mgmt}</span>
               </div>
-              <div class="stat-btn-right">${MGMT_RANK[card.mgmt].level}</div>
+              <div class="stat-btn-right tier-${getStatLevel(card, 'mgmt')}">${getStatLevel(card, 'mgmt')}</div>
             </button>
 
             <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('blast')">
@@ -2859,7 +2927,7 @@
                 <span class="stat-btn-name">💥 Blast Radius</span>
                 <span class="stat-btn-val">${card.blast}</span>
               </div>
-              <div class="stat-btn-right">${BLAST_RANK[card.blast].level}</div>
+              <div class="stat-btn-right tier-${getStatLevel(card, 'blast')}">${getStatLevel(card, 'blast')}</div>
             </button>
 
             <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('meeting')">
@@ -2867,7 +2935,7 @@
                 <span class="stat-btn-name">⏱️ Durchschn. Meetingdauer</span>
                 <span class="stat-btn-val">${card.meeting} min</span>
               </div>
-              <div class="stat-btn-right">${getStatLevel(card, 'meeting')}</div>
+              <div class="stat-btn-right tier-${getStatLevel(card, 'meeting')}">${getStatLevel(card, 'meeting')}</div>
             </button>
 
             <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('salary')">
@@ -2875,7 +2943,7 @@
                 <span class="stat-btn-name">💰 Reallohn</span>
                 <span class="stat-btn-val">${card.salary} k€</span>
               </div>
-              <div class="stat-btn-right">${getStatLevel(card, 'salary')}</div>
+              <div class="stat-btn-right tier-${getStatLevel(card, 'salary')}">${getStatLevel(card, 'salary')}</div>
             </button>
 
             <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('teamplay')">
@@ -2883,7 +2951,7 @@
                 <span class="stat-btn-name">🤝 IT-Team-Play</span>
                 <span class="stat-btn-val">${card.teamplay} / 100</span>
               </div>
-              <div class="stat-btn-right">${getStatLevel(card, 'teamplay')}</div>
+              <div class="stat-btn-right tier-${getStatLevel(card, 'teamplay')}">${getStatLevel(card, 'teamplay')}</div>
             </button>
 
             <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('ux')">
@@ -2891,7 +2959,7 @@
                 <span class="stat-btn-name">😊 Enduser-Freude</span>
                 <span class="stat-btn-val">${card.ux} / 100</span>
               </div>
-              <div class="stat-btn-right">${getStatLevel(card, 'ux')}</div>
+              <div class="stat-btn-right tier-${getStatLevel(card, 'ux')}">${getStatLevel(card, 'ux')}</div>
             </button>
 
             <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('security')">
@@ -2899,7 +2967,7 @@
                 <span class="stat-btn-name">🛡️ Sicherheitsniveau</span>
                 <span class="stat-btn-val">${card.security} / 100</span>
               </div>
-              <div class="stat-btn-right">${getStatLevel(card, 'security')}</div>
+              <div class="stat-btn-right tier-${getStatLevel(card, 'security')}">${getStatLevel(card, 'security')}</div>
             </button>
 
           </div>
@@ -2921,7 +2989,11 @@
 
       const rawVal = formatStatDisplay(card, category);
       document.getElementById('wagerValBig').textContent = rawVal;
-      document.getElementById('wagerLevelBadge').textContent = getStatLevel(card, category);
+      
+      const lvl = getStatLevel(card, category);
+      const lvlBadge = document.getElementById('wagerLevelBadge');
+      lvlBadge.textContent = lvl;
+      lvlBadge.className = `wager-level-badge tier-${lvl}`;
 
       const scaleContainer = document.getElementById('wagerScaleContent');
       if (meta.type === 'tier') {
@@ -2943,7 +3015,7 @@
         `;
       } else {
         let pct = 50;
-        if (category === 'meeting') pct = (card.meeting / 240) * 100;
+        if (category === 'meeting') pct = (card.meeting / 150) * 100;
         else if (category === 'salary') pct = (card.salary / 210) * 100;
         else pct = card[category];
 
