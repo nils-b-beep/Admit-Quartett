@@ -1562,16 +1562,13 @@
         <h3 style="font-size: 1.1rem; font-weight: 900;">💡 Neue Kartenidee vorschlagen</h3>
         <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeNewCardModal()">&times;</button>
       </div>
-      <p style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 10px;">
-        Kein Login nötig! Dein Vorschlag wird direkt in die Tabelle übertragen.
-      </p>
 
       <form id="newCardForm" onsubmit="handleNewCardSubmit(event)">
         <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Tier & Rollenname</label>
         <input type="text" id="nc_role" class="form-control" placeholder="z. B. 🐬 Delfin-Scrum-Master" required>
 
         <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Beschreibung, Spezialfähigkeit & Zitat</label>
-        <textarea id="nc_desc" class="form-control" placeholder="Flavour-Beschreibung der Rolle, Superkraft und ikonisches Zitat..." style="min-height: 70px;" required></textarea>
+        <textarea id="nc_desc" class="form-control" placeholder="Beschreibung der Rolle, Superkraft und ikonisches Zitat..." style="min-height: 70px;" required></textarea>
 
         <div style="background: rgba(9,13,22,0.5); padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px;">
           <div style="font-size: 0.72rem; font-weight: 800; color: #fff; margin-bottom: 6px;">📊 Kriterien-Vorschlag</div>
@@ -2877,8 +2874,8 @@
               <div class="wordart-rainbow-3d">👑 IT-HERO! 👑</div>
               <div class="wordart-subtitle">DU BEHERRSCHST DIE GESAMTE IT!</div>
             ` : `
-              <div class="wordart-fire-3d">💥 WEGRATIONALISIERT! 💥</div>
-              <div class="wordart-subtitle">DER VORSTAND HAT DICH WEGBUDGETIERT</div>
+              <div class="wordart-subtitle" style="font-size: 1.15rem; margin-bottom: 6px; letter-spacing: 1.5px;">DER VORSTAND HAT DICH</div>
+              <div class="wordart-fire-3d">💥 WEGRATIONALISIERT!</div>
             `}
           </div>
 
