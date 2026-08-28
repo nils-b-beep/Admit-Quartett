@@ -3067,7 +3067,9 @@
 
     document.getElementById('searchInput').addEventListener('input', renderDeck);
 
-    // ==================== MODALS & PROPOSALS ====================
+    // ==================== MODALS & CLOUD-ENABLED PROPOSALS ====================
+    const GOOGLE_SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxjIPCkUVKHd0w7xg4J8MaeK-Y05DR1VB3nDgX7FXHY24mFNoe2J6xx4vscvxNFBFwWmQ/exec';
+
     function openImg(src) {
       document.getElementById('modalImg').src = src;
       document.getElementById('imageModal').style.display = 'flex';
@@ -3102,10 +3104,28 @@
       document.getElementById('cardFeedbackModal').style.display = 'none';
     }
 
+    async function sendToGoogleSheets(proposal) {
+      if (!GOOGLE_SHEETS_ENDPOINT) return;
+      try {
+        await fetch(GOOGLE_SHEETS_ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(proposal)
+        });
+        console.log('Google Sheets Sync OK:', proposal);
+      } catch (err) {
+        console.warn('Google Sheets Sync Warn:', err);
+      }
+    }
+
     function saveProposal(proposal) {
       const list = JSON.parse(localStorage.getItem('it_quartett_all_proposals') || '[]');
       list.push(proposal);
       localStorage.setItem('it_quartett_all_proposals', JSON.stringify(list));
+      sendToGoogleSheets(proposal);
     }
 
     function handleCardFeedbackSubmit(e) {
