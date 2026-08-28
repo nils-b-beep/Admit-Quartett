@@ -1234,6 +1234,17 @@
       padding: 5px 7px;
       border-radius: 6px;
       font-size: 0.75rem;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .coll-stat-box.highlight-sort {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: var(--accent-primary);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+      transform: scale(1.02);
     }
 
     .coll-stat-box.full { grid-column: span 2; }
@@ -3527,13 +3538,13 @@
             </div>
 
             <div class="coll-stats-grid">
-              <div class="coll-stat-box">👔 ${c.mgmt} (${MGMT_RANK[c.mgmt].level})</div>
-              <div class="coll-stat-box">💥 ${c.blast} (${BLAST_RANK[c.blast].level})</div>
-              <div class="coll-stat-box">⏱️ ${c.meeting} min</div>
-              <div class="coll-stat-box">💰 ${c.salary} k€</div>
-              <div class="coll-stat-box">🤝 Team: ${c.teamplay}</div>
-              <div class="coll-stat-box">😊 User: ${c.ux}</div>
-              <div class="coll-stat-box full">🛡️ Sicherheit: ${c.security} / 100</div>
+              <div class="coll-stat-box ${deckSort === 'mgmt' ? 'highlight-sort' : ''}">👔 ${c.mgmt} (${MGMT_RANK[c.mgmt].level})</div>
+              <div class="coll-stat-box ${deckSort === 'blast' ? 'highlight-sort' : ''}">💥 ${c.blast} (${BLAST_RANK[c.blast].level})</div>
+              <div class="coll-stat-box ${deckSort === 'meeting' ? 'highlight-sort' : ''}">⏱️ ${c.meeting} min</div>
+              <div class="coll-stat-box ${deckSort === 'salary' ? 'highlight-sort' : ''}">💰 ${c.salary} k€</div>
+              <div class="coll-stat-box ${deckSort === 'teamplay' ? 'highlight-sort' : ''}">🤝 Team: ${c.teamplay}</div>
+              <div class="coll-stat-box ${deckSort === 'ux' ? 'highlight-sort' : ''}">😊 User: ${c.ux}</div>
+              <div class="coll-stat-box full ${deckSort === 'security' ? 'highlight-sort' : ''}">🛡️ Sicherheit: ${c.security} / 100</div>
             </div>
           </div>
         `;
