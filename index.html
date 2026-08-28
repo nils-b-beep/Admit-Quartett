@@ -337,7 +337,9 @@
       gap: 5px;
     }
 
-    /* WAGER MODAL (Pop-up zur Richtungswahl) */
+    /* ==========================================================================
+       PREMIUM WAGER POPUP & INTERACTIVE SCALES
+       ========================================================================== */
     .wager-overlay {
       display: none;
       position: fixed;
@@ -345,31 +347,45 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(9, 13, 22, 0.92);
-      backdrop-filter: blur(10px);
+      background: rgba(9, 13, 22, 0.94);
+      backdrop-filter: blur(14px);
       z-index: 999;
-      padding: 14px;
+      padding: 12px;
       align-items: center;
       justify-content: center;
     }
 
     .wager-box {
-      background: var(--bg-secondary);
-      border: 2px solid var(--border-color);
-      border-radius: 18px;
+      background: linear-gradient(180deg, #182238 0%, #0f172a 100%);
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      border-radius: 20px;
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
+      max-height: 92vh;
+      overflow-y: auto;
       padding: 16px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(56, 189, 248, 0.15);
       display: flex;
       flex-direction: column;
       gap: 12px;
-      animation: popIn 0.2s ease-out;
+      animation: popIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     @keyframes popIn {
-      from { transform: scale(0.92); opacity: 0; }
+      from { transform: scale(0.9); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
+    }
+
+    .wager-card-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(9, 13, 22, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
 
     .wager-header {
@@ -377,136 +393,262 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
+      padding-bottom: 10px;
     }
 
     .wager-cat-title {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--accent-primary);
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #fff;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
-    .info-icon-btn {
+    .info-toggle-btn {
       background: rgba(56, 189, 248, 0.15);
       border: 1px solid var(--accent-primary);
       color: var(--accent-primary);
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      font-size: 0.75rem;
-      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 800;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 4px;
       cursor: pointer;
-      position: relative;
     }
 
-    .info-tooltip {
+    .info-panel {
       display: none;
-      position: absolute;
-      top: 30px;
-      right: 0;
-      width: 260px;
-      background: #0f172a;
+      background: #090d16;
       border: 1px solid var(--accent-primary);
       border-radius: 10px;
-      padding: 10px;
-      font-size: 0.74rem;
-      color: #e2e8f0;
-      line-height: 1.35;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
-      z-index: 10;
-    }
-
-    .info-icon-btn:hover .info-tooltip,
-    .info-icon-btn:active .info-tooltip,
-    .info-icon-btn.open .info-tooltip {
-      display: block;
-    }
-
-    .wager-card-stat-card {
-      background: var(--bg-card);
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
       padding: 10px 12px;
+      font-size: 0.76rem;
+      color: #e2e8f0;
+      line-height: 1.4;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Primary Stat Highlight Display */
+    .wager-stat-display {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
     }
 
-    .wager-val-row {
+    .wager-stat-top {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
     }
 
-    .wager-val-big {
-      font-size: 1.3rem;
+    .wager-stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .wager-stat-val-big {
+      font-size: 1.35rem;
       font-weight: 900;
       color: #fff;
+      letter-spacing: -0.5px;
     }
 
-    .wager-scale-info {
-      background: rgba(9, 13, 22, 0.5);
-      border-radius: 8px;
-      padding: 6px 8px;
+    /* --- TIER LADDER SCALE (For Mgmt-Attention & Blast Radius) --- */
+    .tier-ladder-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .tier-ladder-track {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .tier-ladder-step {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px;
+      border-radius: 6px;
       font-size: 0.72rem;
-      color: #cbd5e1;
-      line-height: 1.3;
-      border-left: 3px solid var(--accent-secondary);
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      transition: all 0.2s;
     }
 
-    .wager-question {
-      font-size: 0.85rem;
+    .tier-ladder-step.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-primary);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+      transform: scale(1.02);
+    }
+
+    .tier-step-badge {
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .tier-ladder-step.active .tier-step-badge {
+      background: var(--accent-primary);
+      color: #090d16;
+      font-weight: 900;
+    }
+
+    /* --- CONTINUOUS GAUGE SPECTRUM (For Meeting, Reallohn, Teamplay, UX, Security) --- */
+    .spectrum-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .spectrum-bar-wrap {
+      position: relative;
+      height: 12px;
+      border-radius: 6px;
+      background: #090d16;
+      border: 1px solid var(--border-color);
+      overflow: visible;
+      margin: 12px 0 6px 0;
+    }
+
+    .spectrum-gradient-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #38bdf8 0%, #a855f7 50%, #f59e0b 100%);
+    }
+
+    .spectrum-indicator-pin {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid var(--accent-primary);
+      box-shadow: 0 0 15px var(--accent-primary);
+      z-index: 5;
+      transition: left 0.3s ease;
+    }
+
+    .spectrum-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Tactical Recommendation Pill */
+    .tactical-hint-pill {
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .hint-higher {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-primary);
+      color: #bae6fd;
+    }
+
+    .hint-lower {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--highlight);
+      color: #fef08a;
+    }
+
+    .hint-mid {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid #c084fc;
+      color: #e9d5ff;
+    }
+
+    .wager-prompt-title {
+      font-size: 0.92rem;
       font-weight: 800;
       text-align: center;
-      color: #f8fafc;
-      margin: 4px 0;
+      color: #fff;
+      margin-top: 2px;
     }
 
-    .wager-btn-group {
+    /* Big Tactical Action Buttons */
+    .wager-btn-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .wager-action-btn {
+    .wager-btn-card {
       border: none;
-      padding: 12px 10px;
-      border-radius: 12px;
-      font-weight: 800;
-      font-size: 0.88rem;
+      padding: 14px 10px;
+      border-radius: 14px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
+      text-align: center;
       gap: 4px;
-      transition: all 0.15s;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .wager-action-btn:active {
-      transform: scale(0.97);
+    .wager-btn-card:active {
+      transform: scale(0.96);
     }
 
     .wager-btn-higher {
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
       color: #090d16;
-      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
     }
 
     .wager-btn-lower {
-      background: linear-gradient(135deg, #d97706, #f59e0b);
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
       color: #090d16;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
     }
 
-    .wager-btn-subtext {
+    .wager-btn-main {
+      font-size: 0.92rem;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+
+    .wager-btn-sub {
       font-size: 0.68rem;
-      font-weight: 600;
+      font-weight: 700;
       opacity: 0.9;
     }
 
@@ -837,46 +979,64 @@
     <div class="deck-list" id="deckList"></div>
   </section>
 
-  <!-- ==================== WAGER / POPUP RICHTUNGSWAHL ==================== -->
+  <!-- ==================== PREMIUM WAGER POPUP ==================== -->
   <div id="wagerModal" class="wager-overlay">
     <div class="wager-box">
       
+      <!-- Card Context Badge -->
+      <div class="wager-card-badge">
+        <span id="wagerCardContext">🃏 Deine aktive Karte: 🪿 Gans-Eskalationsmanager</span>
+        <span style="font-size: 0.68rem; color: var(--accent-primary);">Supertrumpf-Duell</span>
+      </div>
+
+      <!-- Header with Info Toggle -->
       <div class="wager-header">
         <div class="wager-cat-title" id="wagerCatTitle">
           <span>👔 Management-Attention</span>
         </div>
-        <div class="info-icon-btn" onclick="toggleTooltip(event)" title="Erklärung">
-          ℹ️
-          <div class="info-tooltip" id="wagerTooltipText"></div>
-        </div>
+        <button class="info-toggle-btn" onclick="toggleInfoPanel()">
+          <span>ℹ️ Erklärung</span>
+        </button>
       </div>
 
-      <div class="wager-card-stat-card">
-        <div class="wager-val-row">
-          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">Dein aktueller Wert:</span>
-          <span class="wager-val-big" id="wagerValBig">Liebling (100%)</span>
+      <!-- Expandable Lore Info Panel -->
+      <div class="info-panel" id="wagerInfoPanel"></div>
+
+      <!-- Stat Highlight & Dynamic Visual Scale -->
+      <div class="wager-stat-display">
+        <div class="wager-stat-top">
+          <span class="wager-stat-label">Dein Kartenwert:</span>
+          <span class="wager-stat-val-big" id="wagerValBig">Liebling (100%)</span>
         </div>
-        <div class="wager-scale-info" id="wagerScaleInfo"></div>
+
+        <!-- Dynamic Scale Injected via JS -->
+        <div id="wagerScaleContent"></div>
       </div>
 
-      <div class="wager-question">
+      <!-- Tactical Strategy Recommendation -->
+      <div class="tactical-hint-pill" id="wagerTacticalHint"></div>
+
+      <!-- Heading -->
+      <div class="wager-prompt-title">
         Möchtest du darauf wetten, dass du den niedrigsten oder höchsten Wert hast?
       </div>
 
-      <div class="wager-btn-group">
-        <button class="wager-action-btn wager-btn-higher" onclick="confirmWager('higher')">
-          <span>⬆️ Höchster Wert</span>
-          <span class="wager-btn-subtext">(Überbieten)</span>
+      <!-- Big Dual Buttons -->
+      <div class="wager-btn-grid">
+        <button class="wager-btn-card wager-btn-higher" onclick="confirmWager('higher')">
+          <span class="wager-btn-main">⬆️ HÖCHSTER Wert</span>
+          <span class="wager-btn-sub">Ich überbiete den Gegner</span>
         </button>
-        <button class="wager-action-btn wager-btn-lower" onclick="confirmWager('lower')">
-          <span>⬇️ Niedrigster Wert</span>
-          <span class="wager-btn-subtext">(Unterbieten)</span>
+        <button class="wager-btn-card wager-btn-lower" onclick="confirmWager('lower')">
+          <span class="wager-btn-main">⬇️ NIEDRIGSTER Wert</span>
+          <span class="wager-btn-sub">Ich unterbiete den Gegner</span>
         </button>
       </div>
 
+      <!-- Cancel / Reselect -->
       <div style="text-align: center; margin-top: 2px;">
-        <button onclick="closeWagerModal()" style="background: none; border: none; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; text-decoration: underline;">
-          ✖️ Anderen Wert wählen
+        <button onclick="closeWagerModal()" style="background: none; border: none; color: var(--text-muted); font-size: 0.76rem; cursor: pointer; text-decoration: underline;">
+          ✖️ Abbrechen & anderen Wert wählen
         </button>
       </div>
 
@@ -985,37 +1145,78 @@
       mgmt: {
         name: "👔 Management-Attention",
         info: "Gibt an, wie viel Sichtbarkeit und Wohlwollen die Rolle im Top-Management genießt. 'Liebling' sticht alles im oberen Bereich, 'Wer bist du?' ist das unsichtbare Schlusslicht.",
-        scale: "Stufen: Liebling (100%) > Andere Manager (80%) > Arschkriecher (60%) > Aufstreber (40%) > Fleißiges Bienchen (20%) > Wer bist du? (5%)"
+        type: "tier",
+        tiers: [
+          { label: "Liebling", pct: 100, tag: "100% • Max" },
+          { label: "Andere Manager", pct: 80, tag: "80%" },
+          { label: "Arschkriecher", pct: 60, tag: "60%" },
+          { label: "Aufstreber", pct: 40, tag: "40%" },
+          { label: "Fleißiges Bienchen", pct: 20, tag: "20%" },
+          { label: "Wer bist du?", pct: 5, tag: "0% • Min" }
+        ]
       },
       blast: {
         name: "💥 Blast Radius",
-        info: "Der Schadensradius bei einem Ausfall oder Fehler. 'Ich hab's doch gesagt!' bedeutet weltweiten Produktionsstillstand, 'Reporting-Issue' ist ein reiner Darstellungsfehler.",
-        scale: "Stufen: „Ich hab's doch gesagt!“ (100%) > „Das gibt Ärger...“ (80%) > Problem-Ticket (60%) > Morgen wieder vergessen... (40%) > Einzeluserprobleme (20%) > Reporting-Issue (5%)"
+        info: "Der Schadensradius bei einem Ausfall oder Fehler. 'Ich hab's doch gesagt!' bedeutet weltweiten Stillstand, 'Reporting-Issue' ist ein reiner Darstellungsfehler.",
+        type: "tier",
+        tiers: [
+          { label: "„Ich hab's doch gesagt!“", pct: 100, tag: "100% • Max" },
+          { label: "„Das gibt Ärger...“", pct: 80, tag: "80%" },
+          { label: "Problem-Ticket", pct: 60, tag: "60%" },
+          { label: "Morgen wieder vergessen...", pct: 40, tag: "40%" },
+          { label: "Einzeluserprobleme", pct: 20, tag: "20%" },
+          { label: "Reporting-Issue", pct: 5, tag: "0% • Min" }
+        ]
       },
       meeting: {
         name: "⏱️ Durchschn. Meetingdauer",
         info: "Dauer typischer Termine in Minuten. Der SME-Wal hält mit 240 min den Spitzenwert, während Kakerlake oder Sysadmin mit 0–2 min Meetings fast völlig meiden.",
-        scale: "Skala: 0 min (Min: Legacy-Kakerlake, Sysadmin) — 240 min (Max: SME-Wal)"
+        type: "numeric",
+        min: 0,
+        max: 240,
+        unit: "min",
+        minLabel: "0 min (Kakerlake, Sysadmin)",
+        maxLabel: "240 min (SME-Wal)"
       },
       salary: {
         name: "💰 Reallohn",
         info: "Jahresgehalt in Tausend Euro (k€). Sales und Vorstandsberater sahnen bis zu 210 k€ ab, während uralte Legacy-Systeme mit 0 k€ laufen.",
-        scale: "Skala: 0 k€ (Min: Legacy-Kakerlake) — 210 k€ (Max: Kuckuck-Sales)"
+        type: "numeric",
+        min: 0,
+        max: 210,
+        unit: "k€",
+        minLabel: "0 k€ (Legacy-Kakerlake)",
+        maxLabel: "210 k€ (Vendor-Sales)"
       },
       teamplay: {
         name: "🤝 IT-Team-Play",
         info: "Teamfähigkeit und Kollegialität unter IT-Kollegen (1–100). Hohe Werte halten dem Team den Rücken frei (Capybara 98), niedrige treiben Kollegen in den Wahnsinn (AI-Evangelist 2, Auditor 5).",
-        scale: "Skala: 1 / 100 (Gering: AI-Evangelist) — 100 / 100 (Max: Capybara-Owner)"
+        type: "numeric",
+        min: 1,
+        max: 100,
+        unit: "Pkt.",
+        minLabel: "1 (AI-Evangelist)",
+        maxLabel: "100 (Capybara, On-Call)"
       },
       ux: {
         name: "😊 Enduser-Freude",
         info: "Nutzerfreundlichkeit und Beliebtheit bei den Endanwendern (1–100). Der Service-Desk-Otter (98) und UX-Designer (92) sind Publikumslieblinge, SOC-Analysten (2) sperren lieber alles.",
-        scale: "Skala: 1 / 100 (Min: Kugelfisch-SOC) — 100 / 100 (Max: Service-Desk-Otter)"
+        type: "numeric",
+        min: 1,
+        max: 100,
+        unit: "Pkt.",
+        minLabel: "1 (Kugelfisch-SOC)",
+        maxLabel: "100 (Service-Desk-Otter)"
       },
       security: {
         name: "🛡️ Sicherheitsniveau",
         info: "Sicherheitsbewusstsein und Cyber-Resilienz (1–100). Kugelfisch & Pentester bieten maximale Sicherheit (98–100), während Schatten-IT und Key-User massive Risiken bergen (5).",
-        scale: "Skala: 0 / 100 (Min: Kakerlake, Key-User) — 100 / 100 (Max: SOC-Analyst, Pentester)"
+        type: "numeric",
+        min: 0,
+        max: 100,
+        unit: "Pkt.",
+        minLabel: "0 (Kakerlake, Key-User)",
+        maxLabel: "100 (SOC-Analyst, Pentester)"
       }
     };
 
@@ -1204,26 +1405,94 @@
       `;
     }
 
-    // ==================== POPUP RICHTUNGSWAHL ====================
+    // ==================== PREMIUM POPUP RICHTUNGSWAHL ====================
     function openWagerModal(category) {
       if (!isPlayerTurn) return;
       selectedWagerCat = category;
       const meta = STAT_META[category];
       const card = playerDeck[0];
 
-      document.getElementById('wagerCatTitle').textContent = meta.name;
-      document.getElementById('wagerTooltipText').textContent = meta.info;
-      document.getElementById('wagerValBig').textContent = formatStatDisplay(card, category);
-      document.getElementById('wagerScaleInfo').textContent = meta.scale;
+      // Update Card Context & Title
+      document.getElementById('wagerCardContext').textContent = `🃏 Deine Karte: ${card.emoji} ${card.name}`;
+      document.getElementById('wagerCatTitle').innerHTML = `<span>${meta.name}</span>`;
+      document.getElementById('wagerInfoPanel').innerHTML = `<b>💡 Hintergrund:</b> ${meta.info}`;
+      document.getElementById('wagerInfoPanel').style.display = 'none';
+
+      // Big Val Display
+      const formattedVal = formatStatDisplay(card, category);
+      document.getElementById('wagerValBig').textContent = formattedVal;
+
+      // Calculate Percentage Position for Tactical Rating & Scale
+      let relativePct = 50;
+      if (category === 'mgmt') relativePct = MGMT_RANK[card.mgmt].pct;
+      else if (category === 'blast') relativePct = BLAST_RANK[card.blast].pct;
+      else if (category === 'meeting') relativePct = Math.round((card.meeting / 240) * 100);
+      else if (category === 'salary') relativePct = Math.round((card.salary / 210) * 100);
+      else relativePct = card[category];
+
+      // Render Dynamic Scale
+      const scaleContainer = document.getElementById('wagerScaleContent');
+      if (meta.type === 'tier') {
+        // Tier Ladder (Segmented steps)
+        scaleContainer.innerHTML = `
+          <div class="tier-ladder-container">
+            <div style="font-size:0.68rem; font-weight:700; color:var(--text-muted); margin-bottom:2px; display:flex; justify-content:space-between;">
+              <span>🏆 STUFEN-LEITER</span>
+              <span>Dein Rang: ${relativePct}%</span>
+            </div>
+            <div class="tier-ladder-track">
+              ${meta.tiers.map(t => {
+                const isActive = (card[category] === t.label);
+                return `
+                  <div class="tier-ladder-step ${isActive ? 'active' : ''}">
+                    <span>${isActive ? '👉 ' : ''}${t.label}</span>
+                    <span class="tier-step-badge">${t.tag}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        // Continuous Gauge Spectrum with pin
+        scaleContainer.innerHTML = `
+          <div class="spectrum-container">
+            <div style="font-size:0.68rem; font-weight:700; color:var(--text-muted); display:flex; justify-content:space-between;">
+              <span>📊 RELATIVE POSITION IM DECK</span>
+              <span style="color:var(--accent-primary); font-weight:800;">${relativePct}% des Spektrums</span>
+            </div>
+            <div class="spectrum-bar-wrap">
+              <div class="spectrum-gradient-fill" style="width: 100%;"></div>
+              <div class="spectrum-indicator-pin" style="left: ${Math.min(96, Math.max(4, relativePct))}%;" title="Dein Wert: ${formattedVal}"></div>
+            </div>
+            <div class="spectrum-labels">
+              <span>🔻 ${meta.minLabel}</span>
+              <span>🔥 ${meta.maxLabel}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      // Tactical Recommendation
+      const hintEl = document.getElementById('wagerTacticalHint');
+      if (relativePct >= 75) {
+        hintEl.className = 'tactical-hint-pill hint-higher';
+        hintEl.innerHTML = `<span>🔥</span> <span><b>Taktik-Tipp:</b> Dein Wert liegt in den Top ${100 - relativePct + 5}%! <b>Überbieten (⬆️)</b> hat enorme Gewinnchancen!</span>`;
+      } else if (relativePct <= 25) {
+        hintEl.className = 'tactical-hint-pill hint-lower';
+        hintEl.innerHTML = `<span>💎</span> <span><b>Taktik-Tipp:</b> Extrem niedriger Wert! Perfekt, um den Gegner beim <b>Unterbieten (⬇️)</b> in die Falle zu locken!</span>`;
+      } else {
+        hintEl.className = 'tactical-hint-pill hint-mid';
+        hintEl.innerHTML = `<span>⚖️</span> <span><b>Taktik-Tipp:</b> Solides Mittelfeld (${relativePct}%). Wähle ⬆️ oder ⬇️ je nachdem, welche Karte du beim Gegner vermutest!</span>`;
+      }
 
       document.getElementById('wagerModal').style.display = 'flex';
       playBeep(480, 'sine', 0.08);
     }
 
-    function toggleTooltip(e) {
-      e.stopPropagation();
-      const btn = e.currentTarget;
-      btn.classList.toggle('open');
+    function toggleInfoPanel() {
+      const p = document.getElementById('wagerInfoPanel');
+      p.style.display = p.style.display === 'none' ? 'block' : 'none';
     }
 
     function closeWagerModal() {
