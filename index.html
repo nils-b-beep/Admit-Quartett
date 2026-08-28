@@ -38,6 +38,18 @@
       display: flex;
       flex-direction: column;
       padding-bottom: 70px;
+      overflow-x: hidden;
+    }
+
+    /* Confetti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 10000;
     }
 
     /* Top Nav */
@@ -1082,7 +1094,7 @@
       width: 100vw;
       height: 100vh;
       background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
       align-items: center;
       justify-content: center;
       padding: 14px;
@@ -1090,29 +1102,50 @@
 
     .modal-content {
       background: var(--bg-secondary);
-      border-radius: 14px;
+      border-radius: 16px;
       border: 1px solid var(--border-color);
       width: 100%;
       max-width: 480px;
       max-height: 90vh;
       overflow-y: auto;
-      padding: 14px;
+      padding: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
     }
 
     .form-control {
       width: 100%;
-      padding: 8px;
+      padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
       background: #090d16;
       color: #fff;
       font-size: 0.85rem;
       outline: none;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+    }
+
+    .stat-edit-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.15s;
+    }
+
+    .stat-edit-chip:hover {
+      border-color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.1);
     }
   </style>
 </head>
 <body>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
 
   <!-- Top Navigation -->
   <nav class="nav-bar">
@@ -1121,7 +1154,7 @@
     <button class="nav-btn" onclick="switchTab('hof')">🏆 Hall of Fame</button>
     <button class="nav-btn" onclick="switchTab('rules')">📖 Regeln</button>
     <button class="nav-btn" onclick="switchTab('deck')">🃏 Deck (27)</button>
-    <button class="nav-btn" onclick="openIdeaModal()">💡 Ideen</button>
+    <button class="nav-btn" onclick="openNewCardModal()">💡 Ideen</button>
   </nav>
 
   <!-- ==================== TAB 1: AKTIVES SPIEL ==================== -->
@@ -1244,7 +1277,7 @@
         <li><b>💥 Blast Radius:</b> Schadenspotenzial von <i>„Ich hab's doch gesagt!“ (Maximum)</i> bis <i>Reporting-Issue (Minimum)</i>.</li>
         <li><b>⏱️ Durchschn. Meetingdauer:</b> Zeitaufwand in Calls (0 min bis 240 min).</li>
         <li><b>💰 Reallohn:</b> Jahresgehalt in Tausend Euro (0 k€ bis 210 k€).</li>
-        <li><b>🤝 IT-Team-Play:</b> Teamgeist und Kollegialität (Skala 1 bis 100).</li>
+        <li><b>🤝 IT-Team-Play:</b> Teamgeist und Kollegialität unter Admins und Entwicklern.</li>
         <li><b>😊 Enduser-Freude:</b> Beliebtheit bei den Endanwendern (Skala 1 bis 100).</li>
         <li><b>🛡️ Sicherheitsniveau:</b> Cyber-Resilienz und Härtung (Skala 0 bis 100).</li>
       </ul>
@@ -1290,8 +1323,6 @@
   <!-- ==================== HARMONIOUS WAGER POPUP ==================== -->
   <div id="wagerModal" class="wager-overlay">
     <div class="wager-box">
-      
-      <!-- Header -->
       <div class="wager-header">
         <div>
           <div class="wager-card-label" id="wagerCardContext">🪿 Gans-Eskalationsmanager</div>
@@ -1300,19 +1331,14 @@
         <button class="wager-close-x" onclick="closeWagerModal()">&times;</button>
       </div>
 
-      <!-- Focused Value Display -->
       <div class="wager-value-card">
         <span class="wager-val-display" id="wagerValBig">Liebling</span>
         <span class="wager-level-badge" id="wagerLevelBadge">Maximum</span>
       </div>
 
-      <!-- Clear Scale -->
       <div id="wagerScaleContent"></div>
-
-      <!-- Lore & Explanation (Generic) -->
       <div class="wager-lore-box" id="wagerLoreBox"></div>
 
-      <!-- Action Prompt & Buttons -->
       <div class="wager-prompt">
         Möchtest du darauf wetten, dass du den niedrigsten oder höchsten Wert hast?
       </div>
@@ -1327,14 +1353,12 @@
           <span class="wager-btn-sub">Unterbieten</span>
         </button>
       </div>
-
     </div>
   </div>
 
   <!-- ==================== BATTLE MODAL ==================== -->
   <div id="battleModal" class="battle-overlay">
     <div class="battle-container">
-      
       <div class="duel-result-box">
         <div class="duel-result-title" id="duelResultTitle">Du gewinnst die Runde! 🎉</div>
         <div class="duel-result-cat" id="duelResultCategory">Verglichen: Reallohn (⬆️ Höher gewinnt)</div>
@@ -1365,29 +1389,207 @@
     <img id="modalImg" style="max-width: 95%; max-height: 85vh; border-radius: 14px; box-shadow: 0 0 25px rgba(0,0,0,0.9);" src="" alt="Großansicht">
   </div>
 
-  <!-- ==================== IDEA PROPOSAL MODAL ==================== -->
-  <div id="ideaModal" class="modal">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 id="ideaModalTitle">💡 Neue Kartenidee vorschlagen</h3>
-        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeIdeaModal()">&times;</button>
+  <!-- ==================== FORM A: PER-CARD KRITERIEN-FEEDBACK MODAL ==================== -->
+  <div id="cardFeedbackModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h3 id="cfCardTitle" style="font-size: 1.05rem; font-weight: 900;">💬 Kriterien anpassen</h3>
+        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeCardFeedbackModal()">&times;</button>
       </div>
-      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px;">Kein Login nötig! Dein Vorschlag wird direkt übermittelt.</p>
-      
-      <form onsubmit="handleIdeaSubmit(event)">
-        <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Tier & Rollenname</label>
-        <input type="text" id="propRole" class="form-control" placeholder="z. B. 🐬 Delfin-Scrum-Master" required>
 
-        <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Spezialfähigkeit & Zitat-Idee</label>
-        <textarea id="propAbility" class="form-control" placeholder="Welche Superkraft oder welches Zitat hat die Karte?" style="min-height: 60px;"></textarea>
+      <!-- Preview of Card (Header, Flavour, Ability, Quote, Image are locked) -->
+      <div style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; margin-bottom: 10px;">
+        <div id="cfCardHeader" style="padding: 8px 10px; font-weight: 800; font-size: 0.9rem; background: var(--bg-card-header);"></div>
+        <div id="cfCardFlavour" style="padding: 8px 10px; font-size: 0.74rem; color: #cbd5e1; font-style: italic; border-bottom: 1px solid var(--border-color);"></div>
+        <div id="cfCardAbility" style="padding: 6px 10px; font-size: 0.72rem; color: var(--accent-primary); border-bottom: 1px solid var(--border-color);"></div>
+        <div id="cfCardQuote" style="padding: 6px 10px; font-size: 0.72rem; color: #fef08a; font-style: italic; border-bottom: 1px solid var(--border-color);"></div>
+      </div>
 
-        <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Dein Name / Kürzel (optional)</label>
-        <input type="text" id="propAuthor" class="form-control" placeholder="z. B. Alex">
+      <div style="font-size: 0.76rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 6px;">
+        ✏️ Klicke auf ein Kriterium, um deinen Änderungsvorschlag einzustellen:
+      </div>
+
+      <form id="cardFeedbackForm" onsubmit="handleCardFeedbackSubmit(event)">
+        <input type="hidden" id="cfCardId">
+
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
+          
+          <div class="stat-edit-chip">
+            <span style="font-size:0.75rem; font-weight:700;">👔 Management-Attention</span>
+            <select id="cf_mgmt" class="form-control" style="width:auto; margin:0; padding:3px 6px; font-size:0.75rem;">
+              <option value="Liebling">Liebling (Maximum)</option>
+              <option value="Andere Manager">Andere Manager (Hoch)</option>
+              <option value="Arschkriecher">Arschkriecher (Mittel-hoch)</option>
+              <option value="Aufstreber">Aufstreber (Mittel-niedrig)</option>
+              <option value="Fleißiges Bienchen">Fleißiges Bienchen (Niedrig)</option>
+              <option value="Wer bist du?">Wer bist du? (Minimum)</option>
+            </select>
+          </div>
+
+          <div class="stat-edit-chip">
+            <span style="font-size:0.75rem; font-weight:700;">💥 Blast Radius</span>
+            <select id="cf_blast" class="form-control" style="width:auto; margin:0; padding:3px 6px; font-size:0.75rem;">
+              <option value="„Ich hab's doch gesagt!“">„Ich hab's doch gesagt!“ (Maximum)</option>
+              <option value="„Das gibt Ärger...“">„Das gibt Ärger...“ (Hoch)</option>
+              <option value="Problem-Ticket">Problem-Ticket (Mittel-hoch)</option>
+              <option value="Morgen wieder vergessen...">Morgen wieder vergessen... (Mittel-niedrig)</option>
+              <option value="Einzeluserprobleme">Einzeluserprobleme (Niedrig)</option>
+              <option value="Reporting-Issue">Reporting-Issue (Minimum)</option>
+            </select>
+          </div>
+
+          <div class="stat-edit-chip">
+            <span style="font-size:0.75rem; font-weight:700;">⏱️ Durchschn. Meetingdauer</span>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <input type="number" id="cf_meeting" class="form-control" style="width:70px; margin:0; padding:3px 6px; font-size:0.75rem;" min="0" max="300">
+              <span style="font-size:0.72rem; color:var(--text-muted);">min</span>
+            </div>
+          </div>
+
+          <div class="stat-edit-chip">
+            <span style="font-size:0.75rem; font-weight:700;">💰 Reallohn</span>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <input type="number" id="cf_salary" class="form-control" style="width:70px; margin:0; padding:3px 6px; font-size:0.75rem;" min="0" max="300">
+              <span style="font-size:0.72rem; color:var(--text-muted);">k€</span>
+            </div>
+          </div>
+
+          <div class="stat-edit-chip">
+            <span style="font-size:0.75rem; font-weight:700;">🤝 IT-Team-Play</span>
+            <input type="number" id="cf_teamplay" class="form-control" style="width:70px; margin:0; padding:3px 6px; font-size:0.75rem;" min="1" max="100">
+          </div>
+
+          <div class="stat-edit-chip">
+            <span style="font-size:0.75rem; font-weight:700;">😊 Enduser-Freude</span>
+            <input type="number" id="cf_ux" class="form-control" style="width:70px; margin:0; padding:3px 6px; font-size:0.75rem;" min="1" max="100">
+          </div>
+
+          <div class="stat-edit-chip">
+            <span style="font-size:0.75rem; font-weight:700;">🛡️ Sicherheitsniveau</span>
+            <input type="number" id="cf_security" class="form-control" style="width:70px; margin:0; padding:3px 6px; font-size:0.75rem;" min="0" max="100">
+          </div>
+
+        </div>
+
+        <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Begründung / Notiz (optional)</label>
+        <textarea id="cf_reason" class="form-control" placeholder="Warum sollte dieser Wert angepasst werden?" style="min-height: 45px;"></textarea>
+
+        <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Dein Name (optional)</label>
+        <input type="text" id="cf_author" class="form-control" placeholder="z. B. Nils">
+
+        <button type="submit" style="width: 100%; background: var(--accent-primary); color: #090d16; border: none; padding: 10px; border-radius: 8px; font-weight: 800; cursor: pointer;">
+          🚀 Änderungsvorschlag einreichen
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== FORM B: NEW CARD PROPOSAL MODAL ==================== -->
+  <div id="newCardModal" class="modal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h3 style="font-size: 1.1rem; font-weight: 900;">💡 Neue Kartenidee vorschlagen</h3>
+        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeNewCardModal()">&times;</button>
+      </div>
+      <p style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 10px;">
+        Kein Login nötig! (Tipp: Ein leeres Absenden öffnet die Übersicht aller Vorschläge).
+      </p>
+
+      <form id="newCardForm" onsubmit="handleNewCardSubmit(event)">
+        <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Tier & Rollenname</label>
+        <input type="text" id="nc_role" class="form-control" placeholder="z. B. 🐬 Delfin-Scrum-Master">
+
+        <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Beschreibung, Spezialfähigkeit & Zitat</label>
+        <textarea id="nc_desc" class="form-control" placeholder="Flavour-Beschreibung der Rolle, Superkraft und ikonisches Zitat..." style="min-height: 70px;"></textarea>
+
+        <!-- Kriterien Values -->
+        <div style="background: rgba(9,13,22,0.5); padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px;">
+          <div style="font-size: 0.72rem; font-weight: 800; color: #fff; margin-bottom: 6px;">📊 Kriterien-Vorschlag</div>
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
+            <div>
+              <label style="font-size:0.62rem; color:var(--text-muted);">👔 Attention</label>
+              <select id="nc_mgmt" class="form-control" style="font-size:0.72rem; margin:0;">
+                <option value="Liebling">Liebling</option>
+                <option value="Andere Manager">Andere Manager</option>
+                <option value="Arschkriecher" selected>Arschkriecher</option>
+                <option value="Aufstreber">Aufstreber</option>
+                <option value="Fleißiges Bienchen">Fleißiges Bienchen</option>
+                <option value="Wer bist du?">Wer bist du?</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.62rem; color:var(--text-muted);">💥 Blast Radius</label>
+              <select id="nc_blast" class="form-control" style="font-size:0.72rem; margin:0;">
+                <option value="„Ich hab's doch gesagt!“">„Ich hab's doch gesagt!“</option>
+                <option value="„Das gibt Ärger...“">„Das gibt Ärger...“</option>
+                <option value="Problem-Ticket" selected>Problem-Ticket</option>
+                <option value="Morgen wieder vergessen...">Morgen wieder vergessen...</option>
+                <option value="Einzeluserprobleme">Einzeluserprobleme</option>
+                <option value="Reporting-Issue">Reporting-Issue</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.62rem; color:var(--text-muted);">⏱️ Meeting (min)</label>
+              <input type="number" id="nc_meeting" class="form-control" placeholder="z. B. 45" style="font-size:0.72rem; margin:0;">
+            </div>
+            <div>
+              <label style="font-size:0.62rem; color:var(--text-muted);">💰 Gehalt (k€)</label>
+              <input type="number" id="nc_salary" class="form-control" placeholder="z. B. 80" style="font-size:0.72rem; margin:0;">
+            </div>
+            <div>
+              <label style="font-size:0.62rem; color:var(--text-muted);">🤝 Team (1-100)</label>
+              <input type="number" id="nc_teamplay" class="form-control" placeholder="z. B. 50" style="font-size:0.72rem; margin:0;">
+            </div>
+            <div>
+              <label style="font-size:0.62rem; color:var(--text-muted);">😊 User (1-100)</label>
+              <input type="number" id="nc_ux" class="form-control" placeholder="z. B. 60" style="font-size:0.72rem; margin:0;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Button to propose a brand new criterion -->
+        <div id="customCriterionBox" style="display:none; background: rgba(56,189,248,0.1); border:1px solid var(--accent-primary); padding:8px; border-radius:8px; margin-bottom:10px;">
+          <label style="font-size:0.68rem; font-weight:800; color:var(--accent-primary);">➕ Vorschlag für ein NEUES Kriterium</label>
+          <input type="text" id="nc_custom_name" class="form-control" placeholder="z. B. ☕ Kaffee-Verbrauch pro Tag" style="margin-bottom:4px;">
+          <input type="text" id="nc_custom_val" class="form-control" placeholder="Wert für diese Karte (z. B. 8 Tassen)" style="margin:0;">
+        </div>
+
+        <button type="button" onclick="toggleCustomCriterion()" style="width: 100%; background: none; border: 1px dashed var(--accent-primary); color: var(--accent-primary); padding: 6px; border-radius: 8px; font-size: 0.74rem; font-weight: 700; cursor: pointer; margin-bottom: 10px;">
+          ➕ Neues Kriterium vorschlagen
+        </button>
+
+        <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Dein Name (optional)</label>
+        <input type="text" id="nc_author" class="form-control" placeholder="z. B. Alex">
 
         <button type="submit" style="width: 100%; background: var(--accent-primary); color: #090d16; border: none; padding: 10px; border-radius: 8px; font-weight: 800; cursor: pointer;">
           🚀 Vorschlag absenden
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- ==================== SECRET SUBMISSIONS LIST MODAL ==================== -->
+  <div id="secretSubmissionsModal" class="modal">
+    <div class="modal-content" style="max-width: 520px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h3 style="font-size: 1.1rem; font-weight: 900; color: var(--gold);">📋 Alle eingereichten Vorschläge</h3>
+        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeSecretSubmissionsModal()">&times;</button>
+      </div>
+      <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 10px;">
+        Versteckte Übersicht aller Kriterien-Änderungen und neuer Kartenideen.
+      </p>
+
+      <div id="secretSubmissionsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto;"></div>
+
+      <div style="display: flex; gap: 6px; margin-top: 12px;">
+        <button onclick="exportSubmissionsJSON()" style="flex: 1; background: var(--bg-card); border: 1px solid var(--border-color); color: #fff; padding: 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+          📥 JSON Export
+        </button>
+        <button onclick="clearSubmissions()" style="background: none; border: 1px solid var(--danger); color: var(--danger); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+          Leeren
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1407,6 +1609,88 @@
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
       } catch (e) {}
+    }
+
+    // ==================== DUAL CONFETTI CANNONS (LEFT & RIGHT) ====================
+    let confettiParticles = [];
+    let confettiAnimationId = null;
+
+    function launchConfettiCannons() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      confettiParticles = [];
+
+      const colors = ['#38bdf8', '#818cf8', '#f59e0b', '#10b981', '#ef4444', '#fbbf24', '#f43f5e', '#a855f7'];
+
+      // Left Cannon (Bottom Left shooting up-right towards center)
+      for (let i = 0; i < 60; i++) {
+        confettiParticles.push({
+          x: 0,
+          y: canvas.height * 0.95,
+          vx: Math.random() * 12 + 6,
+          vy: -(Math.random() * 18 + 14),
+          size: Math.random() * 8 + 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: Math.random() * 10 - 5,
+          gravity: 0.45,
+          drag: 0.98,
+          opacity: 1
+        });
+      }
+
+      // Right Cannon (Bottom Right shooting up-left towards center)
+      for (let i = 0; i < 60; i++) {
+        confettiParticles.push({
+          x: canvas.width,
+          y: canvas.height * 0.95,
+          vx: -(Math.random() * 12 + 6),
+          vy: -(Math.random() * 18 + 14),
+          size: Math.random() * 8 + 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: Math.random() * 10 - 5,
+          gravity: 0.45,
+          drag: 0.98,
+          opacity: 1
+        });
+      }
+
+      if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+      animateConfetti(ctx, canvas);
+    }
+
+    function animateConfetti(ctx, canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let aliveCount = 0;
+
+      for (let p of confettiParticles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= p.drag;
+        p.rotation += p.rotSpeed;
+        if (p.y > canvas.height * 0.4) p.opacity -= 0.008;
+
+        if (p.opacity > 0 && p.y < canvas.height + 50) {
+          aliveCount++;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = Math.max(0, p.opacity);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.restore();
+        }
+      }
+
+      if (aliveCount > 0) {
+        confettiAnimationId = requestAnimationFrame(() => animateConfetti(ctx, canvas));
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
     }
 
     // Player Cookie & LocalStorage
@@ -1518,7 +1802,7 @@
       },
       teamplay: {
         name: "🤝 IT-Team-Play",
-        info: "Kollegialität, Hilfsbereitschaft und Teamorientierung im täglichen IT-Betrieb (Skala 1–100).",
+        info: "Teamgeist und Kollegialität unter Admins und Entwicklern.",
         type: "numeric",
         min: 1,
         max: 100,
@@ -1548,7 +1832,6 @@
       }
     };
 
-    // 100% COMPLETE & VERBATIM CARD DATA FROM it_quartett_karten.md
     const CARDS = [
       {
         id: 1,
@@ -2063,7 +2346,6 @@
 
       const card = playerDeck[0];
 
-      // Inline Artwork (responsive)
       const artworkHtml = card.image ? `
         <div class="card-artwork-wrap" onclick="openImg('${card.image}')" title="Klick für Vollbild">
           <img src="${card.image}" alt="${card.name}" class="card-artwork-img">
@@ -2074,7 +2356,6 @@
       document.getElementById('gameCardArea').innerHTML = `
         <div class="playing-card">
           
-          <!-- 1. Header -->
           <div class="card-top">
             <div class="card-title-wrap">
               <span style="font-size: 1.4rem;">${card.emoji}</span>
@@ -2082,7 +2363,6 @@
             </div>
           </div>
 
-          <!-- 2. Lore, Ability & Quote (Pre-Image) -->
           <div class="card-story-box">
             <div class="card-flavour-text">${card.flavour}</div>
             <div class="card-ability-pill">
@@ -2095,10 +2375,8 @@
             <div class="card-quote-box">${card.quote}</div>
           </div>
 
-          <!-- 3. Inline Artwork Image -->
           ${artworkHtml}
 
-          <!-- 4. Playable Stats -->
           <div class="game-stats">
             
             <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('mgmt')">
@@ -2285,7 +2563,7 @@
       playBeep(520, 'triangle', 0.15);
     }
 
-    // ==================== DUEL RESOLUTION ====================
+    // ==================== DUEL RESOLUTION (ZUG X) ====================
     function getStatRankVal(card, category) {
       if (category === 'mgmt') return (MGMT_RANK[card.mgmt] && MGMT_RANK[card.mgmt].rank) || 0;
       if (category === 'blast') return (BLAST_RANK[card.blast] && BLAST_RANK[card.blast].rank) || 0;
@@ -2407,7 +2685,7 @@
       renderGameUI();
     }
 
-    // ==================== HISTORIE VIEW ====================
+    // ==================== HISTORIE VIEW (ZUG X) ====================
     function renderHistory() {
       document.getElementById('navHistCount').textContent = roundHistory.length;
       const listEl = document.getElementById('historyList');
@@ -2436,7 +2714,7 @@
         return `
           <div class="history-item ${winClass}">
             <div class="history-top-row">
-              <span style="color:#fff;">Runde ${h.round}: ${h.category}</span>
+              <span style="color:#fff;">Zug ${h.round}: ${h.category}</span>
               <span style="color:var(--text-muted); font-size:0.7rem;">(${h.direction} • ${h.initiator})</span>
             </div>
             <div style="display:flex; justify-content:space-between; margin-top:3px;">
@@ -2532,7 +2810,7 @@
           <div class="hof-row ${isCurrent ? 'current-player' : ''}">
             <div style="display:flex; align-items:center; gap:8px;">
               <span class="hof-rank-badge">#${idx + 1}</span>
-              <span><b>${item.name}</b> <span style="font-size:0.68rem; color:var(--text-muted);">(${item.result} in ${item.rounds} Runden)</span></span>
+              <span><b>${item.name}</b> <span style="font-size:0.68rem; color:var(--text-muted);">(${item.result} in ${item.rounds} Zügen)</span></span>
             </div>
             <div style="font-weight:900; color:${item.result === 'Sieg' ? 'var(--gold)' : 'var(--text-muted)'};">
               ${item.score} Pkt.
@@ -2549,18 +2827,21 @@
       }
     }
 
-    // ==================== RETRO WORDART GAME OVER ====================
+    // ==================== RETRO WORDART & CONFETTI CANNONS ====================
     function renderGameOver() {
       const won = playerDeck.length > 0;
       const roundsPlayed = roundCounter - 1;
       recordGameResult(won, roundsPlayed);
 
-      // Hide top headers for clean epic view
+      // Hide top score & turn banner
       document.getElementById('gameScoreHeader').style.display = 'none';
       document.getElementById('turnBanner').style.display = 'none';
       document.getElementById('gameRestartFooter').style.display = 'none';
 
-      if (won) playBeep(880, 'sine', 0.4);
+      if (won) {
+        playBeep(880, 'sine', 0.4);
+        launchConfettiCannons(); // Trigger left & right cannons!
+      }
 
       document.getElementById('gameCardArea').innerHTML = `
         <div class="gameover-epic-container">
@@ -2583,8 +2864,8 @@
             </h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">
               ${won 
-                ? `Du hast alle <b>27 IT-Tierkarten</b> in grandiosen <b>${roundsPlayed} Runden</b> erobert!` 
-                : `Nach <b>${roundsPlayed} Runden</b> waren deine Karten erschöpft.`}
+                ? `Du hast alle <b>27 IT-Tierkarten</b> in grandiosen <b>${roundsPlayed} Zügen</b> erobert!` 
+                : `Nach <b>${roundsPlayed} Zügen</b> waren deine Karten erschöpft.`}
             </p>
             
             <div style="background: rgba(9,13,22,0.6); padding: 8px; border-radius: 8px; font-size: 0.76rem; margin-bottom: 14px;">
@@ -2662,7 +2943,7 @@
             </div>
             <div style="display:flex; gap:6px;">
               ${c.image ? `<button class="img-open-btn" onclick="openImg('${c.image}')">🖼️ Bild</button>` : ''}
-              <button onclick="openCardFeedback('${c.name}')" style="background:rgba(56,189,248,0.15); border:1px solid var(--accent-primary); color:var(--accent-primary); border-radius:6px; padding:2px 7px; font-size:0.7rem; font-weight:700; cursor:pointer;">💬</button>
+              <button onclick="openCardFeedbackModal(${c.id})" style="background:rgba(56,189,248,0.15); border:1px solid var(--accent-primary); color:var(--accent-primary); border-radius:6px; padding:3px 8px; font-size:0.72rem; font-weight:800; cursor:pointer;" title="Kriterien dieser Karte anpassen">💬 Anpassen</button>
             </div>
           </div>
 
@@ -2702,43 +2983,206 @@
 
     document.getElementById('searchInput').addEventListener('input', renderDeck);
 
-    // ==================== MODALS ====================
+    // ==================== MODALS & PROPOSAL SYSTEM ====================
     function openImg(src) {
       document.getElementById('modalImg').src = src;
       document.getElementById('imageModal').style.display = 'flex';
     }
 
-    function openIdeaModal() {
-      document.getElementById('ideaModalTitle').textContent = '💡 Neue Kartenidee vorschlagen';
-      document.getElementById('propRole').value = '';
-      document.getElementById('propAbility').value = '';
-      document.getElementById('ideaModal').style.display = 'flex';
+    // FORM A: PER-CARD KRITERIEN MODAL
+    function openCardFeedbackModal(cardId) {
+      const card = CARDS.find(c => c.id === cardId);
+      if (!card) return;
+
+      document.getElementById('cfCardId').value = card.id;
+      document.getElementById('cfCardTitle').textContent = `💬 Kriterien anpassen: ${card.name}`;
+      document.getElementById('cfCardHeader').textContent = `${card.emoji} ${card.name}`;
+      document.getElementById('cfCardFlavour').textContent = card.flavour;
+      document.getElementById('cfCardAbility').textContent = `⚡ Spezialfähigkeit: ${card.ability}`;
+      document.getElementById('cfCardQuote').textContent = card.quote;
+
+      // Set current values
+      document.getElementById('cf_mgmt').value = card.mgmt;
+      document.getElementById('cf_blast').value = card.blast;
+      document.getElementById('cf_meeting').value = card.meeting;
+      document.getElementById('cf_salary').value = card.salary;
+      document.getElementById('cf_teamplay').value = card.teamplay;
+      document.getElementById('cf_ux').value = card.ux;
+      document.getElementById('cf_security').value = card.security;
+      document.getElementById('cf_reason').value = '';
+      document.getElementById('cf_author').value = playerName;
+
+      document.getElementById('cardFeedbackModal').style.display = 'flex';
     }
 
-    function openCardFeedback(cardName) {
-      document.getElementById('ideaModalTitle').textContent = `💬 Vorschlag zu: ${cardName}`;
-      document.getElementById('propRole').value = `Feedback zu: ${cardName}`;
-      document.getElementById('propAbility').value = '';
-      document.getElementById('ideaModal').style.display = 'flex';
+    function closeCardFeedbackModal() {
+      document.getElementById('cardFeedbackModal').style.display = 'none';
     }
 
-    function closeIdeaModal() {
-      document.getElementById('ideaModal').style.display = 'none';
-    }
-
-    function handleIdeaSubmit(e) {
+    function handleCardFeedbackSubmit(e) {
       e.preventDefault();
-      const role = document.getElementById('propRole').value;
-      const ability = document.getElementById('propAbility').value;
-      const author = document.getElementById('propAuthor').value || playerName;
+      const cardId = parseInt(document.getElementById('cfCardId').value);
+      const card = CARDS.find(c => c.id === cardId);
+      
+      const proposal = {
+        type: 'card_criteria_adjustment',
+        cardId: cardId,
+        cardName: card ? card.name : 'Unbekannt',
+        mgmt: document.getElementById('cf_mgmt').value,
+        blast: document.getElementById('cf_blast').value,
+        meeting: parseInt(document.getElementById('cf_meeting').value) || 0,
+        salary: parseInt(document.getElementById('cf_salary').value) || 0,
+        teamplay: parseInt(document.getElementById('cf_teamplay').value) || 0,
+        ux: parseInt(document.getElementById('cf_ux').value) || 0,
+        security: parseInt(document.getElementById('cf_security').value) || 0,
+        reason: document.getElementById('cf_reason').value.trim(),
+        author: document.getElementById('cf_author').value.trim() || playerName,
+        date: new Date().toISOString()
+      };
 
-      const suggestions = JSON.parse(localStorage.getItem('it_quartett_suggestions') || '[]');
-      suggestions.push({ role, ability, author, time: new Date().toISOString() });
-      localStorage.setItem('it_quartett_suggestions', JSON.stringify(suggestions));
+      const list = JSON.parse(localStorage.getItem('it_quartett_all_proposals') || '[]');
+      list.push(proposal);
+      localStorage.setItem('it_quartett_all_proposals', JSON.stringify(list));
 
       playBeep(600, 'sine', 0.15);
-      alert(`Vielen Dank, ${author}! Dein Vorschlag zu "${role}" wurde erfolgreich eingereicht.`);
-      closeIdeaModal();
+      alert(`Vielen Dank, ${proposal.author}! Dein Kriterien-Änderungsvorschlag zu "${proposal.cardName}" wurde erfolgreich gespeichert.`);
+      closeCardFeedbackModal();
+    }
+
+    // FORM B: NEW CARD PROPOSAL MODAL
+    function openNewCardModal() {
+      document.getElementById('nc_role').value = '';
+      document.getElementById('nc_desc').value = '';
+      document.getElementById('nc_meeting').value = '';
+      document.getElementById('nc_salary').value = '';
+      document.getElementById('nc_teamplay').value = '';
+      document.getElementById('nc_ux').value = '';
+      document.getElementById('nc_custom_name').value = '';
+      document.getElementById('nc_custom_val').value = '';
+      document.getElementById('customCriterionBox').style.display = 'none';
+      document.getElementById('nc_author').value = playerName;
+      document.getElementById('newCardModal').style.display = 'flex';
+    }
+
+    function closeNewCardModal() {
+      document.getElementById('newCardModal').style.display = 'none';
+    }
+
+    function toggleCustomCriterion() {
+      const box = document.getElementById('customCriterionBox');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function handleNewCardSubmit(e) {
+      e.preventDefault();
+      const role = document.getElementById('nc_role').value.trim();
+      const desc = document.getElementById('nc_desc').value.trim();
+
+      // Secret Trigger: Empty submission opens the secret submissions list!
+      if (!role && !desc) {
+        closeNewCardModal();
+        openSecretSubmissionsModal();
+        return;
+      }
+
+      const proposal = {
+        type: 'new_card_idea',
+        role: role,
+        description_ability_quote: desc,
+        mgmt: document.getElementById('nc_mgmt').value,
+        blast: document.getElementById('nc_blast').value,
+        meeting: parseInt(document.getElementById('nc_meeting').value) || 0,
+        salary: parseInt(document.getElementById('nc_salary').value) || 0,
+        teamplay: parseInt(document.getElementById('nc_teamplay').value) || 0,
+        ux: parseInt(document.getElementById('nc_ux').value) || 0,
+        customCriterion: {
+          name: document.getElementById('nc_custom_name').value.trim(),
+          val: document.getElementById('nc_custom_val').value.trim()
+        },
+        author: document.getElementById('nc_author').value.trim() || playerName,
+        date: new Date().toISOString()
+      };
+
+      const list = JSON.parse(localStorage.getItem('it_quartett_all_proposals') || '[]');
+      list.push(proposal);
+      localStorage.setItem('it_quartett_all_proposals', JSON.stringify(list));
+
+      playBeep(620, 'sine', 0.15);
+      alert(`Vielen Dank, ${proposal.author}! Dein Vorschlag für die neue Karte "${proposal.role}" wurde erfolgreich eingereicht.`);
+      closeNewCardModal();
+    }
+
+    // SECRET SUBMISSIONS LIST MODAL
+    function openSecretSubmissionsModal() {
+      const list = JSON.parse(localStorage.getItem('it_quartett_all_proposals') || '[]');
+      const container = document.getElementById('secretSubmissionsList');
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:16px;">
+            Bisher wurden noch keine Vorschläge eingereicht.
+          </div>
+        `;
+      } else {
+        container.innerHTML = list.map((p, idx) => {
+          if (p.type === 'card_criteria_adjustment') {
+            return `
+              <div style="background:var(--bg-card); border:1px solid var(--accent-primary); border-radius:8px; padding:8px 10px; font-size:0.74rem;">
+                <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--accent-primary);">
+                  <span>#${idx+1} Kriterien-Anpassung: ${p.cardName}</span>
+                  <span style="color:var(--text-muted); font-size:0.65rem;">${p.date.split('T')[0]}</span>
+                </div>
+                <div style="color:#fff; margin-top:3px;">
+                  👔 ${p.mgmt} | 💥 ${p.blast} | ⏱️ ${p.meeting}m | 💰 ${p.salary}k | 🤝 ${p.teamplay} | 😊 ${p.ux} | 🛡️ ${p.security}
+                </div>
+                ${p.reason ? `<div style="font-style:italic; color:#cbd5e1; margin-top:2px;">Notiz: „${p.reason}“</div>` : ''}
+                <div style="color:var(--text-muted); font-size:0.68rem; margin-top:2px;">Von: <b>${p.author}</b></div>
+              </div>
+            `;
+          } else {
+            return `
+              <div style="background:var(--bg-card); border:1px solid var(--gold); border-radius:8px; padding:8px 10px; font-size:0.74rem;">
+                <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--gold);">
+                  <span>#${idx+1} Neue Kartenidee: ${p.role}</span>
+                  <span style="color:var(--text-muted); font-size:0.65rem;">${p.date.split('T')[0]}</span>
+                </div>
+                <div style="color:#fff; margin-top:3px; white-space:pre-line;">
+                  ${p.description_ability_quote}
+                </div>
+                <div style="color:#cbd5e1; font-size:0.7rem; margin-top:2px;">
+                  Werte: 👔 ${p.mgmt} | 💥 ${p.blast} | ⏱️ ${p.meeting}m | 💰 ${p.salary}k
+                </div>
+                ${p.customCriterion && p.customCriterion.name ? `<div style="color:var(--accent-primary); font-size:0.7rem;">Neues Kriterium: ${p.customCriterion.name} = ${p.customCriterion.val}</div>` : ''}
+                <div style="color:var(--text-muted); font-size:0.68rem; margin-top:2px;">Von: <b>${p.author}</b></div>
+              </div>
+            `;
+          }
+        }).join('');
+      }
+
+      document.getElementById('secretSubmissionsModal').style.display = 'flex';
+      playBeep(450, 'sine', 0.1);
+    }
+
+    function closeSecretSubmissionsModal() {
+      document.getElementById('secretSubmissionsModal').style.display = 'none';
+    }
+
+    function exportSubmissionsJSON() {
+      const list = localStorage.getItem('it_quartett_all_proposals') || '[]';
+      const blob = new Blob([list], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `it_quartett_vorschlaege_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+    }
+
+    function clearSubmissions() {
+      if (confirm('Möchtest du die Liste aller eingereichten Vorschläge wirklich löschen?')) {
+        localStorage.removeItem('it_quartett_all_proposals');
+        openSecretSubmissionsModal();
+      }
     }
 
     // Start on load
