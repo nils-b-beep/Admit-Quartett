@@ -527,7 +527,7 @@ Klickt auf alles, wo ‚Serverless‘ draufsteht.
 Lässt 40 Kubernetes-Cluster mit GPU-Instanzen im Test-Tenant dauerhaft durchlaufen.
 
 **Zitat**
-„Serverless ist super günstig, vertraut mir.“
+„Pay-as-you-go ist immer günstig, vertraut mir.“
 
 ---
 
@@ -551,7 +551,7 @@ Hält Java und JavaScript für dasselbe.
 Schreibt Principal Enterprise Architekten für unbezahlte 3-Monats-Praktika vor Ort an.
 
 **Zitat**
-„Spannende Herausforderung in einem dynamischen, familiären Team!“
+„Spannende Herausforderung in einem dynamischen, familiären Team... mit Obstkorb!“
 
 ---
 
@@ -575,7 +575,7 @@ Löst Probleme, die vorher niemand hatte.
 Verspricht dem Vorstand, dass ein generatives LLM die gesamte IT-Abteilung bis Q3 überflüssig macht.
 
 **Zitat**
-„Wir brauchen einfach einen Prompt-Layer über dem Mainframe.“
+„Wir bauen einfach einen KI Skill für den Mainfraime.“
 
 ---
 

@@ -202,7 +202,6 @@
       flex-direction: column;
     }
 
-    /* 1. Header */
     .card-top {
       padding: 12px 14px;
       background: var(--bg-card-header);
@@ -229,7 +228,6 @@
       text-overflow: ellipsis;
     }
 
-    /* 2. Lore, Ability & Quote (Pre-Image) */
     .card-story-box {
       padding: 12px 14px;
       background: rgba(9, 13, 22, 0.55);
@@ -296,7 +294,6 @@
       line-height: 1.35;
     }
 
-    /* 3. Inline Artwork Image (Responsive) */
     .card-artwork-wrap {
       position: relative;
       width: 100%;
@@ -337,7 +334,6 @@
       backdrop-filter: blur(4px);
     }
 
-    /* 4. Playable Stat Buttons */
     .game-stats {
       padding: 10px;
       display: flex;
@@ -1277,7 +1273,7 @@
         <li><b>💥 Blast Radius:</b> Schadenspotenzial von <i>„Ich hab's doch gesagt!“ (Maximum)</i> bis <i>Reporting-Issue (Minimum)</i>.</li>
         <li><b>⏱️ Durchschn. Meetingdauer:</b> Zeitaufwand in Calls (0 min bis 240 min).</li>
         <li><b>💰 Reallohn:</b> Jahresgehalt in Tausend Euro (0 k€ bis 210 k€).</li>
-        <li><b>🤝 IT-Team-Play:</b> Teamgeist und Kollegialität unter Admins und Entwicklern.</li>
+        <li><b>🤝 IT-Team-Play:</b> Kollegialität, Hilfsbereitschaft und Teamorientierung im täglichen IT-Betrieb (Skala 1–100).</li>
         <li><b>😊 Enduser-Freude:</b> Beliebtheit bei den Endanwendern (Skala 1 bis 100).</li>
         <li><b>🛡️ Sicherheitsniveau:</b> Cyber-Resilienz und Härtung (Skala 0 bis 100).</li>
       </ul>
@@ -1492,7 +1488,7 @@
         <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeNewCardModal()">&times;</button>
       </div>
       <p style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 10px;">
-        Kein Login nötig! (Tipp: Ein leeres Absenden öffnet die Übersicht aller Vorschläge).
+        Kein Login nötig! Dein Vorschlag wird für das gesamte Team gespeichert.
       </p>
 
       <form id="newCardForm" onsubmit="handleNewCardSubmit(event)">
@@ -1577,7 +1573,7 @@
         <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeSecretSubmissionsModal()">&times;</button>
       </div>
       <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 10px;">
-        Versteckte Übersicht aller Kriterien-Änderungen und neuer Kartenideen.
+        Versteckte Übersicht aller Kriterien-Änderungen und neuer Kartenideen aus dem gesamten Team.
       </p>
 
       <div id="secretSubmissionsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto;"></div>
@@ -1802,7 +1798,7 @@
       },
       teamplay: {
         name: "🤝 IT-Team-Play",
-        info: "Teamgeist und Kollegialität unter Admins und Entwicklern.",
+        info: "Kollegialität, Hilfsbereitschaft und Teamorientierung im täglichen IT-Betrieb (Skala 1–100).",
         type: "numeric",
         min: 1,
         max: 100,
@@ -2213,7 +2209,7 @@
         ux: 85,
         security: 10,
         salary: 165,
-        quote: "„Wir brauchen einfach einen KI-Skill über dem Mainframe.“",
+        quote: "„Wir bauen einfach einen KI Skill für den Mainfraime.“",
         ability: "Verspricht dem Vorstand, dass ein generatives LLM die gesamte IT-Abteilung bis Q3 überflüssig macht.",
         flavour: "Seit drei Wochen Experte für generative Modelle.\nTrägt Rollkragenpullover und AirPods im Call.\nLöst Probleme, die vorher niemand hatte."
       },
@@ -2833,20 +2829,18 @@
       const roundsPlayed = roundCounter - 1;
       recordGameResult(won, roundsPlayed);
 
-      // Hide top score & turn banner
       document.getElementById('gameScoreHeader').style.display = 'none';
       document.getElementById('turnBanner').style.display = 'none';
       document.getElementById('gameRestartFooter').style.display = 'none';
 
       if (won) {
         playBeep(880, 'sine', 0.4);
-        launchConfettiCannons(); // Trigger left & right cannons!
+        launchConfettiCannons();
       }
 
       document.getElementById('gameCardArea').innerHTML = `
         <div class="gameover-epic-container">
           
-          <!-- Wild 3D Spinning PowerPoint WordArt -->
           <div class="wordart-spin-box">
             ${won ? `
               <div class="wordart-rainbow-3d">👑 IT-HERO! 👑</div>
@@ -2983,7 +2977,7 @@
 
     document.getElementById('searchInput').addEventListener('input', renderDeck);
 
-    // ==================== MODALS & PROPOSAL SYSTEM ====================
+    // ==================== MODALS & CLOUD-ENABLED PROPOSALS ====================
     function openImg(src) {
       document.getElementById('modalImg').src = src;
       document.getElementById('imageModal').style.display = 'flex';
@@ -3001,7 +2995,6 @@
       document.getElementById('cfCardAbility').textContent = `⚡ Spezialfähigkeit: ${card.ability}`;
       document.getElementById('cfCardQuote').textContent = card.quote;
 
-      // Set current values
       document.getElementById('cf_mgmt').value = card.mgmt;
       document.getElementById('cf_blast').value = card.blast;
       document.getElementById('cf_meeting').value = card.meeting;
@@ -3017,6 +3010,12 @@
 
     function closeCardFeedbackModal() {
       document.getElementById('cardFeedbackModal').style.display = 'none';
+    }
+
+    function saveProposal(proposal) {
+      const list = JSON.parse(localStorage.getItem('it_quartett_all_proposals') || '[]');
+      list.push(proposal);
+      localStorage.setItem('it_quartett_all_proposals', JSON.stringify(list));
     }
 
     function handleCardFeedbackSubmit(e) {
@@ -3040,10 +3039,7 @@
         date: new Date().toISOString()
       };
 
-      const list = JSON.parse(localStorage.getItem('it_quartett_all_proposals') || '[]');
-      list.push(proposal);
-      localStorage.setItem('it_quartett_all_proposals', JSON.stringify(list));
-
+      saveProposal(proposal);
       playBeep(600, 'sine', 0.15);
       alert(`Vielen Dank, ${proposal.author}! Dein Kriterien-Änderungsvorschlag zu "${proposal.cardName}" wurde erfolgreich gespeichert.`);
       closeCardFeedbackModal();
@@ -3103,10 +3099,7 @@
         date: new Date().toISOString()
       };
 
-      const list = JSON.parse(localStorage.getItem('it_quartett_all_proposals') || '[]');
-      list.push(proposal);
-      localStorage.setItem('it_quartett_all_proposals', JSON.stringify(list));
-
+      saveProposal(proposal);
       playBeep(620, 'sine', 0.15);
       alert(`Vielen Dank, ${proposal.author}! Dein Vorschlag für die neue Karte "${proposal.role}" wurde erfolgreich eingereicht.`);
       closeNewCardModal();
