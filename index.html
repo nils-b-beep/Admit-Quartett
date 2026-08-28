@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IT-Quartett: Tier-Rollen Edition</title>
+  <style>
+    :root {
+      --bg-primary: #090d16;
+      --bg-secondary: #131d31;
+      --bg-card: #182238;
+      --bg-card-header: #202e4c;
+      --accent-primary: #38bdf8;
+      --accent-secondary: #818cf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #273754;
+      --highlight: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --gold: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 70px;
+    }
+
+    /* Top Nav */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 13, 22, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      padding: 6px 10px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .view-section {
+      display: none;
+      padding: 12px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* GAME VIEW */
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-secondary);
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 12px;
+    }
+
+    .score-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .score-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .score-num {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .vs-pill {
+      background: var(--bg-card-header);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--highlight);
+      border: 1px solid var(--border-color);
+    }
+
+    .turn-banner {
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 8px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      transition: all 0.3s;
+    }
+
+    .turn-player {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .turn-bot {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid var(--danger);
+      color: #fda4af;
+    }
+
+    /* Direction Mode Switcher */
+    .mode-switch-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mode-switch-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .mode-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .mode-toggle-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .mode-toggle-btn.active-higher {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .mode-toggle-btn.active-lower {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: var(--highlight);
+      color: var(--highlight);
+    }
+
+    /* Compact Playing Card */
+    .playing-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 2px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-top {
+      padding: 10px 12px;
+      background: var(--bg-card-header);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-title-text {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .img-open-btn {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--highlight);
+      color: var(--highlight);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.72rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Flavour Box on Card */
+    .card-flavour-box {
+      padding: 8px 12px;
+      background: rgba(9, 13, 22, 0.35);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.74rem;
+      color: #cbd5e1;
+      font-style: italic;
+      line-height: 1.35;
+      white-space: pre-line;
+    }
+
+    /* Playable Stat Buttons */
+    .game-stats {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .stat-row-btn {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 9px;
+      padding: 7px 10px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .stat-row-btn:active {
+      transform: scale(0.98);
+    }
+
+    .stat-row-btn.clickable:hover {
+      border-color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.12);
+    }
+
+    .stat-row-btn.disabled {
+      cursor: default;
+      opacity: 0.85;
+    }
+
+    .stat-btn-left {
+      display: flex;
+      flex-direction: column;
+      z-index: 2;
+    }
+
+    .stat-btn-name {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .stat-btn-val {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-btn-right {
+      z-index: 2;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-muted);
+    }
+
+    .stat-mini-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--accent-primary);
+    }
+
+    .card-footer-info {
+      padding: 8px 12px;
+      background: rgba(9, 13, 22, 0.5);
+      border-top: 1px solid var(--border-color);
+      font-size: 0.74rem;
+    }
+
+    .card-quote-pill {
+      font-style: italic;
+      color: #fef08a;
+      line-height: 1.25;
+      margin-top: 2px;
+    }
+
+    /* Bot Turn Manual Controls */
+    .bot-controls-box {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bot-play-btn {
+      width: 100%;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .skip-bot-btn {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .skip-bot-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Comparison Battle Modal */
+    .battle-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(9, 13, 22, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      padding: 14px;
+      overflow-y: auto;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .battle-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .duel-result-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .duel-result-title {
+      font-size: 1.15rem;
+      font-weight: 900;
+      margin-bottom: 3px;
+    }
+
+    .duel-result-cat {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .battle-duel-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .mini-duel-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .mini-duel-card.win-card {
+      border-color: var(--success);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .mini-duel-card.lose-card {
+      border-color: var(--danger);
+      opacity: 0.6;
+    }
+
+    .duel-owner-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+    }
+
+    .duel-owner-player { background: rgba(56, 189, 248, 0.2); color: var(--accent-primary); }
+    .duel-owner-bot { background: rgba(244, 63, 94, 0.2); color: var(--danger); }
+
+    .next-round-btn {
+      width: 100%;
+      background: var(--accent-primary);
+      color: #090d16;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    /* Round History */
+    .history-section {
+      margin-top: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .history-header {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 0.72rem;
+      border-left: 3px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .history-item.win { border-left-color: var(--success); }
+    .history-item.loss { border-left-color: var(--danger); }
+    .history-item.tie { border-left-color: var(--highlight); }
+
+    .history-top-row {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+    }
+
+    /* CARD COLLECTION VIEW */
+    .search-bar {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-main);
+      font-size: 0.88rem;
+      outline: none;
+      margin-bottom: 8px;
+    }
+
+    .sort-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+      margin-bottom: 8px;
+    }
+
+    .sort-scroll::-webkit-scrollbar { display: none; }
+
+    .sort-btn {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .sort-btn.active {
+      background: var(--accent-primary);
+      color: #090d16;
+      border-color: var(--accent-primary);
+    }
+
+    .collection-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .coll-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .coll-header {
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card-header);
+    }
+
+    .coll-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      padding: 8px 10px;
+      background: rgba(9, 13, 22, 0.4);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .coll-stat-box {
+      background: var(--bg-secondary);
+      padding: 5px 7px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+
+    .coll-stat-box.full { grid-column: span 2; }
+
+    /* Modals & Forms */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 14px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: #090d16;
+      color: #fff;
+      font-size: 0.85rem;
+      outline: none;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="nav-bar">
+    <button class="nav-btn active" onclick="switchTab('game')">🎮 Quartett-Duell</button>
+    <button class="nav-btn" onclick="switchTab('collection')">📖 Sammlung (27)</button>
+    <button class="nav-btn" onclick="openIdeaModal()">💡 Idee einreichen</button>
+  </nav>
+
+  <!-- ==================== TAB 1: GAME VIEW ==================== -->
+  <section id="gameView" class="view-section active">
+    
+    <div class="game-header">
+      <div class="score-badge">
+        <span class="score-label">Du</span>
+        <span class="score-num" id="playerDeckCount">14</span>
+      </div>
+      <div class="vs-pill" id="pottPill">⚔️ POTT: 0</div>
+      <div class="score-badge">
+        <span class="score-label">KI-Vorstand</span>
+        <span class="score-num" id="botDeckCount">13</span>
+      </div>
+    </div>
+
+    <!-- Direction / Mode Switcher -->
+    <div class="mode-switch-box" id="modeSwitchContainer">
+      <div class="mode-switch-label">
+        <span>🏆 Vergleichsmodus wählen:</span>
+        <span id="activeModeText" style="color: var(--accent-primary);">⬆️ Höher sticht</span>
+      </div>
+      <div class="mode-btn-group">
+        <button id="modeHigherBtn" class="mode-toggle-btn active-higher" onclick="setDirection('higher')">
+          ⬆️ Höher gewinnt
+        </button>
+        <button id="modeLowerBtn" class="mode-toggle-btn" onclick="setDirection('lower')">
+          ⬇️ Niedriger gewinnt
+        </button>
+      </div>
+    </div>
+
+    <div id="turnBanner" class="turn-banner turn-player">
+      👉 Du bist am Zug! Wähle deinen Trumpf-Wert:
+    </div>
+
+    <!-- Active Player Card Area -->
+    <div id="gameCardArea"></div>
+
+    <!-- Bot Turn Action Container -->
+    <div id="botActionContainer" class="bot-controls-box" style="display: none;">
+      <button class="bot-play-btn" onclick="executeBotTurn()">
+        🤖 KI-Zug jetzt ausführen ➔
+      </button>
+      <button class="skip-bot-btn" onclick="skipBotTurns()">
+        ⏭️ KI-Züge überspringen (bis ich wieder dran bin)
+      </button>
+    </div>
+
+    <!-- Round History Section -->
+    <div class="history-section">
+      <div class="history-header" onclick="toggleHistory()">
+        <span>📜 Runden-Historie (<span id="historyCount">0</span>)</span>
+        <span id="historyToggleIcon">▼</span>
+      </div>
+      <div class="history-list" id="historyList">
+        <div style="font-size:0.72rem; color:var(--text-muted); text-align:center; padding:6px;">
+          Noch keine Duelle gespielt. Wähle deinen ersten Wert!
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 14px;">
+      <button onclick="restartGame()" style="background: none; border: none; color: var(--text-muted); font-size: 0.75rem; text-decoration: underline; cursor: pointer;">
+        🔄 Neues Spiel starten (Karten neu mischen)
+      </button>
+    </div>
+  </section>
+
+  <!-- ==================== TAB 2: COLLECTION VIEW ==================== -->
+  <section id="collectionView" class="view-section">
+    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rolle, Fähigkeit oder Tier suchen..." autocomplete="off">
+    
+    <div class="sort-scroll" id="sortContainer">
+      <button class="sort-btn active" data-sort="default">Standard</button>
+      <button class="sort-btn" data-sort="mgmt">👔 Mgmt-Attention</button>
+      <button class="sort-btn" data-sort="meeting">⏱️ Meeting</button>
+      <button class="sort-btn" data-sort="blast">💥 Blast Radius</button>
+      <button class="sort-btn" data-sort="teamplay">🤝 Team-Play</button>
+      <button class="sort-btn" data-sort="ux">😊 Enduser</button>
+      <button class="sort-btn" data-sort="security">🛡️ Sicherheit</button>
+      <button class="sort-btn" data-sort="salary">💰 Reallohn</button>
+    </div>
+
+    <div class="collection-list" id="collectionList"></div>
+  </section>
+
+  <!-- ==================== BATTLE MODAL ==================== -->
+  <div id="battleModal" class="battle-overlay">
+    <div class="battle-container">
+      
+      <div class="duel-result-box">
+        <div class="duel-result-title" id="duelResultTitle">Du gewinnst die Runde! 🎉</div>
+        <div class="duel-result-cat" id="duelResultCategory">Verglichen: Reallohn (⬆️ Höher gewinnt)</div>
+      </div>
+
+      <div class="battle-duel-cards">
+        <div class="mini-duel-card" id="playerDuelCard">
+          <span class="duel-owner-tag duel-owner-player">Deine Karte</span>
+          <div id="playerDuelEmoji" style="font-size: 2rem; margin: 4px 0;"></div>
+          <div id="playerDuelName" style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;"></div>
+          <div id="playerDuelStat" style="font-size: 0.95rem; font-weight: 900; color: var(--accent-primary); margin-top: 6px;"></div>
+          <div id="playerDuelBtnWrap" style="margin-top: 6px;"></div>
+        </div>
+
+        <div class="mini-duel-card" id="botDuelCard">
+          <span class="duel-owner-tag duel-owner-bot">KI-Vorstand</span>
+          <div id="botDuelEmoji" style="font-size: 2rem; margin: 4px 0;"></div>
+          <div id="botDuelName" style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;"></div>
+          <div id="botDuelStat" style="font-size: 0.95rem; font-weight: 900; color: var(--danger); margin-top: 6px;"></div>
+          <div id="botDuelBtnWrap" style="margin-top: 6px;"></div>
+        </div>
+      </div>
+
+      <button class="next-round-btn" onclick="nextRound()">Weiter ➔</button>
+    </div>
+  </div>
+
+  <!-- ==================== IMAGE OVERLAY MODAL ==================== -->
+  <div id="imageModal" class="modal" onclick="this.style.display='none'">
+    <img id="modalImg" style="max-width: 95%; max-height: 85vh; border-radius: 14px; box-shadow: 0 0 25px rgba(0,0,0,0.9);" src="" alt="Großansicht">
+  </div>
+
+  <!-- ==================== IDEA PROPOSAL MODAL ==================== -->
+  <div id="ideaModal" class="modal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 id="ideaModalTitle">💡 Neue Kartenidee vorschlagen</h3>
+        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeIdeaModal()">&times;</button>
+      </div>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px;">Kein Login nötig! Dein Vorschlag wird direkt übermittelt.</p>
+      
+      <form onsubmit="handleIdeaSubmit(event)">
+        <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Tier & Rollenname</label>
+        <input type="text" id="propRole" class="form-control" placeholder="z. B. 🐬 Delfin-Scrum-Master" required>
+
+        <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Spezialfähigkeit & Zitat-Idee</label>
+        <textarea id="propAbility" class="form-control" placeholder="Welche Superkraft oder welches Zitat hat die Karte?" style="min-height: 60px;"></textarea>
+
+        <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Dein Name / Kürzel (optional)</label>
+        <input type="text" id="propAuthor" class="form-control" placeholder="z. B. Alex">
+
+        <button type="submit" style="width: 100%; background: var(--accent-primary); color: #090d16; border: none; padding: 10px; border-radius: 8px; font-weight: 800; cursor: pointer;">
+          🚀 Vorschlag absenden
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Audio Synthesizer
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq, type = 'sine', duration = 0.1) {
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    const MGMT_RANK = {
+      "Liebling": { rank: 6, pct: 100 },
+      "Andere Manager": { rank: 5, pct: 80 },
+      "Arschkriecher": { rank: 4, pct: 60 },
+      "Aufstreber": { rank: 3, pct: 40 },
+      "Fleißiges Bienchen": { rank: 2, pct: 20 },
+      "Wer bist du?": { rank: 1, pct: 5 }
+    };
+
+    const BLAST_RANK = {
+      "„Ich hab's doch gesagt!“": { rank: 6, pct: 100 },
+      "„Das gibt Ärger...“": { rank: 5, pct: 80 },
+      "Problem-Ticket": { rank: 4, pct: 60 },
+      "Morgen wieder vergessen...": { rank: 3, pct: 40 },
+      "Einzeluserprobleme": { rank: 2, pct: 20 },
+      "Reporting-Issue": { rank: 1, pct: 5 }
+    };
+
+    const CARDS = [
+      { id: 1, name: "Gans-Eskalationsmanager", emoji: "🪿", image: "images/01_gans_eskalationsmanager.jpg", mgmt: "Liebling", meeting: 15, blast: "Problem-Ticket", teamplay: 10, ux: 20, security: 40, salary: 85, quote: "„HONK. Das ist jetzt Prio 1.“", ability: "Wandelt Lautstärke zuverlässig in Priorität um.", flavour: "Beißt in jede Ursachenanalyse.\nLebt von Chaos. Verhandelt nicht." },
+      { id: 2, name: "Papagei-Auditor", emoji: "🦜", image: "images/02_papagei_auditor.jpg", mgmt: "Andere Manager", meeting: 60, blast: "Morgen wieder vergessen...", teamplay: 5, ux: 5, security: 95, salary: 92, quote: "„Ja, das habe ich gesehen. Haben Sie das auch dokumentiert?“", ability: "Fordert dieselbe Evidenz als Excel, PDF, Screenshot und nochmals als Excel.", flavour: "Hat die Evidenz bereits gesehen.\nMöchte sie trotzdem noch einmal." },
+      { id: 3, name: "Erdmännchen-Projektleiter", emoji: "🦫", image: "images/03_erdmaennchen_projektleiter.jpg", mgmt: "Arschkriecher", meeting: 45, blast: "Einzeluserprobleme", teamplay: 25, ux: 50, security: 50, salary: 78, quote: "„Wir brauchen einen kurzen Sync, nur 45 Minuten.“", ability: "Hört irgendwo das Wort „Projektrisiko“ und eröffnet sofort einen Call.", flavour: "Reckt bei jedem Geräusch den Kopf aus dem Bau.\nWittert Scope Creep gegen den Wind." },
+      { id: 4, name: "Spinne-Integrations-Architect", emoji: "🕷️", image: "images/04_spinne_integrations_architect.jpg", mgmt: "Aufstreber", meeting: 75, blast: "„Ich hab's doch gesagt!“", teamplay: 55, ux: 40, security: 60, salary: 105, quote: "„Wenn dieser Connector ausfällt, merkt es nur die gesamte Firma.“", ability: "Verbindet alles mit allem und kennt als Einzige das Netz.", flavour: "Wohnt in den Tiefen der Middleware.\nWebt unentwegt neue Schnittstellen." },
+      { id: 5, name: "Capybara-Service-Owner", emoji: "🐹", image: "images/05_capybara_service_owner.jpg", mgmt: "Andere Manager", meeting: 30, blast: "Reporting-Issue", teamplay: 98, ux: 85, security: 75, salary: 88, quote: "„Wenn wir jetzt hektisch werden, haben wir zwei Probleme.“", ability: "Bewahrt beim Major Incident eine fast neurotische Ruhe.", flavour: "Tiefenentspannt im Dauerfeuer zwischen Kunde und Management." },
+      { id: 6, name: "Kugelfisch-SOC-Analyst", emoji: "🐡", image: "images/06_kugelfisch_soc_analyst.jpg", mgmt: "Arschkriecher", meeting: 20, blast: "„Ich hab's doch gesagt!“", teamplay: 20, ux: 2, security: 100, salary: 76, quote: "„Der Angriff lief über HTTPS, also habe ich HTTPS gesperrt.“", ability: "Bläst einen einzelnen IOC zur globalen Sperrmaßnahme auf.", flavour: "Schläft mit SIEM-Dashboard unterm Kopfkissen.\nParanoid aus Berufung." },
+      { id: 7, name: "Subject Matter Expert Wal", emoji: "🐋", image: "images/07_subject_matter_expert_wal.jpg", mgmt: "Aufstreber", meeting: 240, blast: "Morgen wieder vergessen...", teamplay: 40, ux: 15, security: 65, salary: 130, quote: "„Um das zu verstehen, müssen wir zurück ins Jahr 2004.“", ability: "Verwandelt jede Ja-Nein-Frage in einen historischen Tiefseemonolog.", flavour: "Taucht nur alle drei Monate im Meeting auf.\nVerfügt über unendliche Speichertiefe." },
+      { id: 8, name: "Igel-Change-Manager", emoji: "🦔", image: "images/08_igel_change_manager.jpg", mgmt: "Andere Manager", meeting: 50, blast: "Einzeluserprobleme", teamplay: 15, ux: 10, security: 92, salary: 74, quote: "„Der Change könnte Auswirkungen haben.“", ability: "Rollt sich bei jedem Risiko vorsorglich ein.", flavour: "Hasst Freitage.\nStellt die Stacheln bei jedem RFC auf." },
+      { id: 9, name: "Transformationswolf", emoji: "🐺", image: "images/09_transformationswolf.jpg", mgmt: "Liebling", meeting: 120, blast: "Problem-Ticket", teamplay: 10, ux: 30, security: 55, salary: 185, quote: "„Der Registry Key ist nicht das Problem. Uns fehlt ein Programm.“", ability: "Wirft aus einem Problem ein Rudel an Grundsatzfragen auf.", flavour: "Pirscht durch Agile Frameworks.\nHeult mit den Business Consultants." },
+      { id: 10, name: "Software-Packaging-Eichhörnchen", emoji: "🐿️", image: "images/10_software_packaging_eichhoernchen.jpg", mgmt: "Fleißiges Bienchen", meeting: 25, blast: "Morgen wieder vergessen...", teamplay: 80, ux: 60, security: 70, salary: 62, quote: "„Die MSI von 2014 könnten wir noch brauchen.“", ability: "Lagert jede Version vorsorglich für den nächsten Winter ein.", flavour: "Vergräbt Setup.exe-Dateien auf verschiedenen Netzlaufwerken." },
+      { id: 11, name: "Dashboard-Pfau", emoji: "🦚", image: "images/11_dashboard_pfau.jpg", mgmt: "Arschkriecher", meeting: 60, blast: "Einzeluserprobleme", teamplay: 35, ux: 65, security: 80, salary: 82, quote: "„Ich habe noch ein cooles Dashboard gebaut.“", ability: "Schlägt bei jedem Messwert ein Management-Dashboard auf.", flavour: "Liebt bunte Tortendiagramme und Ampelfarben." },
+      { id: 12, name: "Legacy-Kakerlake", emoji: "🪳", image: "images/12_legacy_kakerlake.jpg", mgmt: "Wer bist du?", meeting: 0, blast: "„Das gibt Ärger...“", teamplay: 30, ux: 70, security: 0, salary: 0, quote: "„Niemand weiß, warum es existiert. Also bleibt es.“", ability: "Überlebt jede Migration und sämtliche früheren Owner.", flavour: "Läuft seit 1998 auf einem Windows Server 2003 unterm Schreibtisch." },
+      { id: 13, name: "2nd-Level-Gorilla", emoji: "🦍", image: "images/13_2nd_level_gorilla.jpg", mgmt: "Fleißiges Bienchen", meeting: 2, blast: "„Ich hab's doch gesagt!“", teamplay: 88, ux: 8, security: 30, salary: 52, quote: "„Kein Gerät, kein Problem.“", ability: "Löst alle Probleme mit: Get-Device | Remove-Device.", flavour: "Macht keine halben Sachen.\nBrachiale Fehlerbehebung mit Root-Rechten." },
+      { id: 14, name: "Riesenkalmar-Schatten-IT", emoji: "🦑", image: "images/14_riesenkalmar_schatten_it.jpg", mgmt: "Wer bist du?", meeting: 5, blast: "„Das gibt Ärger...“", teamplay: 25, ux: 80, security: 5, salary: 58, quote: "„Dieses Excel-Makro hat jahrelang meine Arbeit gemacht.“", ability: "Umgeht Sicherheitsmechanismen ohne Adminrechte.", flavour: "Alle wissen, dass er existiert.\nManager dementieren seine Existenz." },
+      { id: 15, name: "Service-Desk-Otter", emoji: "🦦", image: "images/15_service_desk_otter.jpg", mgmt: "Wer bist du?", meeting: 10, blast: "Problem-Ticket", teamplay: 60, ux: 98, security: 15, salary: 42, quote: "„Keine Sorge, das haben wir gleich.“", ability: "Kann „Password does not expire“ setzen.", flavour: "Freundlich. Hilfsbereit. Versucht alles zu lösen." },
+      { id: 16, name: "Lemuren-UX-Designer", emoji: "👁️", image: "images/16_lemuren_ux_designer.jpg", mgmt: "Aufstreber", meeting: 90, blast: "Morgen wieder vergessen...", teamplay: 8, ux: 92, security: 50, salary: 68, quote: "„Der Schattenwurf braucht mehr Emotionalität.“", ability: "Ändert Primärfarbe um 2 Hex-Werte und verlangt Rewrite.", flavour: "Riesige Augen für 1px Padding-Abweichungen." },
+      { id: 17, name: "Oktopus-Fullstack-Dev", emoji: "🐙", image: "images/17_oktopus_fullstack_dev.jpg", mgmt: "Fleißiges Bienchen", meeting: 15, blast: "„Das gibt Ärger...“", teamplay: 45, ux: 60, security: 35, salary: 95, quote: "„Das refactoren wir kurz am Wochenende in Rust.“", ability: "Hält 8 Frameworks gleichzeitig in der Luft (6 deprecated).", flavour: "Tippt auf 4 Tastaturen gleichzeitig.\nStartet jeden Monat ein Pet-Project." },
+      { id: 18, name: "Waschbär-On-Call-Engineer", emoji: "🦝", image: "images/18_waschbaer_on_call_engineer.jpg", mgmt: "Fleißiges Bienchen", meeting: 5, blast: "Problem-Ticket", teamplay: 92, ux: 45, security: 45, salary: 58, quote: "„Logs sagen nichts, Reboot hat geholfen.“", ability: "Tippt um 03:17 Uhr im Halbschlaf einen Root-Befehl.", flavour: "Dauergast im Terminal bei Nacht.\nWühlt im tiefsten Log-Müll." },
+      { id: 19, name: "Blindschleichen-CISO", emoji: "🪱", image: "images/19_blindschleichen_ciso.jpg", mgmt: "Andere Manager", meeting: 60, blast: "Problem-Ticket", teamplay: 5, ux: 10, security: 90, salary: 150, quote: "„Wir sind ISO-zertifiziert, uns kann nichts passieren.“", ability: "Unterschreibt 10 neue Richtlinien, die Arbeit unmöglich machen.", flavour: "Erkennt Bedrohungen erst auf heise online.\n14 gerahmte ISO-Zertifikate." },
+      { id: 20, name: "Dachs-Pentester", emoji: "🦡", image: "images/20_dachs_pentester.jpg", mgmt: "Arschkriecher", meeting: 15, blast: "„Ich hab's doch gesagt!“", teamplay: 30, ux: 10, security: 98, salary: 110, quote: "„Euer Master-Passwort war ‚Sommer2024!‘, oder?“", ability: "Steht nach 10 Minuten mit Domain-Admin im Serverraum.", flavour: "Riecht offene Ports durch Betonwände.\nSammelt Admin-Hashes wie Trophäen." },
+      { id: 21, name: "Pinguin-Linux-Sysadmin", emoji: "🐧", image: "images/21_pinguin_linux_sysadmin.jpg", mgmt: "Wer bist du?", meeting: 0, blast: "„Das gibt Ärger...“", teamplay: 85, ux: 15, security: 90, salary: 85, quote: "„Uptime: 1.842 Tage. Reboote ich sicher nicht.“", ability: "Fixt Kernel-Panics via SSH vom Smartphone in der U-Bahn.", flavour: "Verabscheut grafische Benutzeroberflächen.\nKompiliert Kernel beim Zähneputzen." },
+      { id: 22, name: "Schaf-Cloud-Engineer", emoji: "🐑", image: "images/22_schaf_cloud_engineer.jpg", mgmt: "Aufstreber", meeting: 45, blast: "„Das gibt Ärger...“", teamplay: 35, ux: 65, security: 40, salary: 92, quote: "„Serverless ist super günstig, vertraut mir.“", ability: "Lässt 40 Kubernetes-Cluster im Test-Tenant durchlaufen.", flavour: "Folgt jedem Hypetrain blind ins nächste VPC." },
+      { id: 23, name: "Hyänen-IT-Recruiter", emoji: "🐕", image: "images/23_hyaenen_it_recruiter.jpg", mgmt: "Aufstreber", meeting: 30, blast: "Reporting-Issue", teamplay: 5, ux: 20, security: 20, salary: 48, quote: "„Spannende Herausforderung in einem dynamischen Team!“", ability: "Schreibt Senior Architekten für Praktika an.", flavour: "Lauert rund um die Uhr auf LinkedIn.\n500 Copy-Paste-InMails pro Stunde." },
+      { id: 24, name: "Einhorn-AI-Evangelist", emoji: "🦄", image: "images/24_einhorn_ai_evangelist.jpg", mgmt: "Liebling", meeting: 90, blast: "Problem-Ticket", teamplay: 2, ux: 85, security: 10, salary: 165, quote: "„Wir brauchen einfach einen Prompt-Layer über dem Mainframe.“", ability: "Verspricht, dass KI die IT bis Q3 komplett ersetzt.", flavour: "Seit drei Wochen Experte für generative Modelle.\nTrägt Rollkragenpullover." },
+      { id: 25, name: "Faultier-Release-Manager", emoji: "🦥", image: "images/25_faultier_release_manager.jpg", mgmt: "Andere Manager", meeting: 60, blast: "Reporting-Issue", teamplay: 20, ux: 15, security: 85, salary: 70, quote: "„Code-Freeze ist dieses Jahr von Oktober bis Ostern.“", ability: "Friert Deployments 3 Wochen vor und nach Feiertagen ein.", flavour: "Bewegt sich nur bei angekündigtem Code-Freeze." },
+      { id: 26, name: "Biber-Key-User", emoji: "🦫", image: "images/26_biber_key_user.jpg", mgmt: "Arschkriecher", meeting: 45, blast: "„Das gibt Ärger...“", teamplay: 5, ux: 90, security: 5, salary: 55, quote: "„Bitte keine Updates, sonst geht meine Tabelle kaputt.“", ability: "Versteckt 25 Mio. € Logik in einer ungesicherten .xlsm.", flavour: "Baut monumentale Dämme aus Excel-Tabellen." },
+      { id: 27, name: "Kuckuck-Vendor-Sales", emoji: "🐦", image: "", mgmt: "Liebling", meeting: 120, blast: "Problem-Ticket", teamplay: 5, ux: 40, security: 30, salary: 210, quote: "„Das ist Out-of-the-box in 5 Minuten integriert.“", ability: "Verkauft Enterprise-Suite, die alles kann – außer das Benötigte.", flavour: "Taucht ungeladen in Budget-Meetings auf." }
+    ];
+
+    const CAT_NAMES = {
+      mgmt: "👔 Management-Attention",
+      blast: "💥 Blast Radius",
+      meeting: "⏱️ Durchschn. Meetingdauer",
+      salary: "💰 Reallohn",
+      teamplay: "🤝 IT-Team-Play",
+      ux: "😊 Enduser-Freude",
+      security: "🛡️ Sicherheitsniveau"
+    };
+
+    // GAME STATE
+    let playerDeck = [];
+    let botDeck = [];
+    let pottDeck = [];
+    let isPlayerTurn = true;
+    let currentDirection = 'higher'; // 'higher' | 'lower'
+    let roundHistory = [];
+    let roundCounter = 1;
+    let isHistoryExpanded = false;
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function initGame() {
+      const shuffled = shuffle(CARDS);
+      playerDeck = shuffled.slice(0, 14);
+      botDeck = shuffled.slice(14);
+      pottDeck = [];
+      isPlayerTurn = true;
+      currentDirection = 'higher';
+      roundHistory = [];
+      roundCounter = 1;
+      setDirection('higher');
+      renderGameUI();
+      renderHistory();
+    }
+
+    function setDirection(dir) {
+      currentDirection = dir;
+      const hBtn = document.getElementById('modeHigherBtn');
+      const lBtn = document.getElementById('modeLowerBtn');
+      const text = document.getElementById('activeModeText');
+
+      if (dir === 'higher') {
+        hBtn.className = 'mode-toggle-btn active-higher';
+        lBtn.className = 'mode-toggle-btn';
+        text.textContent = '⬆️ Höher sticht';
+        text.style.color = 'var(--accent-primary)';
+      } else {
+        hBtn.className = 'mode-toggle-btn';
+        lBtn.className = 'mode-toggle-btn active-lower';
+        text.textContent = '⬇️ Niedriger / Weniger sticht';
+        text.style.color = 'var(--highlight)';
+      }
+    }
+
+    function renderGameUI() {
+      document.getElementById('playerDeckCount').textContent = playerDeck.length;
+      document.getElementById('botDeckCount').textContent = botDeck.length;
+      document.getElementById('pottPill').textContent = `⚔️ POTT: ${pottDeck.length}`;
+
+      const banner = document.getElementById('turnBanner');
+      const botControls = document.getElementById('botActionContainer');
+
+      if (playerDeck.length === 0 || botDeck.length === 0) {
+        botControls.style.display = 'none';
+        renderGameOver();
+        return;
+      }
+
+      if (isPlayerTurn) {
+        banner.className = 'turn-banner turn-player';
+        banner.textContent = '👉 Du bist am Zug! Wähle deinen Trumpf-Wert:';
+        botControls.style.display = 'none';
+      } else {
+        banner.className = 'turn-banner turn-bot';
+        banner.textContent = '🤖 KI-Vorstand ist am Zug (Klicke unten zum Ausführen):';
+        botControls.style.display = 'flex';
+      }
+
+      const card = playerDeck[0];
+      const mgmtInfo = MGMT_RANK[card.mgmt] || { rank: 1, pct: 10 };
+      const blastInfo = BLAST_RANK[card.blast] || { rank: 1, pct: 10 };
+      const meetingPct = Math.min(100, Math.round((card.meeting / 240) * 100));
+      const salaryPct = Math.min(100, Math.round((card.salary / 210) * 100));
+
+      const imgBtnHtml = card.image ? `
+        <button class="img-open-btn" onclick="openImg('${card.image}')">
+          🖼️ Bild
+        </button>
+      ` : '';
+
+      document.getElementById('gameCardArea').innerHTML = `
+        <div class="playing-card">
+          <div class="card-top">
+            <div class="card-title-wrap">
+              <span style="font-size: 1.4rem;">${card.emoji}</span>
+              <span class="card-title-text">${card.name}</span>
+            </div>
+            ${imgBtnHtml}
+          </div>
+
+          <div class="card-flavour-box">${card.flavour}</div>
+
+          <div class="game-stats">
+            
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('mgmt')">
+              <div class="stat-btn-left">
+                <span class="stat-btn-name">👔 Management-Attention</span>
+                <span class="stat-btn-val">${card.mgmt}</span>
+              </div>
+              <div class="stat-btn-right">${mgmtInfo.pct}%</div>
+              <div class="stat-mini-bar" style="width: ${mgmtInfo.pct}%"></div>
+            </button>
+
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('blast')">
+              <div class="stat-btn-left">
+                <span class="stat-btn-name">💥 Blast Radius</span>
+                <span class="stat-btn-val">${card.blast}</span>
+              </div>
+              <div class="stat-btn-right">${blastInfo.pct}%</div>
+              <div class="stat-mini-bar" style="width: ${blastInfo.pct}%; background:#ef4444;"></div>
+            </button>
+
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('meeting')">
+              <div class="stat-btn-left">
+                <span class="stat-btn-name">⏱️ Durchschn. Meetingdauer</span>
+                <span class="stat-btn-val">${card.meeting} min</span>
+              </div>
+              <div class="stat-btn-right">${card.meeting}m</div>
+              <div class="stat-mini-bar" style="width: ${meetingPct}%; background:#c084fc;"></div>
+            </button>
+
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('salary')">
+              <div class="stat-btn-left">
+                <span class="stat-btn-name">💰 Reallohn</span>
+                <span class="stat-btn-val">${card.salary} k€</span>
+              </div>
+              <div class="stat-btn-right">${card.salary}k</div>
+              <div class="stat-mini-bar" style="width: ${salaryPct}%; background:#10b981;"></div>
+            </button>
+
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('teamplay')">
+              <div class="stat-btn-left">
+                <span class="stat-btn-name">🤝 IT-Team-Play</span>
+                <span class="stat-btn-val">${card.teamplay} / 100</span>
+              </div>
+              <div class="stat-btn-right">${card.teamplay}%</div>
+              <div class="stat-mini-bar" style="width: ${card.teamplay}%; background:#38bdf8;"></div>
+            </button>
+
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('ux')">
+              <div class="stat-btn-left">
+                <span class="stat-btn-name">😊 Enduser-Freude</span>
+                <span class="stat-btn-val">${card.ux} / 100</span>
+              </div>
+              <div class="stat-btn-right">${card.ux}%</div>
+              <div class="stat-mini-bar" style="width: ${card.ux}%; background:#f43f5e;"></div>
+            </button>
+
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('security')">
+              <div class="stat-btn-left">
+                <span class="stat-btn-name">🛡️ Sicherheitsniveau</span>
+                <span class="stat-btn-val">${card.security} / 100</span>
+              </div>
+              <div class="stat-btn-right">${card.security}%</div>
+              <div class="stat-mini-bar" style="width: ${card.security}%; background:#34d399;"></div>
+            </button>
+
+          </div>
+
+          <div class="card-footer-info">
+            <div style="font-weight:700; color:var(--accent-primary); font-size:0.65rem; text-transform:uppercase;">⚡ ${card.ability}</div>
+            <div class="card-quote-pill">${card.quote}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getStatRankVal(card, category) {
+      if (category === 'mgmt') return (MGMT_RANK[card.mgmt] && MGMT_RANK[card.mgmt].rank) || 0;
+      if (category === 'blast') return (BLAST_RANK[card.blast] && BLAST_RANK[card.blast].rank) || 0;
+      return card[category];
+    }
+
+    function formatStatDisplay(card, category) {
+      if (category === 'mgmt') return `${card.mgmt} (${MGMT_RANK[card.mgmt].pct}%)`;
+      if (category === 'blast') return `${card.blast} (${BLAST_RANK[card.blast].pct}%)`;
+      if (category === 'meeting') return `${card.meeting} min`;
+      if (category === 'salary') return `${card.salary} k€`;
+      return `${card[category]} / 100`;
+    }
+
+    function playTurn(category) {
+      if (!isPlayerTurn) return;
+      resolveDuel(category, currentDirection, 'player');
+    }
+
+    function executeBotTurn() {
+      if (isPlayerTurn || botDeck.length === 0) return;
+      const { cat, dir } = chooseBotCategory();
+      resolveDuel(cat, dir, 'bot');
+    }
+
+    function chooseBotCategory() {
+      const botCard = botDeck[0];
+      const scoresHigh = {
+        mgmt: (MGMT_RANK[botCard.mgmt].pct / 100),
+        blast: (BLAST_RANK[botCard.blast].pct / 100),
+        meeting: (botCard.meeting / 240),
+        salary: (botCard.salary / 210),
+        teamplay: (botCard.teamplay / 100),
+        ux: (botCard.ux / 100),
+        security: (botCard.security / 100)
+      };
+
+      let bestCat = 'salary';
+      let bestDir = 'higher';
+      let bestAdvantage = -1;
+
+      for (const [cat, val] of Object.entries(scoresHigh)) {
+        // High advantage
+        if (val > bestAdvantage) {
+          bestAdvantage = val;
+          bestCat = cat;
+          bestDir = 'higher';
+        }
+        // Low advantage (1 - val)
+        const lowAdv = 1 - val;
+        if (lowAdv > bestAdvantage) {
+          bestAdvantage = lowAdv;
+          bestCat = cat;
+          bestDir = 'lower';
+        }
+      }
+
+      return { cat: bestCat, dir: bestDir };
+    }
+
+    function skipBotTurns() {
+      let turnsSimulated = 0;
+      while (!isPlayerTurn && playerDeck.length > 0 && botDeck.length > 0 && turnsSimulated < 50) {
+        turnsSimulated++;
+        const { cat, dir } = chooseBotCategory();
+        resolveDuel(cat, dir, 'bot', true); // silent duel without modal
+      }
+
+      renderGameUI();
+      renderHistory();
+      playBeep(520, 'triangle', 0.15);
+    }
+
+    function resolveDuel(category, direction, initiator, silent = false) {
+      playBeep(440, 'sine', 0.08);
+      const pCard = playerDeck[0];
+      const bCard = botDeck[0];
+
+      const valP = getStatRankVal(pCard, category);
+      const valB = getStatRankVal(bCard, category);
+
+      let winner = 'tie';
+      if (direction === 'higher') {
+        if (valP > valB) winner = 'player';
+        else if (valB > valP) winner = 'bot';
+      } else {
+        // lower wins!
+        if (valP < valB) winner = 'player';
+        else if (valB < valP) winner = 'bot';
+      }
+
+      const dirLabel = direction === 'higher' ? '⬆️ Höher gewinnt' : '⬇️ Niedriger gewinnt';
+      const initiatorLabel = initiator === 'player' ? 'Du' : 'KI-Vorstand';
+
+      // History Record
+      const histItem = {
+        round: roundCounter++,
+        category: CAT_NAMES[category],
+        direction: dirLabel,
+        initiator: initiatorLabel,
+        pName: `${pCard.emoji} ${pCard.name}`,
+        pVal: formatStatDisplay(pCard, category),
+        bName: `${bCard.emoji} ${bCard.name}`,
+        bVal: formatStatDisplay(bCard, category),
+        winner
+      };
+      roundHistory.unshift(histItem);
+
+      if (winner === 'player') {
+        pottDeck.push(pCard, bCard);
+        playerDeck.push(...pottDeck);
+        playerDeck.shift();
+        botDeck.shift();
+        pottDeck = [];
+        isPlayerTurn = true;
+      } else if (winner === 'bot') {
+        pottDeck.push(pCard, bCard);
+        botDeck.push(...pottDeck);
+        playerDeck.shift();
+        botDeck.shift();
+        pottDeck = [];
+        isPlayerTurn = false;
+      } else {
+        // Tie
+        pottDeck.push(pCard, bCard);
+        playerDeck.shift();
+        botDeck.shift();
+      }
+
+      if (!silent) {
+        showDuelModal(histItem, pCard, bCard);
+      } else {
+        renderHistory();
+      }
+    }
+
+    function showDuelModal(hist, pCard, bCard) {
+      document.getElementById('duelResultCategory').textContent = `Kriterium: ${hist.category} (${hist.direction})`;
+
+      document.getElementById('playerDuelEmoji').textContent = pCard.emoji;
+      document.getElementById('playerDuelName').textContent = pCard.name;
+      document.getElementById('playerDuelStat').textContent = hist.pVal;
+      document.getElementById('playerDuelBtnWrap').innerHTML = pCard.image ? `
+        <button class="img-open-btn" onclick="openImg('${pCard.image}')">🖼️ Bild</button>
+      ` : '';
+
+      document.getElementById('botDuelEmoji').textContent = bCard.emoji;
+      document.getElementById('botDuelName').textContent = bCard.name;
+      document.getElementById('botDuelStat').textContent = hist.bVal;
+      document.getElementById('botDuelBtnWrap').innerHTML = bCard.image ? `
+        <button class="img-open-btn" onclick="openImg('${bCard.image}')">🖼️ Bild</button>
+      ` : '';
+
+      const resTitle = document.getElementById('duelResultTitle');
+      const pDuelCard = document.getElementById('playerDuelCard');
+      const bDuelCard = document.getElementById('botDuelCard');
+
+      pDuelCard.className = 'mini-duel-card';
+      bDuelCard.className = 'mini-duel-card';
+
+      if (hist.winner === 'player') {
+        playBeep(660, 'triangle', 0.2);
+        resTitle.textContent = "Du gewinnst die Runde! 🎉";
+        resTitle.style.color = "var(--success)";
+        pDuelCard.classList.add('win-card');
+        bDuelCard.classList.add('lose-card');
+      } else if (hist.winner === 'bot') {
+        playBeep(220, 'sawtooth', 0.25);
+        resTitle.textContent = "KI-Vorstand gewinnt die Runde! 💥";
+        resTitle.style.color = "var(--danger)";
+        bDuelCard.classList.add('win-card');
+        pDuelCard.classList.add('lose-card');
+      } else {
+        playBeep(350, 'square', 0.15);
+        resTitle.textContent = "Unentschieden! ⚔️ Karten im Pott";
+        resTitle.style.color = "var(--highlight)";
+      }
+
+      document.getElementById('battleModal').style.display = 'flex';
+      renderHistory();
+    }
+
+    function nextRound() {
+      document.getElementById('battleModal').style.display = 'none';
+      renderGameUI();
+    }
+
+    function renderHistory() {
+      document.getElementById('historyCount').textContent = roundHistory.length;
+      const listEl = document.getElementById('historyList');
+
+      if (roundHistory.length === 0) {
+        listEl.innerHTML = `
+          <div style="font-size:0.72rem; color:var(--text-muted); text-align:center; padding:6px;">
+            Noch keine Duelle gespielt. Wähle deinen ersten Wert!
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = roundHistory.map(h => {
+        let winClass = 'tie';
+        let winText = '⚔️ Unentschieden ➔ Pott';
+        if (h.winner === 'player') { winClass = 'win'; winText = '🎉 Du gewinnst!'; }
+        else if (h.winner === 'bot') { winClass = 'loss'; winText = '💥 KI gewinnt!'; }
+
+        return `
+          <div class="history-item ${winClass}">
+            <div class="history-top-row">
+              <span style="color:#fff;">Runde ${h.round}: ${h.category}</span>
+              <span style="color:var(--text-muted); font-size:0.65rem;">(${h.direction} • ${h.initiator})</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:2px;">
+              <span>👤 ${h.pName}: <b>${h.pVal}</b></span>
+              <span>🤖 ${h.bName}: <b>${h.bVal}</b></span>
+            </div>
+            <div style="font-weight:700; color:${h.winner === 'player' ? 'var(--success)' : (h.winner === 'bot' ? 'var(--danger)' : 'var(--highlight)')}; font-size:0.68rem; margin-top:1px;">
+              ➔ ${winText}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleHistory() {
+      isHistoryExpanded = !isHistoryExpanded;
+      const list = document.getElementById('historyList');
+      const icon = document.getElementById('historyToggleIcon');
+      list.style.display = isHistoryExpanded ? 'none' : 'flex';
+      icon.textContent = isHistoryExpanded ? '▲' : '▼';
+    }
+
+    function renderGameOver() {
+      const won = playerDeck.length > 0;
+      if (won) playBeep(880, 'sine', 0.4);
+      document.getElementById('gameCardArea').innerHTML = `
+        <div style="background:var(--bg-card); border-radius:18px; border:2px solid ${won ? 'var(--success)' : 'var(--danger)'}; padding:24px 16px; text-align:center;">
+          <div style="font-size: 3rem; margin-bottom: 8px;">${won ? '🏆👑' : '💀💥'}</div>
+          <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 6px;">${won ? 'SIEG! Du beherrschst die IT!' : 'GAME OVER! Vorstand hat dich wegrationalisiert.'}</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">
+            ${won ? 'Du hast alle 27 Karten erobert!' : 'Deine Karten sind alle weg.'}
+          </p>
+          <button onclick="initGame()" style="background:var(--accent-primary); color:#090d16; border:none; padding:12px 24px; border-radius:12px; font-weight:800; font-size:1rem; cursor:pointer;">
+            🔄 Nochmal spielen
+          </button>
+        </div>
+      `;
+    }
+
+    function restartGame() {
+      if (confirm('Möchtest du das Spiel wirklich neu starten?')) {
+        initGame();
+      }
+    }
+
+    // ==================== TAB NAVIGATION ====================
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+
+      if (tab === 'game') {
+        document.querySelector("button[onclick=\"switchTab('game')\"]").classList.add('active');
+        document.getElementById('gameView').classList.add('active');
+      } else {
+        document.querySelector("button[onclick=\"switchTab('collection')\"]").classList.add('active');
+        document.getElementById('collectionView').classList.add('active');
+        renderCollection();
+      }
+    }
+
+    // ==================== COLLECTION VIEW ====================
+    let collSort = 'default';
+    function renderCollection() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      let list = CARDS.filter(c => !q || c.name.toLowerCase().includes(q) || c.ability.toLowerCase().includes(q));
+
+      if (collSort !== 'default') {
+        list.sort((a, b) => {
+          let va, vb;
+          if (collSort === 'mgmt') { va = MGMT_RANK[a.mgmt].rank; vb = MGMT_RANK[b.mgmt].rank; }
+          else if (collSort === 'blast') { va = BLAST_RANK[a.blast].rank; vb = BLAST_RANK[b.blast].rank; }
+          else { va = a[collSort]; vb = b[collSort]; }
+          return vb - va;
+        });
+      }
+
+      document.getElementById('collectionList').innerHTML = list.map(c => `
+        <div class="coll-card">
+          <div class="coll-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.3rem;">${c.emoji}</span>
+              <span style="font-weight:700; font-size:0.9rem; color:#fff;">${c.name}</span>
+            </div>
+            <div style="display:flex; gap:6px;">
+              ${c.image ? `<button class="img-open-btn" onclick="openImg('${c.image}')">🖼️ Bild</button>` : ''}
+              <button onclick="openCardFeedback('${c.name}')" style="background:rgba(56,189,248,0.15); border:1px solid var(--accent-primary); color:var(--accent-primary); border-radius:6px; padding:2px 7px; font-size:0.7rem; font-weight:700; cursor:pointer;">💬</button>
+            </div>
+          </div>
+          <div class="coll-stats-grid">
+            <div class="coll-stat-box">👔 ${c.mgmt}</div>
+            <div class="coll-stat-box">💥 ${c.blast}</div>
+            <div class="coll-stat-box">⏱️ ${c.meeting} min</div>
+            <div class="coll-stat-box">💰 ${c.salary} k€</div>
+            <div class="coll-stat-box">🤝 Team: ${c.teamplay}</div>
+            <div class="coll-stat-box">😊 User: ${c.ux}</div>
+            <div class="coll-stat-box full">🛡️ Sicherheit: ${c.security} / 100</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('sortContainer').addEventListener('click', (e) => {
+      const btn = e.target.closest('.sort-btn');
+      if (!btn) return;
+      document.querySelectorAll('#sortContainer .sort-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      collSort = btn.dataset.sort;
+      renderCollection();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', renderCollection);
+
+    // ==================== MODALS ====================
+    function openImg(src) {
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imageModal').style.display = 'flex';
+    }
+
+    function openIdeaModal() {
+      document.getElementById('ideaModalTitle').textContent = '💡 Neue Kartenidee vorschlagen';
+      document.getElementById('propRole').value = '';
+      document.getElementById('propAbility').value = '';
+      document.getElementById('ideaModal').style.display = 'flex';
+    }
+
+    function openCardFeedback(cardName) {
+      document.getElementById('ideaModalTitle').textContent = `💬 Vorschlag zu: ${cardName}`;
+      document.getElementById('propRole').value = `Feedback zu: ${cardName}`;
+      document.getElementById('propAbility').value = '';
+      document.getElementById('ideaModal').style.display = 'flex';
+    }
+
+    function closeIdeaModal() {
+      document.getElementById('ideaModal').style.display = 'none';
+    }
+
+    function handleIdeaSubmit(e) {
+      e.preventDefault();
+      const role = document.getElementById('propRole').value;
+      const ability = document.getElementById('propAbility').value;
+      const author = document.getElementById('propAuthor').value || 'Anonym';
+
+      const suggestions = JSON.parse(localStorage.getItem('it_quartett_suggestions') || '[]');
+      suggestions.push({ role, ability, author, time: new Date().toISOString() });
+      localStorage.setItem('it_quartett_suggestions', JSON.stringify(suggestions));
+
+      playBeep(600, 'sine', 0.15);
+      alert(`Vielen Dank, ${author}! Dein Vorschlag zu "${role}" wurde erfolgreich eingereicht.`);
+      closeIdeaModal();
+    }
+
+    // Start on load
+    initGame();
+  </script>
+</body>
+</html>
