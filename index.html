@@ -375,9 +375,7 @@
       gap: 5px;
     }
 
-    /* ==========================================================================
-       HARMONIOUS POPUP & CLEAR SCALES (NO PERCENTAGES)
-       ========================================================================== */
+    /* HARMONIOUS WAGER POPUP */
     .wager-overlay {
       display: none;
       position: fixed;
@@ -579,8 +577,8 @@
       background: rgba(9, 13, 22, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 0.72rem;
+      padding: 8px 10px;
+      font-size: 0.74rem;
       color: #cbd5e1;
       line-height: 1.35;
     }
@@ -674,7 +672,7 @@
     }
 
     .duel-result-title {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       font-weight: 900;
       margin-bottom: 3px;
     }
@@ -759,7 +757,6 @@
 
     .history-item.win { border-left-color: var(--success); }
     .history-item.loss { border-left-color: var(--danger); }
-    .history-item.tie { border-left-color: var(--highlight); }
 
     .history-top-row {
       display: flex;
@@ -986,7 +983,7 @@
         <span class="score-label" id="playerDeckLabel">Du</span>
         <span class="score-num" id="playerDeckCount">14</span>
       </div>
-      <div class="vs-pill" id="pottPill">⚔️ POTT: 0</div>
+      <div class="vs-pill" id="pottPill">⚔️ DUELL</div>
       <div class="score-badge">
         <span class="score-label">KI-Vorstand</span>
         <span class="score-num" id="botDeckCount">13</span>
@@ -1110,7 +1107,7 @@
       <!-- Clear Scale -->
       <div id="wagerScaleContent"></div>
 
-      <!-- Lore & Explanation -->
+      <!-- Lore & Explanation (Generic, no card spoilers) -->
       <div class="wager-lore-box" id="wagerLoreBox"></div>
 
       <!-- Action Prompt & Buttons -->
@@ -1272,10 +1269,11 @@
       "Reporting-Issue": { rank: 1, level: "Minimum" }
     };
 
+    // Generic, spoiler-free metric metadata
     const STAT_META = {
       mgmt: {
         name: "👔 Management-Attention",
-        info: "Gibt an, wie viel Sichtbarkeit und Wohlwollen die Rolle im Top-Management genießt. 'Liebling' sticht alles im oberen Bereich, 'Wer bist du?' ist das unsichtbare Schlusslicht.",
+        info: "Gibt an, wie viel Sichtbarkeit und strategisches Wohlwollen diese IT-Rolle in der oberen Chefetage genießt.",
         type: "tier",
         tiers: [
           { label: "Liebling", level: "Maximum" },
@@ -1288,7 +1286,7 @@
       },
       blast: {
         name: "💥 Blast Radius",
-        info: "Der Schadensradius bei einem Ausfall oder Fehler. 'Ich hab's doch gesagt!' bedeutet weltweiten Stillstand, 'Reporting-Issue' ist ein reiner Darstellungsfehler.",
+        info: "Der relative Schadens- und Eskalationsradius bei einem Systemausfall, Fehltritt oder gravierenden Bug.",
         type: "tier",
         tiers: [
           { label: "„Ich hab's doch gesagt!“", level: "Maximum" },
@@ -1301,7 +1299,7 @@
       },
       meeting: {
         name: "⏱️ Durchschn. Meetingdauer",
-        info: "Dauer typischer Termine in Minuten. Der SME-Wal hält mit 240 min das Maximum, während Kakerlake oder Sysadmin Meetings fast völlig meiden.",
+        info: "Die typische Zeit in Minuten, die täglich oder pro Sitzung in Abstimmungsrunden und Calls verbracht wird.",
         type: "numeric",
         min: 0,
         max: 240,
@@ -1311,7 +1309,7 @@
       },
       salary: {
         name: "💰 Reallohn",
-        info: "Jahresgehalt in Tausend Euro (k€). Sales und Vorstandsberater sahnen bis zu 210 k€ ab, während uralte Legacy-Systeme mit 0 k€ laufen.",
+        info: "Das durchschnittliche Jahresgehalt für diese IT-Disziplin (in Tausend Euro / k€).",
         type: "numeric",
         min: 0,
         max: 210,
@@ -1321,7 +1319,7 @@
       },
       teamplay: {
         name: "🤝 IT-Team-Play",
-        info: "Teamfähigkeit und Kollegialität unter IT-Kollegen (1–100). Hohe Werte halten dem Team den Rücken frei (Capybara), niedrige treiben Kollegen in den Wahnsinn.",
+        info: "Kollegialität, Hilfsbereitschaft und Teamorientierung im täglichen IT-Betrieb (Skala 1–100).",
         type: "numeric",
         min: 1,
         max: 100,
@@ -1331,7 +1329,7 @@
       },
       ux: {
         name: "😊 Enduser-Freude",
-        info: "Nutzerfreundlichkeit und Beliebtheit bei den Endanwendern (1–100). Der Service-Desk-Otter und UX-Designer sind Publikumslieblinge, SOC-Analysten sperren lieber alles.",
+        info: "Wie sehr die Endanwender diese Rolle, ihre Kommunikation und ihre Arbeitsergebnisse schätzen (Skala 1–100).",
         type: "numeric",
         min: 1,
         max: 100,
@@ -1341,7 +1339,7 @@
       },
       security: {
         name: "🛡️ Sicherheitsniveau",
-        info: "Sicherheitsbewusstsein und Cyber-Resilienz (1–100). SOC-Analyst & Pentester bieten maximale Sicherheit, während Schatten-IT und Key-User massive Risiken bergen.",
+        info: "Das IT-Sicherheitsbewusstsein, Cyber-Resilienz und gelebte Compliance (Skala 0–100).",
         type: "numeric",
         min: 0,
         max: 100,
@@ -1402,7 +1400,6 @@
     // GAME STATE
     let playerDeck = [];
     let botDeck = [];
-    let pottDeck = [];
     let isPlayerTurn = true;
     let selectedWagerCat = null;
     let roundHistory = [];
@@ -1421,7 +1418,6 @@
       const shuffled = shuffle(CARDS);
       playerDeck = shuffled.slice(0, 14);
       botDeck = shuffled.slice(14);
-      pottDeck = [];
       isPlayerTurn = true;
       selectedWagerCat = null;
       roundHistory = [];
@@ -1435,7 +1431,6 @@
     function renderGameUI() {
       document.getElementById('playerDeckCount').textContent = playerDeck.length;
       document.getElementById('botDeckCount').textContent = botDeck.length;
-      document.getElementById('pottPill').textContent = `⚔️ POTT: ${pottDeck.length}`;
       document.getElementById('navHistCount').textContent = roundHistory.length;
 
       const banner = document.getElementById('turnBanner');
@@ -1458,9 +1453,6 @@
       }
 
       const card = playerDeck[0];
-      const meetingPct = Math.min(100, Math.round((card.meeting / 240) * 100));
-      const salaryPct = Math.min(100, Math.round((card.salary / 210) * 100));
-
       const imgBtnHtml = card.image ? `
         <button class="img-open-btn" onclick="openImg('${card.image}')">
           🖼️ Bild
@@ -1692,13 +1684,17 @@
       const valP = getStatRankVal(pCard, category);
       const valB = getStatRankVal(bCard, category);
 
-      let winner = 'tie';
-      if (direction === 'higher') {
-        if (valP > valB) winner = 'player';
-        else if (valB > valP) winner = 'bot';
+      let winner;
+      let isTieBreak = false;
+
+      // PATT-REGEL: Bei Gleichstand gewinnt IMMER der Verteidiger (derjenige, der NICHT am Zug war)!
+      if (valP === valB) {
+        isTieBreak = true;
+        winner = (initiator === 'player') ? 'bot' : 'player';
+      } else if (direction === 'higher') {
+        winner = (valP > valB) ? 'player' : 'bot';
       } else {
-        if (valP < valB) winner = 'player';
-        else if (valB < valP) winner = 'bot';
+        winner = (valP < valB) ? 'player' : 'bot';
       }
 
       const dirLabel = direction === 'higher' ? '⬆️ Höher gewinnt' : '⬇️ Niedriger gewinnt';
@@ -1713,28 +1709,21 @@
         pVal: formatStatDisplay(pCard, category),
         bName: `${bCard.emoji} ${bCard.name}`,
         bVal: formatStatDisplay(bCard, category),
-        winner
+        winner,
+        isTieBreak
       };
       roundHistory.unshift(histItem);
 
       if (winner === 'player') {
-        pottDeck.push(pCard, bCard);
-        playerDeck.push(...pottDeck);
+        playerDeck.push(pCard, bCard);
         playerDeck.shift();
         botDeck.shift();
-        pottDeck = [];
         isPlayerTurn = true;
-      } else if (winner === 'bot') {
-        pottDeck.push(pCard, bCard);
-        botDeck.push(...pottDeck);
-        playerDeck.shift();
-        botDeck.shift();
-        pottDeck = [];
-        isPlayerTurn = false;
       } else {
-        pottDeck.push(pCard, bCard);
+        botDeck.push(pCard, bCard);
         playerDeck.shift();
         botDeck.shift();
+        isPlayerTurn = false;
       }
 
       if (!silent) {
@@ -1771,20 +1760,24 @@
 
       if (hist.winner === 'player') {
         playBeep(660, 'triangle', 0.2);
-        resTitle.textContent = `${playerName} gewinnt die Runde! 🎉`;
+        if (hist.isTieBreak) {
+          resTitle.textContent = `Patt! 🛡️ Deine Verteidigung sticht den Angriff! 🎉`;
+        } else {
+          resTitle.textContent = `${playerName} gewinnt die Runde! 🎉`;
+        }
         resTitle.style.color = "var(--success)";
         pDuelCard.classList.add('win-card');
         bDuelCard.classList.add('lose-card');
-      } else if (hist.winner === 'bot') {
+      } else {
         playBeep(220, 'sawtooth', 0.25);
-        resTitle.textContent = "KI-Vorstand gewinnt die Runde! 💥";
+        if (hist.isTieBreak) {
+          resTitle.textContent = `Patt! 💥 KI-Verteidigung sticht deinen Angriff!`;
+        } else {
+          resTitle.textContent = `KI-Vorstand gewinnt die Runde! 💥`;
+        }
         resTitle.style.color = "var(--danger)";
         bDuelCard.classList.add('win-card');
         pDuelCard.classList.add('lose-card');
-      } else {
-        playBeep(350, 'square', 0.15);
-        resTitle.textContent = "Unentschieden! ⚔️ Karten im Pott";
-        resTitle.style.color = "var(--highlight)";
       }
 
       document.getElementById('battleModal').style.display = 'flex';
@@ -1811,10 +1804,16 @@
       }
 
       listEl.innerHTML = roundHistory.map(h => {
-        let winClass = 'tie';
-        let winText = '⚔️ Unentschieden ➔ Pott';
-        if (h.winner === 'player') { winClass = 'win'; winText = `🎉 ${playerName} gewinnt!`; }
-        else if (h.winner === 'bot') { winClass = 'loss'; winText = '💥 KI-Vorstand gewinnt!'; }
+        let winClass = 'win';
+        let winText = `🎉 ${playerName} gewinnt!`;
+        if (h.winner === 'bot') {
+          winClass = 'loss';
+          winText = '💥 KI-Vorstand gewinnt!';
+        }
+
+        if (h.isTieBreak) {
+          winText += ' (🛡️ Patt: Verteidiger sticht Angreifer)';
+        }
 
         return `
           <div class="history-item ${winClass}">
@@ -1826,7 +1825,7 @@
               <span>👤 ${h.pName}: <b>${h.pVal}</b></span>
               <span>🤖 ${h.bName}: <b>${h.bVal}</b></span>
             </div>
-            <div style="font-weight:700; color:${h.winner === 'player' ? 'var(--success)' : (h.winner === 'bot' ? 'var(--danger)' : 'var(--highlight)')}; font-size:0.72rem; margin-top:2px;">
+            <div style="font-weight:700; color:${h.winner === 'player' ? 'var(--success)' : 'var(--danger)'}; font-size:0.72rem; margin-top:2px;">
               ➔ ${winText}
             </div>
           </div>
