@@ -2779,7 +2779,7 @@
       }
     }
 
-    // HALL OF FAME
+    // ==================== HALL OF FAME (CLOUD LIVE-SYNC) ====================
     const DEFAULT_HOF = [
       { name: "Ada Lovelace", score: 2850, rounds: 11, result: "Sieg", date: "2026-08-20" },
       { name: "Linus Torvalds", score: 2400, rounds: 14, result: "Sieg", date: "2026-08-22" },
@@ -2788,15 +2788,35 @@
       { name: "Helpdesk Hero", score: 1200, rounds: 26, result: "Sieg", date: "2026-08-27" }
     ];
 
-    function getHofList() {
-      const saved = localStorage.getItem('it_quartett_hof_v1');
-      if (saved) {
-        try { return JSON.parse(saved); } catch (e) {}
+    let cachedHofList = JSON.parse(localStorage.getItem('it_quartett_hof_v1') || 'null') || DEFAULT_HOF;
+    let isHofLoading = false;
+
+    async function fetchCloudLeaderboard() {
+      if (!GOOGLE_SHEETS_ENDPOINT) return;
+      isHofLoading = true;
+      try {
+        const res = await fetch(GOOGLE_SHEETS_ENDPOINT);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            cachedHofList = data;
+            localStorage.setItem('it_quartett_hof_v1', JSON.stringify(cachedHofList));
+            renderHof();
+          }
+        }
+      } catch (err) {
+        console.warn('Cloud Leaderboard fetch warning:', err);
+      } finally {
+        isHofLoading = false;
       }
-      return DEFAULT_HOF;
+    }
+
+    function getHofList() {
+      return cachedHofList;
     }
 
     function saveHofList(list) {
+      cachedHofList = list;
       localStorage.setItem('it_quartett_hof_v1', JSON.stringify(list));
     }
 
@@ -2947,13 +2967,16 @@
       saveHofList(list);
       renderHof();
 
-      // Send to Google Sheets
+      // Send to Google Sheets Cloud Leaderboard
       sendToGoogleSheets({
         type: 'hall_of_fame',
-        role: `${newEntry.result} in ${rounds} Zügen`,
-        description_ability_quote: `Highscore: ${score} Punkte`,
-        author: finalName
+        name: finalName,
+        score: score,
+        rounds: rounds,
+        result: won ? 'Sieg' : 'Niederlage'
       });
+
+      setTimeout(fetchCloudLeaderboard, 1200);
 
       playBeep(600, 'sine', 0.15);
       document.getElementById('hofOptInBox').style.display = 'none';
@@ -2986,6 +3009,7 @@
         document.querySelector("button[onclick=\"switchTab('hof')\"]").classList.add('active');
         document.getElementById('hofView').classList.add('active');
         renderHof();
+        fetchCloudLeaderboard();
       } else if (tab === 'rules') {
         document.querySelector("button[onclick=\"switchTab('rules')\"]").classList.add('active');
         document.getElementById('rulesView').classList.add('active');
