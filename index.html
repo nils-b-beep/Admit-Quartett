@@ -270,7 +270,7 @@
       font-size: 0.76rem;
       font-weight: 600;
       color: #fff;
-      line-height: 1.25;
+      line-height: 1.3;
     }
 
     .card-quote-box {
@@ -281,7 +281,7 @@
       font-size: 0.75rem;
       color: #fef08a;
       font-style: italic;
-      line-height: 1.3;
+      line-height: 1.35;
     }
 
     /* 3. Inline Artwork Image (Responsive) */
@@ -396,14 +396,6 @@
       border: 1px solid rgba(56, 189, 248, 0.2);
     }
 
-    .stat-mini-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 3px;
-      background: var(--accent-primary);
-    }
-
     /* Bot Controls */
     .bot-controls-box {
       margin-top: 12px;
@@ -480,7 +472,6 @@
       }
     }
 
-    /* 90s WordArt Rainbow 3D Headline */
     .wordart-rainbow-3d {
       font-size: 2.2rem;
       font-weight: 900;
@@ -495,7 +486,6 @@
       line-height: 1.15;
     }
 
-    /* 90s WordArt Fiery Doom Headline */
     .wordart-fire-3d {
       font-size: 2.2rem;
       font-weight: 900;
@@ -1044,14 +1034,16 @@
     .deck-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
     .coll-card {
       background: var(--bg-card);
-      border-radius: 14px;
+      border-radius: 16px;
       border: 1px solid var(--border-color);
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .coll-header {
@@ -1556,34 +1548,440 @@
       }
     };
 
+    // 100% COMPLETE & VERBATIM CARD DATA FROM it_quartett_karten.md
     const CARDS = [
-      { id: 1, name: "Gans-Eskalationsmanager", emoji: "🪿", image: "images/01_gans_eskalationsmanager.jpg", mgmt: "Liebling", meeting: 15, blast: "Problem-Ticket", teamplay: 10, ux: 20, security: 40, salary: 85, quote: "„HONK. Das ist jetzt Prio 1.“", ability: "Wandelt Lautstärke zuverlässig in Priorität um.", flavour: "Beißt in jede Ursachenanalyse.\nLebt von Chaos. Verhandelt nicht." },
-      { id: 2, name: "Papagei-Auditor", emoji: "🦜", image: "images/02_papagei_auditor.jpg", mgmt: "Andere Manager", meeting: 60, blast: "Morgen wieder vergessen...", teamplay: 5, ux: 5, security: 95, salary: 92, quote: "„Ja, das habe ich gesehen. Haben Sie das auch dokumentiert?“", ability: "Fordert dieselbe Evidenz als Excel, PDF, Screenshot und nochmals als Excel.", flavour: "Hat die Evidenz bereits gesehen.\nMöchte sie trotzdem noch einmal." },
-      { id: 3, name: "Erdmännchen-Projektleiter", emoji: "🦫", image: "images/03_erdmaennchen_projektleiter.jpg", mgmt: "Arschkriecher", meeting: 45, blast: "Einzeluserprobleme", teamplay: 25, ux: 50, security: 50, salary: 78, quote: "„Wir brauchen einen kurzen Sync, nur 45 Minuten.“", ability: "Hört irgendwo das Wort „Projektrisiko“ und eröffnet sofort einen Call.", flavour: "Reckt bei jedem Geräusch den Kopf aus dem Bau.\nWittert Scope Creep gegen den Wind." },
-      { id: 4, name: "Spinne-Integrations-Architect", emoji: "🕷️", image: "images/04_spinne_integrations_architect.jpg", mgmt: "Aufstreber", meeting: 75, blast: "„Ich hab's doch gesagt!“", teamplay: 55, ux: 40, security: 60, salary: 105, quote: "„Wenn dieser Connector ausfällt, merkt es nur die gesamte Firma.“", ability: "Verbindet alles mit allem und kennt als Einzige das Netz.", flavour: "Wohnt in den Tiefen der Middleware.\nWebt unentwegt neue Schnittstellen." },
-      { id: 5, name: "Capybara-Service-Owner", emoji: "🐹", image: "images/05_capybara_service_owner.jpg", mgmt: "Andere Manager", meeting: 30, blast: "Reporting-Issue", teamplay: 98, ux: 85, security: 75, salary: 88, quote: "„Wenn wir jetzt hektisch werden, haben wir zwei Probleme.“", ability: "Bewahrt beim Major Incident eine fast neurotische Ruhe.", flavour: "Tiefenentspannt im Dauerfeuer zwischen Kunde und Management." },
-      { id: 6, name: "Kugelfisch-SOC-Analyst", emoji: "🐡", image: "images/06_kugelfisch_soc_analyst.jpg", mgmt: "Arschkriecher", meeting: 20, blast: "„Ich hab's doch gesagt!“", teamplay: 20, ux: 2, security: 100, salary: 76, quote: "„Der Angriff lief über HTTPS, also habe ich HTTPS gesperrt.“", ability: "Bläst einen einzelnen IOC zur globalen Sperrmaßnahme auf.", flavour: "Schläft mit SIEM-Dashboard unterm Kopfkissen.\nParanoid aus Berufung." },
-      { id: 7, name: "Subject Matter Expert Wal", emoji: "🐋", image: "images/07_subject_matter_expert_wal.jpg", mgmt: "Aufstreber", meeting: 240, blast: "Morgen wieder vergessen...", teamplay: 40, ux: 15, security: 65, salary: 130, quote: "„Um das zu verstehen, müssen wir zurück ins Jahr 2004.“", ability: "Verwandelt jede Ja-Nein-Frage in einen historischen Tiefseemonolog.", flavour: "Taucht nur alle drei Monate im Meeting auf.\nVerfügt über unendliche Speichertiefe." },
-      { id: 8, name: "Igel-Change-Manager", emoji: "🦔", image: "images/08_igel_change_manager.jpg", mgmt: "Andere Manager", meeting: 50, blast: "Einzeluserprobleme", teamplay: 15, ux: 10, security: 92, salary: 74, quote: "„Der Change könnte Auswirkungen haben.“", ability: "Rollt sich bei jedem Risiko vorsorglich ein.", flavour: "Hasst Freitage.\nStellt die Stacheln bei jedem RFC auf." },
-      { id: 9, name: "Transformationswolf", emoji: "🐺", image: "images/09_transformationswolf.jpg", mgmt: "Liebling", meeting: 120, blast: "Problem-Ticket", teamplay: 10, ux: 30, security: 55, salary: 185, quote: "„Der Registry Key ist nicht das Problem. Uns fehlt ein Programm.“", ability: "Wirft aus einem Problem ein Rudel an Grundsatzfragen auf.", flavour: "Pirscht durch Agile Frameworks.\nHeult mit den Business Consultants." },
-      { id: 10, name: "Software-Packaging-Eichhörnchen", emoji: "🐿️", image: "images/10_software_packaging_eichhoernchen.jpg", mgmt: "Fleißiges Bienchen", meeting: 25, blast: "Morgen wieder vergessen...", teamplay: 80, ux: 60, security: 70, salary: 62, quote: "„Die MSI von 2014 könnten wir noch brauchen.“", ability: "Lagert jede Version vorsorglich für den nächsten Winter ein.", flavour: "Vergräbt Setup.exe-Dateien auf verschiedenen Netzlaufwerken." },
-      { id: 11, name: "Dashboard-Pfau", emoji: "🦚", image: "images/11_dashboard_pfau.jpg", mgmt: "Arschkriecher", meeting: 60, blast: "Einzeluserprobleme", teamplay: 35, ux: 65, security: 80, salary: 82, quote: "„Ich habe noch ein cooles Dashboard gebaut.“", ability: "Schlägt bei jedem Messwert ein Management-Dashboard auf.", flavour: "Liebt bunte Tortendiagramme und Ampelfarben." },
-      { id: 12, name: "Legacy-Kakerlake", emoji: "🪳", image: "images/12_legacy_kakerlake.jpg", mgmt: "Wer bist du?", meeting: 0, blast: "„Das gibt Ärger...“", teamplay: 30, ux: 70, security: 0, salary: 0, quote: "„Niemand weiß, warum es existiert. Also bleibt es.“", ability: "Überlebt jede Migration und sämtliche früheren Owner.", flavour: "Läuft seit 1998 auf einem Windows Server 2003 unterm Schreibtisch." },
-      { id: 13, name: "2nd-Level-Gorilla", emoji: "🦍", image: "images/13_2nd_level_gorilla.jpg", mgmt: "Fleißiges Bienchen", meeting: 2, blast: "„Ich hab's doch gesagt!“", teamplay: 88, ux: 8, security: 30, salary: 52, quote: "„Kein Gerät, kein Problem.“", ability: "Löst alle Probleme mit: Get-Device | Remove-Device.", flavour: "Macht keine halben Sachen.\nBrachiale Fehlerbehebung mit Root-Rechten." },
-      { id: 14, name: "Riesenkalmar-Schatten-IT", emoji: "🦑", image: "images/14_riesenkalmar_schatten_it.jpg", mgmt: "Wer bist du?", meeting: 5, blast: "„Das gibt Ärger...“", teamplay: 25, ux: 80, security: 5, salary: 58, quote: "„Dieses Excel-Makro hat jahrelang meine Arbeit gemacht.“", ability: "Umgeht Sicherheitsmechanismen ohne Adminrechte.", flavour: "Alle wissen, dass er existiert.\nManager dementieren seine Existenz." },
-      { id: 15, name: "Service-Desk-Otter", emoji: "🦦", image: "images/15_service_desk_otter.jpg", mgmt: "Wer bist du?", meeting: 10, blast: "Problem-Ticket", teamplay: 60, ux: 98, security: 15, salary: 42, quote: "„Keine Sorge, das haben wir gleich.“", ability: "Kann „Password does not expire“ setzen.", flavour: "Freundlich. Hilfsbereit. Versucht alles zu lösen." },
-      { id: 16, name: "Lemuren-UX-Designer", emoji: "👁️", image: "images/16_lemuren_ux_designer.jpg", mgmt: "Aufstreber", meeting: 90, blast: "Morgen wieder vergessen...", teamplay: 8, ux: 92, security: 50, salary: 68, quote: "„Der Schattenwurf braucht mehr Emotionalität.“", ability: "Ändert Primärfarbe um 2 Hex-Werte und verlangt Rewrite.", flavour: "Riesige Augen für 1px Padding-Abweichungen." },
-      { id: 17, name: "Oktopus-Fullstack-Dev", emoji: "🐙", image: "images/17_oktopus_fullstack_dev.jpg", mgmt: "Fleißiges Bienchen", meeting: 15, blast: "„Das gibt Ärger...“", teamplay: 45, ux: 60, security: 35, salary: 95, quote: "„Das refactoren wir kurz am Wochenende in Rust.“", ability: "Hält 8 Frameworks gleichzeitig in der Luft (6 deprecated).", flavour: "Tippt auf 4 Tastaturen gleichzeitig.\nStartet jeden Monat ein Pet-Project." },
-      { id: 18, name: "Waschbär-On-Call-Engineer", emoji: "🦝", image: "images/18_waschbaer_on_call_engineer.jpg", mgmt: "Fleißiges Bienchen", meeting: 5, blast: "Problem-Ticket", teamplay: 92, ux: 45, security: 45, salary: 58, quote: "„Logs sagen nichts, Reboot hat geholfen.“", ability: "Tippt um 03:17 Uhr im Halbschlaf einen Root-Befehl.", flavour: "Dauergast im Terminal bei Nacht.\nWühlt im tiefsten Log-Müll." },
-      { id: 19, name: "Blindschleichen-CISO", emoji: "🪱", image: "images/19_blindschleichen_ciso.jpg", mgmt: "Andere Manager", meeting: 60, blast: "Problem-Ticket", teamplay: 5, ux: 10, security: 90, salary: 150, quote: "„Wir sind ISO-zertifiziert, uns kann nichts passieren.“", ability: "Unterschreibt 10 neue Richtlinien, die Arbeit unmöglich machen.", flavour: "Erkennt Bedrohungen erst auf heise online.\n14 gerahmte ISO-Zertifikate." },
-      { id: 20, name: "Dachs-Pentester", emoji: "🦡", image: "images/20_dachs_pentester.jpg", mgmt: "Arschkriecher", meeting: 15, blast: "„Ich hab's doch gesagt!“", teamplay: 30, ux: 10, security: 98, salary: 110, quote: "„Euer Master-Passwort war ‚Sommer2024!‘, oder?“", ability: "Steht nach 10 Minuten mit Domain-Admin im Serverraum.", flavour: "Riecht offene Ports durch Betonwände.\nSammelt Admin-Hashes wie Trophäen." },
-      { id: 21, name: "Pinguin-Linux-Sysadmin", emoji: "🐧", image: "images/21_pinguin_linux_sysadmin.jpg", mgmt: "Wer bist du?", meeting: 0, blast: "„Das gibt Ärger...“", teamplay: 85, ux: 15, security: 90, salary: 85, quote: "„Uptime: 1.842 Tage. Reboote ich sicher nicht.“", ability: "Fixt Kernel-Panics via SSH vom Smartphone in der U-Bahn.", flavour: "Verabscheut grafische Benutzeroberflächen.\nKompiliert Kernel beim Zähneputzen." },
-      { id: 22, name: "Schaf-Cloud-Engineer", emoji: "🐑", image: "images/22_schaf_cloud_engineer.jpg", mgmt: "Aufstreber", meeting: 45, blast: "„Das gibt Ärger...“", teamplay: 35, ux: 65, security: 40, salary: 92, quote: "„Serverless ist super günstig, vertraut mir.“", ability: "Lässt 40 Kubernetes-Cluster im Test-Tenant durchlaufen.", flavour: "Folgt jedem Hypetrain blind ins nächste VPC." },
-      { id: 23, name: "Hyänen-IT-Recruiter", emoji: "🐕", image: "images/23_hyaenen_it_recruiter.jpg", mgmt: "Aufstreber", meeting: 30, blast: "Reporting-Issue", teamplay: 5, ux: 20, security: 20, salary: 48, quote: "„Spannende Herausforderung in einem dynamischen Team!“", ability: "Schreibt Senior Architekten für Praktika an.", flavour: "Lauert rund um die Uhr auf LinkedIn.\n500 Copy-Paste-InMails pro Stunde." },
-      { id: 24, name: "Einhorn-AI-Evangelist", emoji: "🦄", image: "images/24_einhorn_ai_evangelist.jpg", mgmt: "Liebling", meeting: 90, blast: "Problem-Ticket", teamplay: 2, ux: 85, security: 10, salary: 165, quote: "„Wir brauchen einfach einen Prompt-Layer über dem Mainframe.“", ability: "Verspricht, dass KI die IT bis Q3 komplett ersetzt.", flavour: "Seit drei Wochen Experte für generative Modelle.\nTrägt Rollkragenpullover." },
-      { id: 25, name: "Faultier-Release-Manager", emoji: "🦥", image: "images/25_faultier_release_manager.jpg", mgmt: "Andere Manager", meeting: 60, blast: "Reporting-Issue", teamplay: 20, ux: 15, security: 85, salary: 70, quote: "„Code-Freeze ist dieses Jahr von Oktober bis Ostern.“", ability: "Friert Deployments 3 Wochen vor und nach Feiertagen ein.", flavour: "Bewegt sich nur bei angekündigtem Code-Freeze." },
-      { id: 26, name: "Biber-Key-User", emoji: "🦫", image: "images/26_biber_key_user.jpg", mgmt: "Arschkriecher", meeting: 45, blast: "„Das gibt Ärger...“", teamplay: 5, ux: 90, security: 5, salary: 55, quote: "„Bitte keine Updates, sonst geht meine Tabelle kaputt.“", ability: "Versteckt 25 Mio. € Logik in einer ungesicherten .xlsm.", flavour: "Baut monumentale Dämme aus Excel-Tabellen." },
-      { id: 27, name: "Kuckuck-Vendor-Sales", emoji: "🐦", image: "images/27_kuckuck_vendor_sales.jpg", mgmt: "Liebling", meeting: 120, blast: "Problem-Ticket", teamplay: 5, ux: 40, security: 30, salary: 210, quote: "„Das ist Out-of-the-box in 5 Minuten integriert.“", ability: "Verkauft Enterprise-Suite, die alles kann – außer das Benötigte.", flavour: "Taucht ungeladen in Budget-Meetings auf." }
+      {
+        id: 1,
+        name: "Gans-Eskalationsmanager",
+        emoji: "🪿",
+        image: "images/01_gans_eskalationsmanager.jpg",
+        mgmt: "Liebling",
+        meeting: 15,
+        blast: "Problem-Ticket",
+        teamplay: 10,
+        ux: 20,
+        security: 40,
+        salary: 85,
+        quote: "„HONK. Das ist jetzt Prio 1.“",
+        ability: "Wandelt Lautstärke zuverlässig in Priorität um.",
+        flavour: "Beißt in jede Ursachenanalyse.\nLebt von Chaos. Verhandelt nicht.\nErkennt Kritikalität an der Anzahl von Ausrufezeichen."
+      },
+      {
+        id: 2,
+        name: "Papagei-Auditor",
+        emoji: "🦜",
+        image: "images/02_papagei_auditor.jpg",
+        mgmt: "Andere Manager",
+        meeting: 60,
+        blast: "Morgen wieder vergessen...",
+        teamplay: 5,
+        ux: 5,
+        security: 95,
+        salary: 92,
+        quote: "„Ja, das habe ich gesehen. Haben Sie das auch dokumentiert?“",
+        ability: "Fordert dieselbe Evidenz als Excel, PDF, Screenshot und anschließend noch einmal als Excel.",
+        flavour: "Hat die Evidenz bereits gesehen.\nMöchte sie trotzdem noch einmal.\nAm besten als Excel. Und als PDF. Mit Screenshots."
+      },
+      {
+        id: 3,
+        name: "Erdmännchen-Projektleiter",
+        emoji: "🦫",
+        image: "images/03_erdmaennchen_projektleiter.jpg",
+        mgmt: "Arschkriecher",
+        meeting: 45,
+        blast: "Einzeluserprobleme",
+        teamplay: 25,
+        ux: 50,
+        security: 50,
+        salary: 78,
+        quote: "„Wir brauchen einen kurzen Sync, nur 45 Minuten.“",
+        ability: "Hört irgendwo das Wort „Projektrisiko“ und eröffnet sofort einen Status-Call.",
+        flavour: "Reckt bei jedem Geräusch den Kopf aus dem Bau.\nWittert Scope Creep gegen den Wind.\nLebt ausschließlich in Jira und MS Teams."
+      },
+      {
+        id: 4,
+        name: "Spinne-Integrations-Architect",
+        emoji: "🕷️",
+        image: "images/04_spinne_integrations_architect.jpg",
+        mgmt: "Aufstreber",
+        meeting: 75,
+        blast: "„Ich hab's doch gesagt!“",
+        teamplay: 55,
+        ux: 40,
+        security: 60,
+        salary: 105,
+        quote: "„Wenn dieser Connector ausfällt, merkt es nur die gesamte Firma.“",
+        ability: "Verbindet alles mit allem und kennt als Einzige das vollständige Netz.",
+        flavour: "Wohnt in den Tiefen der Middleware.\nWebt unentwegt neue Schnittstellen.\nDokumentation existiert nur in ihrem Kopf."
+      },
+      {
+        id: 5,
+        name: "Capybara-Service-Owner",
+        emoji: "🐹",
+        image: "images/05_capybara_service_owner.jpg",
+        mgmt: "Andere Manager",
+        meeting: 30,
+        blast: "Reporting-Issue",
+        teamplay: 98,
+        ux: 85,
+        security: 75,
+        salary: 88,
+        quote: "„Wenn wir jetzt hektisch werden, haben wir zwei Probleme.“",
+        ability: "Bewahrt selbst beim Major Incident eine fast neurotische Ruhe und hat ohne das Problem gelöst zu haben, bereits das Lesson Learned durchgespielt.",
+        flavour: "Tiefenentspannt im Dauerfeuer zwischen Kunde und Management.\nTrinkt Mate während die DB abschmiert.\nEmpathisch, unerschütterlich, gelassen."
+      },
+      {
+        id: 6,
+        name: "Kugelfisch-SOC-Analyst",
+        emoji: "🐡",
+        image: "images/06_kugelfisch_soc_analyst.jpg",
+        mgmt: "Arschkriecher",
+        meeting: 20,
+        blast: "„Ich hab's doch gesagt!“",
+        teamplay: 20,
+        ux: 2,
+        security: 100,
+        salary: 76,
+        quote: "„Der Angriff lief über HTTPS, also habe ich HTTPS im gesamten Firmennetz gesperrt.“",
+        ability: "Bläst einen einzelnen IOC zur globalen Sperrmaßnahme auf und blockiert notfalls Betriebssysteme, Herstellerseiten oder Produktionsdateien.",
+        flavour: "Schläft mit SIEM-Dashboard unterm Kopfkissen.\nParanoid aus Berufung.\nBläht sich beim kleinsten Ping bedrohlich auf."
+      },
+      {
+        id: 7,
+        name: "Subject Matter Expert Wal",
+        emoji: "🐋",
+        image: "images/07_subject_matter_expert_wal.jpg",
+        mgmt: "Aufstreber",
+        meeting: 240,
+        blast: "Morgen wieder vergessen...",
+        teamplay: 40,
+        ux: 15,
+        security: 65,
+        salary: 130,
+        quote: "„Um das zu verstehen, müssen wir zurück ins Jahr 2004.“",
+        ability: "Verwandelt jede Ja-Nein-Frage in einen historischen Tiefseemonolog.",
+        flavour: "Taucht nur alle drei Monate im Meeting auf.\nVerfügt über unendliche Speichertiefe.\nKennt noch die Quellcodes aus den 90ern."
+      },
+      {
+        id: 8,
+        name: "Igel-Change-Manager",
+        emoji: "🦔",
+        image: "images/08_igel_change_manager.jpg",
+        mgmt: "Andere Manager",
+        meeting: 50,
+        blast: "Einzeluserprobleme",
+        teamplay: 15,
+        ux: 10,
+        security: 92,
+        salary: 74,
+        quote: "„Der Change könnte Auswirkungen haben.“",
+        ability: "Rollt sich bei erkanntem, unerkanntem und nicht vorhandenem Risiko vorsorglich ein.",
+        flavour: "Hasst Freitage.\nStellt die Stacheln bei jedem RFC auf.\nWittert das Restrisiko im kleinsten Leerzeichen."
+      },
+      {
+        id: 9,
+        name: "Transformationswolf",
+        emoji: "🐺",
+        image: "images/09_transformationswolf.jpg",
+        mgmt: "Liebling",
+        meeting: 120,
+        blast: "Problem-Ticket",
+        teamplay: 10,
+        ux: 30,
+        security: 55,
+        salary: 185,
+        quote: "„Der Registry Key ist nicht das Problem. Uns fehlt Change & Lifecycle Management, auditfähige Dokumentationen und ein ausgereiftes Logging & Monitoring.“",
+        ability: "Wirft aus einem einzelnen Problem ein ganzes Rudel an Grundsatzfragen auf.",
+        flavour: "Pirscht durch Agile Frameworks.\nHeult mit den Business Consultants.\nWittert Synergien im Unterholz."
+      },
+      {
+        id: 10,
+        name: "Software-Packaging-Eichhörnchen",
+        emoji: "🐿️",
+        image: "images/10_software_packaging_eichhoernchen.jpg",
+        mgmt: "Fleißiges Bienchen",
+        meeting: 25,
+        blast: "Morgen wieder vergessen...",
+        teamplay: 80,
+        ux: 60,
+        security: 70,
+        salary: 62,
+        quote: "„Die MSI von 2014 könnten wir noch brauchen.“",
+        ability: "Lagert jede Release-Version vorsorglich für den nächsten Winter ein.",
+        flavour: "Vergräbt Setup.exe-Dateien auf verschiedenen Netzlaufwerken.\nFindet alte Installationsanweisungen im Schlaf.\nTraut keinem Cloud-Installer."
+      },
+      {
+        id: 11,
+        name: "Dashboard-Pfau",
+        emoji: "🦚",
+        image: "images/11_dashboard_pfau.jpg",
+        mgmt: "Arschkriecher",
+        meeting: 60,
+        blast: "Einzeluserprobleme",
+        teamplay: 35,
+        ux: 65,
+        security: 80,
+        salary: 82,
+        quote: "„Ich habe noch ein cooles Dashboard gebaut.“",
+        ability: "Schlägt bei jedem neuen Messwert sofort ein zusätzliches Management-Dashboard auf.",
+        flavour: "Liebt bunte Tortendiagramme und Ampelfarben.\nStellt sein PowerBI-Gefieder vor dem Vorstand zur Schau.\nHauptsache alles leuchtet grün."
+      },
+      {
+        id: 12,
+        name: "Legacy-Kakerlake",
+        emoji: "🪳",
+        image: "images/12_legacy_kakerlake.jpg",
+        mgmt: "Wer bist du?",
+        meeting: 0,
+        blast: "„Das gibt Ärger...“",
+        teamplay: 30,
+        ux: 70,
+        security: 0,
+        salary: 0,
+        quote: "„Niemand weiß, warum es existiert. Also bleibt es.“",
+        ability: "Überlebt jede Migration, jeden Technologiewechsel und sämtliche früheren Owner.",
+        flavour: "Läuft seit 1998 auf einem Windows Server 2003 unterm Schreibtisch.\nHat drei Reorganisationen überstanden.\nQuellcode ging 2007 verloren."
+      },
+      {
+        id: 13,
+        name: "2nd-Level-Gorilla",
+        emoji: "🦍",
+        image: "images/13_2nd_level_gorilla.jpg",
+        mgmt: "Fleißiges Bienchen",
+        meeting: 2,
+        blast: "„Ich hab's doch gesagt!“",
+        teamplay: 88,
+        ux: 8,
+        security: 30,
+        salary: 52,
+        quote: "„Kein Gerät, kein Problem.“",
+        ability: "Kann mit PowerShell alle Probleme lösen -> Get-Device | Remove-Device.",
+        flavour: "Macht keine halben Sachen.\nKlickt nicht in GUIs herum.\nBrachiale Fehlerbehebung mit Root-Rechten."
+      },
+      {
+        id: 14,
+        name: "Riesenkalmar-Schatten-IT",
+        emoji: "🦑",
+        image: "images/14_riesenkalmar_schatten_it.jpg",
+        mgmt: "Wer bist du?",
+        meeting: 5,
+        blast: "„Das gibt Ärger...“",
+        teamplay: 25,
+        ux: 80,
+        security: 5,
+        salary: 58,
+        quote: "„Dieses Excel-Makro hat jahrelang meine Arbeit gemacht.“",
+        ability: "Umgeht Sicherheitsmechanismen ohne Adminrechte und betreibt unsichtbare Tentakel aus Makros, Tools und Nebenprozessen.",
+        flavour: "Alle wissen, dass er existiert.\nKeiner hat ihn je vollständig gesehen.\nManager dementieren seine Existenz."
+      },
+      {
+        id: 15,
+        name: "Service-Desk-Otter",
+        emoji: "🦦",
+        image: "images/15_service_desk_otter.jpg",
+        mgmt: "Wer bist du?",
+        meeting: 10,
+        blast: "Problem-Ticket",
+        teamplay: 60,
+        ux: 98,
+        security: 15,
+        salary: 42,
+        quote: "„Keine Sorge, das haben wir gleich.“",
+        ability: "Kann „Password does not expire“ setzen.",
+        flavour: "Freundlich.\nHilfsbereit.\nVersucht alles zu lösen.\nHat versehentlich Domain-Adminrechte."
+      },
+      {
+        id: 16,
+        name: "Lemuren-UX-Designer",
+        emoji: "👁️",
+        image: "images/16_lemuren_ux_designer.jpg",
+        mgmt: "Aufstreber",
+        meeting: 90,
+        blast: "Morgen wieder vergessen...",
+        teamplay: 8,
+        ux: 92,
+        security: 50,
+        salary: 68,
+        quote: "„Der Schattenwurf braucht mehr Emotionalität.“",
+        ability: "Ändert die Primärfarbe um 2 Hex-Werte pro Release und verlangt dafür einen kompletten Frontend-Rewrite.",
+        flavour: "Riesige Augen für 1px Padding-Abweichungen.\nVerabscheut Standard-Buttons zutiefst.\nVerbringt ganze Sprints mit Micro-Animations."
+      },
+      {
+        id: 17,
+        name: "Oktopus-Fullstack-Dev",
+        emoji: "🐙",
+        image: "images/17_oktopus_fullstack_dev.jpg",
+        mgmt: "Fleißiges Bienchen",
+        meeting: 15,
+        blast: "„Das gibt Ärger...“",
+        teamplay: 45,
+        ux: 60,
+        security: 35,
+        salary: 95,
+        quote: "„Das refactoren wir kurz am Wochenende in Rust.“",
+        ability: "Hält 8 Frameworks gleichzeitig in der Luft (6 davon seit 2019 deprecated) und droht bei jedem Bug mit Rust.",
+        flavour: "Tippt auf 4 Tastaturen gleichzeitig.\nStartet jeden Monat ein neues Pet-Project.\nHält Dokumentation für Zeitverschwendung."
+      },
+      {
+        id: 18,
+        name: "Waschbär-On-Call-Engineer",
+        emoji: "🦝",
+        image: "images/18_waschbaer_on_call_engineer.jpg",
+        mgmt: "Fleißiges Bienchen",
+        meeting: 5,
+        blast: "Problem-Ticket",
+        teamplay: 92,
+        ux: 45,
+        security: 45,
+        salary: 58,
+        quote: "„Logs sagen nichts, Reboot hat geholfen.“",
+        ability: "Wacht um 03:17 Uhr auf, tippt blind im Halbschlaf einen Root-Befehl und schläft sofort weiter.",
+        flavour: "Dauergast im Terminal bei Nacht.\nErnährt sich von Energy Drinks und Alert-Pings.\nWühlt im tiefsten Log-Müll."
+      },
+      {
+        id: 19,
+        name: "Blindschleichen-CISO",
+        emoji: "🪱",
+        image: "images/19_blindschleichen_ciso.jpg",
+        mgmt: "Andere Manager",
+        meeting: 60,
+        blast: "Problem-Ticket",
+        teamplay: 5,
+        ux: 10,
+        security: 90,
+        salary: 150,
+        quote: "„Wir sind ISO-27001-zertifiziert, uns kann statistisch nichts passieren.“",
+        ability: "Unterschreibt nach jedem Medienbericht 10 neue Richtlinien, die produktives Arbeiten vollständig unterbinden.",
+        flavour: "Erkennt Bedrohungen erst auf heise online.\nBesitzt 14 ISO-Zertifikate im Goldrahmen.\nUnterschreibt Richtlinien grundsätzlich ungelesen."
+      },
+      {
+        id: 20,
+        name: "Dachs-Pentester",
+        emoji: "🦡",
+        image: "images/20_dachs_pentester.jpg",
+        mgmt: "Arschkriecher",
+        meeting: 15,
+        blast: "„Ich hab's doch gesagt!“",
+        teamplay: 30,
+        ux: 10,
+        security: 98,
+        salary: 110,
+        quote: "„Euer Master-Passwort war ‚Sommer2024!‘, oder?“",
+        ability: "Gräbt sich durch vergessene Test-Ports und steht 10 Minuten nach Kick-off mit Domain-Admin-Rechten im Serverraum.",
+        flavour: "Riecht offene Ports durch Betonwände.\nKennt keine Höflichkeit im Active Directory.\nSammelt Admin-Hashes wie Trophäen."
+      },
+      {
+        id: 21,
+        name: "Pinguin-Linux-Sysadmin",
+        emoji: "🐧",
+        image: "images/21_pinguin_linux_sysadmin.jpg",
+        mgmt: "Wer bist du?",
+        meeting: 0,
+        blast: "„Das gibt Ärger...“",
+        teamplay: 85,
+        ux: 15,
+        security: 90,
+        salary: 85,
+        quote: "„Uptime: 1.842 Tage. Reboote ich sicher nicht.“",
+        ability: "Fixt Kernel-Panics mit sed und awk über eine SSH-Session vom Smartphone in der U-Bahn.",
+        flavour: "Verabscheut grafische Benutzeroberflächen.\nKompiliert den Kernel beim Zähneputzen.\nAntwortet auf Fragen ausschließlich mit Manpages."
+      },
+      {
+        id: 22,
+        name: "Schaf-Cloud-Engineer",
+        emoji: "🐑",
+        image: "images/22_schaf_cloud_engineer.jpg",
+        mgmt: "Aufstreber",
+        meeting: 45,
+        blast: "„Das gibt Ärger...“",
+        teamplay: 35,
+        ux: 65,
+        security: 40,
+        salary: 92,
+        quote: "„Pay-as-you-go ist immer günstig, vertraut mir.“",
+        ability: "Lässt 40 Kubernetes-Cluster mit GPU-Instanzen im Test-Tenant dauerhaft durchlaufen.",
+        flavour: "Folgt jedem Hypetrain blind ins nächste VPC.\nErkennt Kosten erst bei der Monatsrechnung.\nKlickt auf alles, wo ‚Serverless‘ draufsteht."
+      },
+      {
+        id: 23,
+        name: "Hyänen-IT-Recruiter",
+        emoji: "🐕",
+        image: "images/23_hyaenen_it_recruiter.jpg",
+        mgmt: "Aufstreber",
+        meeting: 30,
+        blast: "Reporting-Issue",
+        teamplay: 5,
+        ux: 20,
+        security: 20,
+        salary: 48,
+        quote: "„Spannende Herausforderung in einem dynamischen, familiären Team... mit Obstkorb!“",
+        ability: "Schreibt Principal Enterprise Architekten für unbezahlte 3-Monats-Praktika vor Ort an.",
+        flavour: "Lauert rund um die Uhr auf LinkedIn.\nSchreibt 500 Copy-Paste-InMails pro Stunde.\nHält Java und JavaScript für dasselbe."
+      },
+      {
+        id: 24,
+        name: "Einhorn-AI-Evangelist",
+        emoji: "🦄",
+        image: "images/24_einhorn_ai_evangelist.jpg",
+        mgmt: "Liebling",
+        meeting: 90,
+        blast: "Problem-Ticket",
+        teamplay: 2,
+        ux: 85,
+        security: 10,
+        salary: 165,
+        quote: "„Wir brauchen einfach einen KI-Skill über dem Mainframe.“",
+        ability: "Verspricht dem Vorstand, dass ein generatives LLM die gesamte IT-Abteilung bis Q3 überflüssig macht.",
+        flavour: "Seit drei Wochen Experte für generative Modelle.\nTrägt Rollkragenpullover und AirPods im Call.\nLöst Probleme, die vorher niemand hatte."
+      },
+      {
+        id: 25,
+        name: "Faultier-Release-Manager",
+        emoji: "🦥",
+        image: "images/25_faultier_release_manager.jpg",
+        mgmt: "Andere Manager",
+        meeting: 60,
+        blast: "Reporting-Issue",
+        teamplay: 20,
+        ux: 15,
+        security: 85,
+        salary: 70,
+        quote: "„Code-Freeze ist dieses Jahr von Oktober bis Ostern.“",
+        ability: "Friert Deployments 3 Wochen vor und 2 Wochen nach Feiertagen, Brückentagen und Vollmond ein.",
+        flavour: "Bewegt sich nur bei angekündigtem Code-Freeze.\nKennt die Feiertage aller Bundesländer auswendig.\nVerhindert Deployments aus reinem Selbsterhaltungstrieb."
+      },
+      {
+        id: 26,
+        name: "Biber-Key-User",
+        emoji: "🦫",
+        image: "images/26_biber_key_user.jpg",
+        mgmt: "Arschkriecher",
+        meeting: 45,
+        blast: "„Das gibt Ärger...“",
+        teamplay: 5,
+        ux: 90,
+        security: 5,
+        salary: 55,
+        quote: "„Bitte keine Updates einspielen, sonst geht meine Tabelle kaputt.“",
+        ability: "Versteckt 25 Mio. € Geschäftslogik in einer ungesicherten `.xlsm` auf dem Desktop ohne Backup.",
+        flavour: "Baut monumentale Dämme aus Excel-Tabellen.\nHält relationale Datenbanken für neumodischen Kram.\nVerwaltet den Jahresumsatz in 47 verschachtelten WENN-Formeln."
+      },
+      {
+        id: 27,
+        name: "Kuckuck-Vendor-Sales",
+        emoji: "🐦",
+        image: "images/27_kuckuck_vendor_sales.jpg",
+        mgmt: "Liebling",
+        meeting: 120,
+        blast: "Problem-Ticket",
+        teamplay: 5,
+        ux: 40,
+        security: 30,
+        salary: 210,
+        quote: "„Das ist Out-of-the-box in 5 Minuten integriert.“",
+        ability: "Verkauft eine monströse Enterprise-Suite, die alles kann – außer die einzige Funktion, die man benötigt.",
+        flavour: "Taucht ungeladen in Budget-Meetings auf.\nVerspricht 100 % Feature-Parität mit allem.\nVerschwindet sofort nach Unterzeichnung des 5-Jahres-Vertrags."
+      }
     ];
 
     function getStatLevel(card, category) {
@@ -2243,7 +2641,7 @@
     let deckSort = 'default';
     function renderDeck() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
-      let list = CARDS.filter(c => !q || c.name.toLowerCase().includes(q) || c.ability.toLowerCase().includes(q));
+      let list = CARDS.filter(c => !q || c.name.toLowerCase().includes(q) || c.ability.toLowerCase().includes(q) || c.flavour.toLowerCase().includes(q));
 
       if (deckSort !== 'default') {
         list.sort((a, b) => {
@@ -2267,6 +2665,19 @@
               <button onclick="openCardFeedback('${c.name}')" style="background:rgba(56,189,248,0.15); border:1px solid var(--accent-primary); color:var(--accent-primary); border-radius:6px; padding:2px 7px; font-size:0.7rem; font-weight:700; cursor:pointer;">💬</button>
             </div>
           </div>
+
+          <div style="padding: 8px 12px; font-size: 0.74rem; color: #cbd5e1; font-style: italic; border-bottom: 1px solid var(--border-color); background: rgba(9,13,22,0.3); white-space: pre-line;">
+            ${c.flavour}
+          </div>
+
+          <div style="padding: 6px 12px; font-size: 0.72rem; color: var(--accent-primary); border-bottom: 1px solid var(--border-color);">
+            ⚡ <b>${c.ability}</b>
+          </div>
+
+          <div style="padding: 4px 12px 6px 12px; font-size: 0.72rem; color: #fef08a; font-style: italic; border-bottom: 1px solid var(--border-color);">
+            ${c.quote}
+          </div>
+
           <div class="coll-stats-grid">
             <div class="coll-stat-box">👔 ${c.mgmt} (${MGMT_RANK[c.mgmt].level})</div>
             <div class="coll-stat-box">💥 ${c.blast} (${BLAST_RANK[c.blast].level})</div>
