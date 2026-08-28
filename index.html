@@ -1701,7 +1701,7 @@
         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; margin-top:3px;">
           <button id="chartType_bar" class="preset-chip active" onclick="setChartType('bar')">📊 Stufen-Balken</button>
           <button id="chartType_stack" class="preset-chip" onclick="setChartType('stack')">📏 Säulendiagramm</button>
-          <button id="chartType_list" class="preset-chip" onclick="setChartType('list')">📋 Rangliste</button>
+          <button id="chartType_pie" class="preset-chip" onclick="setChartType('pie')">🍰 Tortendiagramm</button>
         </div>
       </div>
     </div>
@@ -3571,7 +3571,7 @@
 
     function setChartType(type) {
       currentChartType = type;
-      ['bar', 'stack', 'list'].forEach(t => {
+      ['bar', 'stack', 'pie'].forEach(t => {
         const btn = document.getElementById(`chartType_${t}`);
         if (btn) btn.className = `preset-chip ${t === type ? 'active' : ''}`;
       });
@@ -3802,31 +3802,92 @@
         `;
 
       } else {
-        // 📋 VOLLSTÄNDIGE SORTIERTE RANGLISTE
-        const sortedCards = [...cardsToAnalyze].sort((a, b) => {
-          const va = (meta.type === 'tier') ? getStatRankVal(a, cat) : a[cat];
-          const vb = (meta.type === 'tier') ? getStatRankVal(b, cat) : b[cat];
-          return vb - va;
-        });
+        // 🍰 TORTENDIAGRAMM (SVG Donut + Klick-Ausklappmenü)
+        const size = 200;
+        const center = size / 2;
+        const radius = 72;
+        const strokeWidth = 28;
+        const circumference = 2 * Math.PI * radius;
+        let cumulativeAngle = 0;
 
-        renderArea.innerHTML = sortedCards.map((c, idx) => {
-          const val = formatStatDisplay(c, cat);
-          const level = getStatLevel(c, cat);
-          const color = TIER_COLORS[level] || 'var(--accent-primary)';
+        const activeBuckets = buckets.filter(b => b.count > 0);
+
+        const slicesSvg = activeBuckets.map(b => {
+          const pct = totalCount > 0 ? (b.count / totalCount) : 0;
+          const strokeDasharray = `${pct * circumference} ${circumference}`;
+          const strokeDashoffset = -cumulativeAngle * circumference;
+          cumulativeAngle += pct;
 
           return `
-            <div class="hof-row" style="border-left: 3px solid ${color}; padding: 7px 10px; margin-bottom: 4px; background: rgba(9,13,22,0.5); border-radius: 8px;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-weight:900; color:var(--text-muted); font-size:0.74rem;">#${idx + 1}</span>
-                <span style="font-size:0.85rem;">${c.emoji} <b>${c.name}</b></span>
-              </div>
-              <div style="display:flex; align-items:center; gap:6px;">
-                <span style="font-size:0.65rem; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.08); color:${color}; font-weight:800;">${level}</span>
-                <span style="font-weight:900; font-size:0.85rem; color:#fff;">${val}</span>
-              </div>
-            </div>
+            <circle cx="${center}" cy="${center}" r="${radius}"
+              fill="transparent"
+              stroke="${b.color}"
+              stroke-width="${strokeWidth}"
+              stroke-dasharray="${strokeDasharray}"
+              stroke-dashoffset="${strokeDashoffset}"
+              style="cursor:pointer; transition: transform 0.2s;"
+              onclick="toggleTierAccordion('${b.id}')"
+            />
           `;
         }).join('');
+
+        renderArea.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+            
+            <!-- SVG Donut -->
+            <div style="position:relative; width:${size}px; height:${size}px;">
+              <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform: rotate(-90deg); overflow:visible;">
+                ${slicesSvg}
+              </svg>
+              <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align:center; pointer-events:none;">
+                <div style="font-size:1.35rem; font-weight:900; color:#fff;">${totalCount}</div>
+                <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Karten</div>
+              </div>
+            </div>
+
+            <!-- Structured Accordion List beneath Donut -->
+            <div style="width:100%; display:flex; flex-direction:column; gap:6px;">
+              ${buckets.map(b => {
+                const pct = totalCount > 0 ? ((b.count / totalCount) * 100).toFixed(0) : 0;
+                const isOpen = openTierAccordionIds.has(b.id);
+
+                return `
+                  <div style="background:var(--bg-secondary); border:1px solid ${isOpen ? b.color : 'var(--border-color)'}; border-radius:8px; overflow:hidden;">
+                    <div onclick="toggleTierAccordion('${b.id}')" style="padding:8px 12px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${b.color};"></span>
+                        <span style="font-weight:800; font-size:0.8rem; color:#fff;">${b.label}</span>
+                        <span style="font-size:0.68rem; color:var(--text-muted);">(${b.sublabel})</span>
+                      </div>
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-weight:900; font-size:0.75rem; color:${b.count > 0 ? '#fff' : 'var(--text-muted)'};">
+                          ${b.count} Karten (${pct}%)
+                        </span>
+                        <span style="font-size:0.75rem; color:var(--accent-primary); font-weight:900;">${isOpen ? '▲' : '▼'}</span>
+                      </div>
+                    </div>
+
+                    ${isOpen ? `
+                      <div style="background:rgba(9,13,22,0.6); border-top:1px solid var(--border-color); padding:6px 12px;">
+                        ${b.cards.length === 0 ? `
+                          <div style="font-size:0.72rem; color:var(--text-muted); padding:4px 0; text-align:center; font-style:italic;">
+                            Keine Karten in dieser Stufe.
+                          </div>
+                        ` : b.cards.map(c => `
+                          <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.75rem;">
+                            <span>${c.emoji} <b>${c.name}</b></span>
+                            <span style="font-weight:900; color:var(--accent-primary);">${c.val}</span>
+                          </div>
+                        `).join('')}
+                      </div>
+                    ` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+          </div>
+        `;
       }
     }
 
