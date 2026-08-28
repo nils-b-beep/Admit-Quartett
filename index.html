@@ -73,7 +73,7 @@
       background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-weight: 700;
       padding: 7px 8px;
       border-radius: 10px;
@@ -95,7 +95,7 @@
     .view-section {
       display: none;
       padding: 12px;
-      max-width: 580px;
+      max-width: 600px;
       margin: 0 auto;
       width: 100%;
     }
@@ -997,7 +997,63 @@
       color: var(--text-muted);
     }
 
-    /* DECK VIEW & CONTROLS */
+    /* ==================== DECK BUILDER & CONTROLS ==================== */
+    .deck-builder-panel {
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--border-color);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .deck-builder-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .deck-count-pill {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-primary);
+      color: var(--accent-primary);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .preset-btn-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .preset-btn-row::-webkit-scrollbar { display: none; }
+
+    .preset-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 5px 9px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
     .deck-controls-row {
       display: flex;
       gap: 8px;
@@ -1076,10 +1132,20 @@
     .coll-card {
       background: var(--bg-card);
       border-radius: 16px;
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--border-color);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: border-color 0.2s;
+    }
+
+    .coll-card.in-deck {
+      border-color: rgba(56, 189, 248, 0.6);
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.1);
+    }
+
+    .coll-card.out-deck {
+      opacity: 0.65;
     }
 
     .coll-header {
@@ -1089,6 +1155,27 @@
       align-items: center;
       background: var(--bg-card-header);
       border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-deck-toggle-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .card-deck-toggle-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
     }
 
     .img-open-btn {
@@ -1150,6 +1237,159 @@
     }
 
     .coll-stat-box.full { grid-column: span 2; }
+
+    /* ==================== METRICS & ANALYTICS VIEW ==================== */
+    .metrics-header-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .scope-toggle-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .scope-toggle-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.76rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .scope-toggle-btn.active {
+      background: var(--accent-primary);
+      color: #090d16;
+      border-color: var(--accent-primary);
+    }
+
+    .metrics-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .metric-summary-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .metric-summary-val {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--accent-primary);
+    }
+
+    .metric-summary-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .chart-container-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chart-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .chart-title-text {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .tier-overlay-guide {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: rgba(9, 13, 22, 0.6);
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    .tier-guide-cell {
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .tier-c-max { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+    .tier-c-high { background: rgba(129, 140, 248, 0.2); color: var(--accent-secondary); }
+    .tier-c-mid { background: rgba(56, 189, 248, 0.2); color: var(--accent-primary); }
+    .tier-c-low { background: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
+
+    .bar-chart-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+
+    .bar-row-label-wrap {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 16px;
+      background: #090d16;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+      transition: width 0.4s ease;
+      position: relative;
+    }
+
+    .bar-fill-gold {
+      background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+    }
 
     /* Modals & Forms */
     .modal {
@@ -1220,7 +1460,8 @@
     <button class="nav-btn" onclick="switchTab('history')">📜 Historie (<span id="navHistCount">0</span>)</button>
     <button class="nav-btn" onclick="switchTab('hof')">🏆 Hall of Fame</button>
     <button class="nav-btn" onclick="switchTab('rules')">📖 Regeln</button>
-    <button class="nav-btn" onclick="switchTab('deck')">🃏 Deck (27)</button>
+    <button class="nav-btn" onclick="switchTab('deck')">🃏 Deck & Builder (<span id="navDeckCount">27</span>)</button>
+    <button class="nav-btn" onclick="switchTab('metrics')">📊 Metriken</button>
     <button class="nav-btn" onclick="openNewCardModal()">💡 Ideen</button>
   </nav>
 
@@ -1234,8 +1475,8 @@
         <span id="activePlayerNameDisplay" style="color: var(--accent-primary);">Nils</span>
         <span style="font-size: 0.7rem;">✏️</span>
       </div>
-      <div style="color: var(--text-muted); font-size: 0.7rem; cursor: pointer;" onclick="switchTab('hof')">
-        🏆 Rangliste anzeigen ➔
+      <div style="color: var(--text-muted); font-size: 0.7rem; cursor: pointer;" onclick="switchTab('deck')">
+        🃏 Deck anpassen (<span id="activeDeckQuickLabel">27 Karten</span>) ➔
       </div>
     </div>
 
@@ -1292,7 +1533,7 @@
   <section id="hofView" class="view-section">
     <div style="text-align: center; margin-bottom: 12px;">
       <h2 style="font-size: 1.2rem; font-weight: 900; color: #fff;">🏆 Hall of Fame</h2>
-      <p style="font-size: 0.74rem; color: var(--text-muted);">Die legendärsten IT-Quartett Duelle aller Zeiten</p>
+      <p style="font-size: 0.74rem; color: var(--text-muted);">Die legendärsten IT-Quartett Duelle aller Zeiten (Live Cloud)</p>
     </div>
 
     <div class="hof-container">
@@ -1316,7 +1557,20 @@
 
     <div class="rules-card">
       <div class="rules-title">🎯 Ziel des Spiels</div>
-      <p>Das Ziel ist es, dem <b>KI-Vorstand</b> alle Karten abzujagen. Du gewinnst das Spiel, sobald du im Besitz aller <b>27 IT-Tier-Karten</b> bist!</p>
+      <p>Das Ziel ist es, dem <b>KI-Vorstand</b> alle Karten deines aktiven Decks abzujagen. Du gewinnst das Spiel, sobald du im Besitz aller Karten der Partie bist!</p>
+    </div>
+
+    <div class="rules-card">
+      <div class="rules-title">🏆 Punkteberechnung & Deckgröße</div>
+      <p>Deine Punktzahl in der <b>Hall of Fame</b> skaliert dynamisch mit der Größe deines Decks und deiner Spieleffizienz:</p>
+      <div style="background: rgba(9,13,22,0.6); padding: 8px 10px; border-radius: 8px; font-family: monospace; font-size: 0.74rem; color: var(--accent-primary); margin: 6px 0;">
+        Punkte = (Deckgröße × 100) + Effizienzbonus + 1.000 (Sieg-Bonus)
+      </div>
+      <ul style="margin-left: 18px; margin-top: 4px; font-size: 0.76rem;">
+        <li><b>Deck-Bonus:</b> Größeres Deck = höhere Basispunkte (z. B. 27 Karten = 2.700 Basispunkte).</li>
+        <li><b>Effizienz-Bonus:</b> Wer den Vorstand in wenigen Zügen überrollt, erhält maximale Bonuspunkte!</li>
+        <li><b>Patt-Schlachten:</b> Auch knappe Duelle mit vielen Runden werden fair mit Punkten belohnt.</li>
+      </ul>
     </div>
 
     <div class="rules-card">
@@ -1351,8 +1605,29 @@
     </div>
   </section>
 
-  <!-- ==================== TAB 5: DECK ==================== -->
+  <!-- ==================== TAB 5: DECK & BUILDER ==================== -->
   <section id="deckView" class="view-section">
+    
+    <!-- Custom Deck Builder Panel -->
+    <div class="deck-builder-panel">
+      <div class="deck-builder-header">
+        <span>🃏 Custom Deck Builder</span>
+        <span class="deck-count-pill" id="deckBuilderCountPill">27 / 27 Karten aktiv</span>
+      </div>
+
+      <div class="preset-btn-row">
+        <button class="preset-chip" onclick="applyDeckPreset('blitz')">⚡ Blitz-Match (10)</button>
+        <button class="preset-chip" onclick="applyDeckPreset('standard')">⚔️ Standard (20)</button>
+        <button class="preset-chip" onclick="applyDeckPreset('all')">👑 Alle Karten (27)</button>
+        <button class="preset-chip" onclick="applyDeckPreset('none')">🧹 Keine</button>
+      </div>
+
+      <button onclick="startCustomMatch()" style="width: 100%; background: var(--accent-primary); color: #090d16; border: none; padding: 10px; border-radius: 10px; font-weight: 900; font-size: 0.88rem; cursor: pointer;">
+        🎮 Neues Spiel mit diesem Deck starten ➔
+      </button>
+    </div>
+
+    <!-- Search & Sort Controls -->
     <div class="deck-controls-row">
       <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rolle, Fähigkeit oder Tier suchen..." autocomplete="off">
       <button id="sortDirBtn" class="sort-dir-btn" onclick="toggleSortDirection()" title="Sortierreihenfolge umkehren">
@@ -1372,6 +1647,74 @@
     </div>
 
     <div class="deck-list" id="deckList"></div>
+  </section>
+
+  <!-- ==================== TAB 6: METRIKEN & DIAGRAMME ==================== -->
+  <section id="metricsView" class="view-section">
+    
+    <div class="metrics-header-panel">
+      <div style="font-size: 0.95rem; font-weight: 900; color: #fff;">📊 Deck- & Sammlungs-Metriken</div>
+      
+      <!-- Scope Selector: Active Deck vs All Collection -->
+      <div class="scope-toggle-wrap">
+        <button id="scopeActiveBtn" class="scope-toggle-btn active" onclick="setMetricScope('active')">
+          🃏 Aktives Deck (<span id="metricActiveCount">27</span>)
+        </button>
+        <button id="scopeAllBtn" class="scope-toggle-btn" onclick="setMetricScope('all')">
+          📚 Alle Karten (27)
+        </button>
+      </div>
+
+      <!-- Criteria Selector -->
+      <div>
+        <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Zu analysierendes Kriterium:</label>
+        <select id="metricCatSelect" class="form-control" onchange="renderMetricsView()" style="margin-top: 3px; font-weight: 800;">
+          <option value="mgmt">👔 Management-Attention (Stufen)</option>
+          <option value="blast">💥 Blast Radius (Schadensstufen)</option>
+          <option value="meeting">⏱️ Durchschn. Meetingdauer (min)</option>
+          <option value="salary">💰 Reallohn (k€)</option>
+          <option value="teamplay">🤝 IT-Team-Play (1–100)</option>
+          <option value="ux">😊 Enduser-Freude (1–100)</option>
+          <option value="security">🛡️ Sicherheitsniveau (0–100)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Summary KPI Cards -->
+    <div class="metrics-summary-grid">
+      <div class="metric-summary-card">
+        <span class="metric-summary-val" id="kpiAvgVal">0</span>
+        <span class="metric-summary-label" id="kpiAvgLabel">Mittelwert</span>
+      </div>
+      <div class="metric-summary-card">
+        <span class="metric-summary-val" id="kpiMaxVal" style="color: var(--gold);">0</span>
+        <span class="metric-summary-label">Maximum</span>
+      </div>
+      <div class="metric-summary-card">
+        <span class="metric-summary-val" id="kpiMinVal" style="color: var(--text-muted);">0</span>
+        <span class="metric-summary-label">Minimum</span>
+      </div>
+    </div>
+
+    <!-- Interactive Frequency & Level Overlay Chart -->
+    <div class="chart-container-box">
+      <div class="chart-title-row">
+        <span class="chart-title-text" id="chartMainTitle">Verteilung & Stufen-Overlay</span>
+        <span style="font-size: 0.7rem; color: var(--text-muted);" id="chartSubtitleText">Kartenanzahl pro Stufe</span>
+      </div>
+
+      <!-- Tier / Level Overlay Legend -->
+      <div class="tier-overlay-guide">
+        <span class="tier-guide-cell tier-c-max">🔥 Maximum</span>
+        <span class="tier-guide-cell tier-c-high">⚡ Hoch / Mittel-H</span>
+        <span class="tier-guide-cell tier-c-mid">⚖️ Mittel-N</span>
+        <span class="tier-guide-cell tier-c-low">🔻 Niedrig / Min</span>
+      </div>
+
+      <!-- Dynamic Bar Distribution -->
+      <div id="metricDistributionBars" style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;"></div>
+    </div>
+
   </section>
 
   <!-- ==================== PLAYER NAME PROMPT MODAL ==================== -->
@@ -1653,7 +1996,7 @@
       } catch (e) {}
     }
 
-    // ==================== DUAL CONFETTI CANNONS ====================
+    // DUAL CONFETTI CANNONS
     let confettiParticles = [];
     let confettiAnimationId = null;
 
@@ -1666,7 +2009,6 @@
 
       const colors = ['#38bdf8', '#818cf8', '#f59e0b', '#10b981', '#ef4444', '#fbbf24', '#f43f5e', '#a855f7'];
 
-      // Left Cannon
       for (let i = 0; i < 60; i++) {
         confettiParticles.push({
           x: 0,
@@ -1683,7 +2025,6 @@
         });
       }
 
-      // Right Cannon
       for (let i = 0; i < 60; i++) {
         confettiParticles.push({
           x: canvas.width,
@@ -2326,12 +2667,71 @@
       return "Minimum";
     }
 
-    // GAME STATE
+    // ==================== DECK BUILDER STATE ====================
+    let activeDeckCardIds = JSON.parse(localStorage.getItem('it_quartett_active_deck_ids_v1') || 'null');
+    if (!activeDeckCardIds || !Array.isArray(activeDeckCardIds) || activeDeckCardIds.length === 0) {
+      activeDeckCardIds = CARDS.map(c => c.id);
+    }
+
+    function saveActiveDeckIds() {
+      localStorage.setItem('it_quartett_active_deck_ids_v1', JSON.stringify(activeDeckCardIds));
+      updateDeckBuilderUI();
+    }
+
+    function toggleCardInDeck(id) {
+      if (activeDeckCardIds.includes(id)) {
+        if (activeDeckCardIds.length <= 4) {
+          alert('Ein Deck benötigt mindestens 4 Karten, um spielbar zu sein!');
+          return;
+        }
+        activeDeckCardIds = activeDeckCardIds.filter(cardId => cardId !== id);
+      } else {
+        activeDeckCardIds.push(id);
+      }
+      playBeep(500, 'sine', 0.06);
+      saveActiveDeckIds();
+      renderDeck();
+      if (metricScope === 'active') renderMetricsView();
+    }
+
+    function applyDeckPreset(preset) {
+      playBeep(550, 'triangle', 0.1);
+      if (preset === 'all') {
+        activeDeckCardIds = CARDS.map(c => c.id);
+      } else if (preset === 'none') {
+        activeDeckCardIds = [CARDS[0].id, CARDS[1].id, CARDS[2].id, CARDS[3].id];
+      } else if (preset === 'blitz') {
+        const shuffled = [...CARDS].sort(() => 0.5 - Math.random());
+        activeDeckCardIds = shuffled.slice(0, 10).map(c => c.id);
+      } else if (preset === 'standard') {
+        const shuffled = [...CARDS].sort(() => 0.5 - Math.random());
+        activeDeckCardIds = shuffled.slice(0, 20).map(c => c.id);
+      }
+      saveActiveDeckIds();
+      renderDeck();
+      if (metricScope === 'active') renderMetricsView();
+    }
+
+    function updateDeckBuilderUI() {
+      const count = activeDeckCardIds.length;
+      document.getElementById('navDeckCount').textContent = count;
+      document.getElementById('deckBuilderCountPill').textContent = `${count} / ${CARDS.length} Karten aktiv`;
+      document.getElementById('activeDeckQuickLabel').textContent = `${count} Karten`;
+      document.getElementById('metricActiveCount').textContent = count;
+    }
+
+    function startCustomMatch() {
+      initGame();
+      switchTab('game');
+    }
+
+    // ==================== GAME STATE & LOOP ====================
     let playerDeck = [];
     let botDeck = [];
     let isPlayerTurn = true;
     let selectedWagerCat = null;
-    let currentMatchTurns = 0; // Züge ausschließlich in der AKTUELLEN Partie!
+    let currentMatchTurns = 0;
+    let currentMatchDeckSize = 27;
     let roundHistory = JSON.parse(localStorage.getItem('it_quartett_history') || '[]');
     let roundCounter = roundHistory.length > 0 ? (roundHistory[0].round + 1) : 1;
 
@@ -2345,18 +2745,24 @@
     }
 
     function initGame() {
-      const shuffled = shuffle(CARDS);
-      playerDeck = shuffled.slice(0, 14);
-      botDeck = shuffled.slice(14);
+      const pool = CARDS.filter(c => activeDeckCardIds.includes(c.id));
+      const activePool = pool.length >= 4 ? pool : CARDS;
+      currentMatchDeckSize = activePool.length;
+      currentMatchTurns = 0;
+
+      const shuffled = shuffle(activePool);
+      const half = Math.ceil(shuffled.length / 2);
+      playerDeck = shuffled.slice(0, half);
+      botDeck = shuffled.slice(half);
       isPlayerTurn = true;
       selectedWagerCat = null;
-      currentMatchTurns = 0; // Neue Partie = 0 Züge!
       
       document.getElementById('gameScoreHeader').style.display = 'flex';
       document.getElementById('turnBanner').style.display = 'block';
       document.getElementById('gameRestartFooter').style.display = 'block';
 
       updatePlayerNameDisplay();
+      updateDeckBuilderUI();
       renderGameUI();
       renderHistory();
       renderHof();
@@ -2605,7 +3011,7 @@
       playBeep(520, 'triangle', 0.15);
     }
 
-    // DUEL RESOLUTION (ZUG X)
+    // DUEL RESOLUTION
     function getStatRankVal(card, category) {
       if (category === 'mgmt') return (MGMT_RANK[card.mgmt] && MGMT_RANK[card.mgmt].rank) || 0;
       if (category === 'blast') return (BLAST_RANK[card.blast] && BLAST_RANK[card.blast].rank) || 0;
@@ -2631,7 +3037,6 @@
       let winner;
       let isTieBreak = false;
 
-      // PATT-REGEL
       if (valP === valB) {
         isTieBreak = true;
         winner = (initiator === 'player') ? 'bot' : 'player';
@@ -2729,7 +3134,7 @@
       renderGameUI();
     }
 
-    // HISTORIE VIEW (ZUG X)
+    // HISTORIE VIEW
     function renderHistory() {
       document.getElementById('navHistCount').textContent = roundHistory.length;
       const listEl = document.getElementById('historyList');
@@ -2785,11 +3190,11 @@
 
     // ==================== HALL OF FAME (CLOUD LIVE-SYNC) ====================
     const DEFAULT_HOF = [
-      { name: "Ada Lovelace", score: 2850, rounds: 11, result: "Sieg", date: "2026-08-20" },
-      { name: "Linus Torvalds", score: 2400, rounds: 14, result: "Sieg", date: "2026-08-22" },
-      { name: "RootAdmin", score: 1950, rounds: 18, result: "Sieg", date: "2026-08-25" },
-      { name: "Grace Hopper", score: 1700, rounds: 21, result: "Sieg", date: "2026-08-26" },
-      { name: "Helpdesk Hero", score: 1200, rounds: 26, result: "Sieg", date: "2026-08-27" }
+      { name: "Ada Lovelace", score: 3700, rounds: 11, deckSize: 27, result: "Sieg", date: "2026-08-20" },
+      { name: "Linus Torvalds", score: 3200, rounds: 14, deckSize: 27, result: "Sieg", date: "2026-08-22" },
+      { name: "RootAdmin", score: 2650, rounds: 18, deckSize: 27, result: "Sieg", date: "2026-08-25" },
+      { name: "Grace Hopper", score: 2300, rounds: 21, deckSize: 27, result: "Sieg", date: "2026-08-26" },
+      { name: "Helpdesk Hero", score: 1800, rounds: 26, deckSize: 20, result: "Sieg", date: "2026-08-27" }
     ];
 
     let cachedHofList = JSON.parse(localStorage.getItem('it_quartett_hof_v1') || 'null') || DEFAULT_HOF;
@@ -2855,11 +3260,12 @@
 
       tableEl.innerHTML = list.map((item, idx) => {
         const isCurrent = item.name === playerName;
+        const deckSizeInfo = item.deckSize ? ` • ${item.deckSize} Karten` : '';
         return `
           <div class="hof-row ${isCurrent ? 'current-player' : ''}">
             <div style="display:flex; align-items:center; gap:8px;">
               <span class="hof-rank-badge">#${idx + 1}</span>
-              <span><b>${item.name}</b> <span style="font-size:0.68rem; color:var(--text-muted);">(${item.result} in ${item.rounds} Zügen)</span></span>
+              <span><b>${item.name}</b> <span style="font-size:0.68rem; color:var(--text-muted);">(${item.result} in ${item.rounds} Zügen${deckSizeInfo})</span></span>
             </div>
             <div style="font-weight:900; color:${item.result === 'Sieg' ? 'var(--gold)' : 'var(--text-muted)'};">
               ${item.score} Pkt.
@@ -2876,10 +3282,18 @@
       }
     }
 
-    // GAME OVER & OPT-IN HALL OF FAME
+    // GAME OVER & DYNAMIC SCORE CALCULATION
     function renderGameOver() {
       const won = playerDeck.length > 0;
-      const roundsPlayed = currentMatchTurns; // Exakt die Züge dieser konkreten Partie!
+      const roundsPlayed = currentMatchTurns;
+      const deckSize = currentMatchDeckSize;
+
+      // Dynamic Score Formula:
+      // Base points based on deck size + Efficiency bonus + Win bonus
+      const basePoints = deckSize * 100;
+      const efficiencyBonus = Math.max(0, Math.round((deckSize * 2.5 - roundsPlayed) * 40));
+      const winBonus = won ? 1000 : 0;
+      const totalScore = basePoints + efficiencyBonus + winBonus;
 
       document.getElementById('gameScoreHeader').style.display = 'none';
       document.getElementById('turnBanner').style.display = 'none';
@@ -2908,20 +3322,26 @@
             <h3 style="font-size: 1.15rem; color: #fff; font-weight: 900; margin-bottom: 4px;">
               ${won ? `Gratulation, ${playerName}!` : `Schade, ${playerName}!`}
             </h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 8px;">
               ${won 
-                ? `Du hast alle <b>27 IT-Tierkarten</b> in <b>${roundsPlayed} Zügen</b> erobert!` 
+                ? `Du hast alle <b>${deckSize} Karten</b> deines Decks in <b>${roundsPlayed} Zügen</b> erobert!` 
                 : `Nach <b>${roundsPlayed} Zügen</b> waren deine Karten erschöpft.`}
             </p>
+
+            <div style="background: rgba(9,13,22,0.6); padding: 8px; border-radius: 8px; font-size: 0.74rem; margin-bottom: 12px; display:flex; justify-content:space-around;">
+              <span>🃏 Deckgröße: <b>${deckSize}</b></span>
+              <span>⏱️ Züge: <b>${roundsPlayed}</b></span>
+              <span style="color:var(--gold); font-weight:900;">⭐ ${totalScore} Pkt.</span>
+            </div>
             
             <!-- OPT-IN HALL OF FAME -->
             <div id="hofOptInBox" style="background: rgba(9,13,22,0.7); border:1px solid var(--border-color); padding: 12px 10px; border-radius: 12px; margin-bottom: 14px;">
               <div style="font-size:0.82rem; font-weight:800; color:#fff; margin-bottom:8px;">
-                🏆 Möchtest du dich in die Hall of Fame eintragen?
+                🏆 Möchtest du dich mit <b>${totalScore} Punkten</b> in die Hall of Fame eintragen?
               </div>
               <div style="display:flex; gap:6px; max-width:320px; margin:0 auto 8px auto;">
                 <input type="text" id="hofNameInput" class="form-control" style="margin:0; text-align:center; font-weight:800; font-size:0.88rem;" value="${playerName}" placeholder="Dein Name">
-                <button onclick="submitToHof(${won}, ${roundsPlayed})" style="background:var(--gold); color:#090d16; border:none; padding:8px 14px; border-radius:8px; font-weight:900; font-size:0.82rem; cursor:pointer; white-space:nowrap;">
+                <button onclick="submitToHof(${won}, ${roundsPlayed}, ${deckSize}, ${totalScore})" style="background:var(--gold); color:#090d16; border:none; padding:8px 14px; border-radius:8px; font-weight:900; font-size:0.82rem; cursor:pointer; white-space:nowrap;">
                   ✅ Eintragen
                 </button>
               </div>
@@ -2948,7 +3368,7 @@
       `;
     }
 
-    function submitToHof(won, rounds) {
+    function submitToHof(won, rounds, deckSize, totalScore) {
       const nameInput = document.getElementById('hofNameInput');
       const finalName = (nameInput && nameInput.value.trim()) || playerName;
       playerName = finalName;
@@ -2956,12 +3376,12 @@
       updatePlayerNameDisplay();
 
       const list = getHofList();
-      const score = won ? Math.max(500, (60 - rounds) * 100 + 1000) : Math.max(100, rounds * 25);
       
       const newEntry = {
         name: finalName,
-        score: score,
+        score: totalScore,
         rounds: rounds,
+        deckSize: deckSize,
         result: won ? "Sieg" : "Niederlage",
         date: new Date().toISOString().split('T')[0]
       };
@@ -2971,12 +3391,12 @@
       saveHofList(list);
       renderHof();
 
-      // Send to Google Sheets Cloud Leaderboard
       sendToGoogleSheets({
         type: 'hall_of_fame',
         name: finalName,
-        score: score,
+        score: totalScore,
         rounds: rounds,
+        deckSize: deckSize,
         result: won ? 'Sieg' : 'Niederlage'
       });
 
@@ -2997,7 +3417,7 @@
       }
     }
 
-    // TAB NAVIGATION
+    // ==================== TAB NAVIGATION ====================
     function switchTab(tab) {
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
@@ -3020,11 +3440,16 @@
       } else if (tab === 'deck') {
         document.querySelector("button[onclick=\"switchTab('deck')\"]").classList.add('active');
         document.getElementById('deckView').classList.add('active');
+        updateDeckBuilderUI();
         renderDeck();
+      } else if (tab === 'metrics') {
+        document.querySelector("button[onclick=\"switchTab('metrics')\"]").classList.add('active');
+        document.getElementById('metricsView').classList.add('active');
+        renderMetricsView();
       }
     }
 
-    // DECK VIEW & SORTING
+    // ==================== DECK VIEW & SORTING ====================
     let deckSort = 'default';
     let deckSortDir = 'desc';
 
@@ -3051,40 +3476,46 @@
         });
       }
 
-      document.getElementById('deckList').innerHTML = list.map(c => `
-        <div class="coll-card">
-          <div class="coll-header">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:1.3rem;">${c.emoji}</span>
-              <span style="font-weight:700; font-size:0.9rem; color:#fff;">${c.name}</span>
+      document.getElementById('deckList').innerHTML = list.map(c => {
+        const inDeck = activeDeckCardIds.includes(c.id);
+        return `
+          <div class="coll-card ${inDeck ? 'in-deck' : 'out-deck'}">
+            <div class="coll-header">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button class="card-deck-toggle-btn ${inDeck ? 'active' : ''}" onclick="toggleCardInDeck(${c.id})" title="Klicke hier, um die Karte im Deck ein-/auszuschalten">
+                  ${inDeck ? '✅ Im Deck' : '➕ Hinzufügen'}
+                </button>
+                <span style="font-size:1.2rem;">${c.emoji}</span>
+                <span style="font-weight:700; font-size:0.88rem; color:#fff;">${c.name}</span>
+              </div>
+              <div style="display:flex; gap:6px;">
+                ${c.image ? `<button class="img-open-btn" onclick="openImg('${c.image}')">🖼️ Artwork</button>` : ''}
+                <button class="adjust-card-btn" onclick="openCardFeedbackModal(${c.id})" title="Kriterien dieser Karte anpassen">💬 Anpassen</button>
+              </div>
             </div>
-            <div style="display:flex; gap:6px;">
-              ${c.image ? `<button class="img-open-btn" onclick="openImg('${c.image}')">🖼️ Artwork</button>` : ''}
-              <button class="adjust-card-btn" onclick="openCardFeedbackModal(${c.id})" title="Kriterien dieser Karte anpassen">💬 Anpassen</button>
+
+            <div style="padding: 8px 12px; font-size: 0.74rem; color: #cbd5e1; font-style: italic; border-bottom: 1px solid var(--border-color); background: rgba(9,13,22,0.3); white-space: pre-line;">${c.flavour.trim()}</div>
+
+            <div style="padding: 6px 12px; font-size: 0.72rem; color: var(--accent-primary); border-bottom: 1px solid var(--border-color);">
+              ⚡ <b>${c.ability.trim()}</b>
+            </div>
+
+            <div style="padding: 6px 12px; font-size: 0.72rem; color: #fef08a; font-style: italic; border-bottom: 1px solid var(--border-color);">
+              ${c.quote.trim()}
+            </div>
+
+            <div class="coll-stats-grid">
+              <div class="coll-stat-box">👔 ${c.mgmt} (${MGMT_RANK[c.mgmt].level})</div>
+              <div class="coll-stat-box">💥 ${c.blast} (${BLAST_RANK[c.blast].level})</div>
+              <div class="coll-stat-box">⏱️ ${c.meeting} min</div>
+              <div class="coll-stat-box">💰 ${c.salary} k€</div>
+              <div class="coll-stat-box">🤝 Team: ${c.teamplay}</div>
+              <div class="coll-stat-box">😊 User: ${c.ux}</div>
+              <div class="coll-stat-box full">🛡️ Sicherheit: ${c.security} / 100</div>
             </div>
           </div>
-
-          <div style="padding: 8px 12px; font-size: 0.74rem; color: #cbd5e1; font-style: italic; border-bottom: 1px solid var(--border-color); background: rgba(9,13,22,0.3); white-space: pre-line;">${c.flavour.trim()}</div>
-
-          <div style="padding: 6px 12px; font-size: 0.72rem; color: var(--accent-primary); border-bottom: 1px solid var(--border-color);">
-            ⚡ <b>${c.ability.trim()}</b>
-          </div>
-
-          <div style="padding: 6px 12px; font-size: 0.72rem; color: #fef08a; font-style: italic; border-bottom: 1px solid var(--border-color);">
-            ${c.quote.trim()}
-          </div>
-
-          <div class="coll-stats-grid">
-            <div class="coll-stat-box">👔 ${c.mgmt} (${MGMT_RANK[c.mgmt].level})</div>
-            <div class="coll-stat-box">💥 ${c.blast} (${BLAST_RANK[c.blast].level})</div>
-            <div class="coll-stat-box">⏱️ ${c.meeting} min</div>
-            <div class="coll-stat-box">💰 ${c.salary} k€</div>
-            <div class="coll-stat-box">🤝 Team: ${c.teamplay}</div>
-            <div class="coll-stat-box">😊 User: ${c.ux}</div>
-            <div class="coll-stat-box full">🛡️ Sicherheit: ${c.security} / 100</div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     document.getElementById('sortContainer').addEventListener('click', (e) => {
@@ -3097,6 +3528,121 @@
     });
 
     document.getElementById('searchInput').addEventListener('input', renderDeck);
+
+    // ==================== METRICS & ANALYTICS VIEW ====================
+    let metricScope = 'active'; // 'active' | 'all'
+
+    function setMetricScope(scope) {
+      metricScope = scope;
+      document.getElementById('scopeActiveBtn').className = `scope-toggle-btn ${scope === 'active' ? 'active' : ''}`;
+      document.getElementById('scopeAllBtn').className = `scope-toggle-btn ${scope === 'all' ? 'active' : ''}`;
+      renderMetricsView();
+    }
+
+    function renderMetricsView() {
+      const cat = document.getElementById('metricCatSelect').value;
+      const meta = STAT_META[cat];
+      
+      const cardsToAnalyze = (metricScope === 'active')
+        ? CARDS.filter(c => activeDeckCardIds.includes(c.id))
+        : CARDS;
+
+      const totalCount = cardsToAnalyze.length;
+      document.getElementById('metricActiveCount').textContent = activeDeckCardIds.length;
+
+      document.getElementById('chartMainTitle').textContent = `Verteilung: ${meta.name}`;
+      document.getElementById('chartSubtitleText').textContent = `Basis: ${totalCount} Karten (${metricScope === 'active' ? 'Aktives Deck' : 'Gesamte Sammlung'})`;
+
+      const barsContainer = document.getElementById('metricDistributionBars');
+
+      if (meta.type === 'tier') {
+        // TIER METRICS (Management-Attention & Blast Radius)
+        const counts = {};
+        meta.tiers.forEach(t => counts[t.label] = { count: 0, level: t.level, cards: [] });
+
+        cardsToAnalyze.forEach(c => {
+          const val = c[cat];
+          if (counts[val]) {
+            counts[val].count++;
+            counts[val].cards.push(`${c.emoji} ${c.name}`);
+          }
+        });
+
+        // KPI calculations
+        const maxTier = meta.tiers.find(t => counts[t.label].count > 0) || meta.tiers[0];
+        const minTier = [...meta.tiers].reverse().find(t => counts[t.label].count > 0) || meta.tiers[meta.tiers.length - 1];
+
+        document.getElementById('kpiAvgVal').textContent = `${totalCount}`;
+        document.getElementById('kpiAvgLabel').textContent = "Karten im Fokus";
+        document.getElementById('kpiMaxVal').textContent = maxTier.level;
+        document.getElementById('kpiMinVal').textContent = minTier.level;
+
+        barsContainer.innerHTML = meta.tiers.map(t => {
+          const info = counts[t.label] || { count: 0, cards: [] };
+          const pct = totalCount > 0 ? ((info.count / totalCount) * 100).toFixed(0) : 0;
+          const isGold = (t.level === 'Maximum');
+
+          return `
+            <div class="bar-chart-row">
+              <div class="bar-row-label-wrap">
+                <span><b>${t.label}</b> <span style="color:var(--text-muted); font-size:0.68rem;">(${t.level})</span></span>
+                <span><b>${info.count} Karten</b> (${pct}%)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill ${isGold ? 'bar-fill-gold' : ''}" style="width: ${Math.max(2, pct)}%;"></div>
+              </div>
+              ${info.cards.length > 0 ? `
+                <div style="font-size:0.68rem; color:var(--text-muted); line-height:1.2; margin-top:1px;">
+                  ${info.cards.join(', ')}
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+
+      } else {
+        // NUMERIC METRICS (Meeting, Salary, Team-Play, UX, Security)
+        const values = cardsToAnalyze.map(c => c[cat]);
+        const sum = values.reduce((a, b) => a + b, 0);
+        const avg = totalCount > 0 ? (sum / totalCount).toFixed(1) : 0;
+        const maxVal = values.length > 0 ? Math.max(...values) : 0;
+        const minVal = values.length > 0 ? Math.min(...values) : 0;
+
+        document.getElementById('kpiAvgVal').textContent = `${avg} ${meta.unit || ''}`;
+        document.getElementById('kpiAvgLabel').textContent = "Durchschnitt";
+        document.getElementById('kpiMaxVal').textContent = `${maxVal} ${meta.unit || ''}`;
+        document.getElementById('kpiMinVal').textContent = `${minVal} ${meta.unit || ''}`;
+
+        // Sort cards by this criterion
+        const sortedCards = [...cardsToAnalyze].sort((a, b) => b[cat] - a[cat]);
+
+        barsContainer.innerHTML = sortedCards.map(c => {
+          const val = c[cat];
+          let pct = 50;
+          if (cat === 'meeting') pct = (val / 240) * 100;
+          else if (cat === 'salary') pct = (val / 210) * 100;
+          else pct = val;
+
+          const level = getStatLevel(c, cat);
+          let badgeClass = 'tier-c-mid';
+          if (level === 'Maximum') badgeClass = 'tier-c-max';
+          else if (level === 'Hoch' || level === 'Mittel-hoch') badgeClass = 'tier-c-high';
+          else if (level === 'Niedrig' || level === 'Minimum') badgeClass = 'tier-c-low';
+
+          return `
+            <div class="bar-chart-row">
+              <div class="bar-row-label-wrap">
+                <span>${c.emoji} <b>${c.name}</b> <span class="tier-guide-cell ${badgeClass}" style="padding:1px 5px; font-size:0.62rem;">${level}</span></span>
+                <span><b>${val} ${meta.unit || ''}</b></span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill ${level === 'Maximum' ? 'bar-fill-gold' : ''}" style="width: ${Math.max(3, pct)}%;"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
 
     // ==================== GOOGLE SHEETS LIVE SYNC ====================
     const GOOGLE_SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxjIPCkUVKHd0w7xg4J8MaeK-Y05DR1VB3nDgX7FXHY24mFNoe2J6xx4vscvxNFBFwWmQ/exec';
