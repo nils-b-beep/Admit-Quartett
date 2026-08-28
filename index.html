@@ -1570,19 +1570,6 @@
     </div>
 
     <div class="rules-card">
-      <div class="rules-title">🏆 Punkteberechnung & Deckgröße</div>
-      <p>Deine Punktzahl in der <b>Hall of Fame</b> skaliert dynamisch mit der Größe deines Decks und deiner Spieleffizienz:</p>
-      <div style="background: rgba(9,13,22,0.6); padding: 8px 10px; border-radius: 8px; font-family: monospace; font-size: 0.74rem; color: var(--accent-primary); margin: 6px 0;">
-        Punkte = (Deckgröße × 100) + Effizienzbonus + 1.000 (Sieg-Bonus)
-      </div>
-      <ul style="margin-left: 18px; margin-top: 4px; font-size: 0.76rem;">
-        <li><b>Deck-Bonus:</b> Größeres Deck = höhere Basispunkte (z. B. 27 Karten = 2.700 Basispunkte).</li>
-        <li><b>Effizienz-Bonus:</b> Wer den Vorstand in wenigen Zügen überrollt, erhält maximale Bonuspunkte!</li>
-        <li><b>Patt-Schlachten:</b> Auch knappe Duelle mit vielen Runden werden fair mit Punkten belohnt.</li>
-      </ul>
-    </div>
-
-    <div class="rules-card">
       <div class="rules-title">⚔️ Der Spielzug & Die Richtungs-Wette</div>
       <p>Wer am Zug ist, wählt eines der 7 Kriterien seiner obersten Karte. Vor dem Duell bestimmst du deine Wette:</p>
       <ul style="margin-left: 18px; margin-top: 4px;">
@@ -1605,11 +1592,24 @@
       <ul style="margin-left: 18px; margin-top: 4px; display: flex; flex-direction: column; gap: 4px;">
         <li><b>👔 Management-Attention:</b> Stufenleiter von <i>Liebling (Maximum)</i> bis <i>Wer bist du? (Minimum)</i>.</li>
         <li><b>💥 Blast Radius:</b> Schadenspotenzial von <i>„Ich hab's doch gesagt!“ (Maximum)</i> bis <i>Reporting-Issue (Minimum)</i>.</li>
-        <li><b>⏱️ Durchschn. Meetingdauer:</b> Zeitaufwand in Calls (0 min bis 240 min).</li>
+        <li><b>⏱️ Durchschn. Meetingdauer:</b> Zeitaufwand in Calls (0 min bis 150 min).</li>
         <li><b>💰 Reallohn:</b> Jahresgehalt in Tausend Euro (0 k€ bis 210 k€).</li>
         <li><b>🤝 IT-Team-Play:</b> Kollegialität, Hilfsbereitschaft und Teamorientierung im täglichen IT-Betrieb (Skala 1–100).</li>
         <li><b>😊 Enduser-Freude:</b> Beliebtheit bei den Endanwendern (Skala 1 bis 100).</li>
         <li><b>🛡️ Sicherheitsniveau:</b> Cyber-Resilienz und Härtung (Skala 0 bis 100).</li>
+      </ul>
+    </div>
+
+    <div class="rules-card">
+      <div class="rules-title">🏆 Punkteberechnung & Deckgröße</div>
+      <p>Deine Punktzahl in der <b>Hall of Fame</b> skaliert dynamisch mit der Größe deines Decks und deiner Spieleffizienz:</p>
+      <div style="background: rgba(9,13,22,0.6); padding: 8px 10px; border-radius: 8px; font-family: monospace; font-size: 0.74rem; color: var(--accent-primary); margin: 6px 0;">
+        Punkte = (Deckgröße × 100) + Effizienzbonus + 1.000 (Sieg-Bonus)
+      </div>
+      <ul style="margin-left: 18px; margin-top: 4px; font-size: 0.76rem;">
+        <li><b>Deck-Bonus:</b> Größeres Deck = höhere Basispunkte (z. B. 27 Karten = 2.700 Basispunkte).</li>
+        <li><b>Effizienz-Bonus:</b> Wer den Vorstand in wenigen Zügen überrollt, erhält maximale Bonuspunkte!</li>
+        <li><b>Patt-Schlachten:</b> Auch knappe Duelle mit vielen Runden werden fair mit Punkten belohnt.</li>
       </ul>
     </div>
   </section>
@@ -3736,14 +3736,16 @@
         }).join('');
 
       } else if (currentChartType === 'stack') {
-        // 📏 GESTAPELTE SÄULE (100% Bar + Accordion)
+        // 📏 GESTAPELTE SÄULE (100% Bar mit Glow & Klick-Ausklappmenü)
         const activeBuckets = buckets.filter(b => b.count > 0);
 
         const segmentsHtml = activeBuckets.map(b => {
           const pct = ((b.count / totalCount) * 100).toFixed(1);
           return `
             <div onclick="toggleTierAccordion('${b.id}')"
-                 style="width: ${pct}%; height: 100%; background: ${b.color}; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#090d16; font-weight:900; font-size:0.72rem; overflow:hidden;"
+                 style="width: ${pct}%; height: 100%; background: ${b.color}; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#090d16; font-weight:900; font-size:0.72rem; overflow:hidden; border-right: 2px solid #090d16; box-sizing: border-box; transition: all 0.2s ease; position:relative;"
+                 onmouseenter="this.style.filter='brightness(1.25) drop-shadow(0 0 10px ${b.color})'; this.style.zIndex='10';"
+                 onmouseleave="this.style.filter='none'; this.style.zIndex='1';"
                  title="${b.label}: ${b.count} Karten (${pct}%)">
               ${pct > 8 ? `${b.count}` : ''}
             </div>
@@ -3751,8 +3753,8 @@
         }).join('');
 
         renderArea.innerHTML = `
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            <div style="width:100%; height:32px; border-radius:10px; background:#090d16; border:1px solid var(--border-color); display:flex; overflow:hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="width:100%; height:34px; border-radius:10px; background:#090d16; border:2px solid #090d16; display:flex; overflow:hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
               ${segmentsHtml}
             </div>
 
