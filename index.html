@@ -2331,6 +2331,7 @@
     let botDeck = [];
     let isPlayerTurn = true;
     let selectedWagerCat = null;
+    let currentMatchTurns = 0; // Züge ausschließlich in der AKTUELLEN Partie!
     let roundHistory = JSON.parse(localStorage.getItem('it_quartett_history') || '[]');
     let roundCounter = roundHistory.length > 0 ? (roundHistory[0].round + 1) : 1;
 
@@ -2349,6 +2350,7 @@
       botDeck = shuffled.slice(14);
       isPlayerTurn = true;
       selectedWagerCat = null;
+      currentMatchTurns = 0; // Neue Partie = 0 Züge!
       
       document.getElementById('gameScoreHeader').style.display = 'flex';
       document.getElementById('turnBanner').style.display = 'block';
@@ -2644,6 +2646,7 @@
 
       const histItem = {
         round: roundCounter++,
+        matchTurn: ++currentMatchTurns,
         category: STAT_META[category].name,
         direction: dirLabel,
         initiator: initiatorLabel,
@@ -2774,6 +2777,7 @@
       if (confirm('Zug-Historie wirklich leeren?')) {
         roundHistory = [];
         roundCounter = 1;
+        currentMatchTurns = 0;
         localStorage.removeItem('it_quartett_history');
         renderHistory();
       }
@@ -2875,7 +2879,7 @@
     // GAME OVER & OPT-IN HALL OF FAME
     function renderGameOver() {
       const won = playerDeck.length > 0;
-      const roundsPlayed = roundHistory.length;
+      const roundsPlayed = currentMatchTurns; // Exakt die Züge dieser konkreten Partie!
 
       document.getElementById('gameScoreHeader').style.display = 'none';
       document.getElementById('turnBanner').style.display = 'none';
