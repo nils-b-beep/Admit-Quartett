@@ -1625,9 +1625,10 @@
       </div>
 
       <div class="preset-btn-row">
-        <button class="preset-chip" onclick="applyDeckPreset('blitz')">⚡ Blitz-Match (10)</button>
+        <button class="preset-chip" onclick="applyDeckPreset('original')">🏛️ Original (27)</button>
+        <button class="preset-chip" onclick="applyDeckPreset('blitz')">⚡ Blitz (10)</button>
         <button class="preset-chip" onclick="applyDeckPreset('standard')">⚔️ Standard (20)</button>
-        <button class="preset-chip" onclick="applyDeckPreset('all')">👑 Alle Karten (27)</button>
+        <button class="preset-chip" onclick="applyDeckPreset('all')">👑 Alle Karten</button>
         <button class="preset-chip" onclick="applyDeckPreset('none')">🧹 Keine</button>
       </div>
 
@@ -2712,7 +2713,9 @@
 
     function applyDeckPreset(preset) {
       playBeep(550, 'triangle', 0.1);
-      if (preset === 'all') {
+      if (preset === 'original') {
+        activeDeckCardIds = CARDS.filter(c => c.id <= 27).map(c => c.id);
+      } else if (preset === 'all') {
         activeDeckCardIds = CARDS.map(c => c.id);
       } else if (preset === 'none') {
         activeDeckCardIds = [CARDS[0].id, CARDS[1].id, CARDS[2].id, CARDS[3].id];
