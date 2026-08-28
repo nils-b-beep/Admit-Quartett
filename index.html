@@ -48,22 +48,23 @@
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-around;
-      padding: 6px 10px;
+      padding: 6px 6px;
     }
 
     .nav-btn {
       background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      padding: 8px 14px;
+      padding: 8px 10px;
       border-radius: 12px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       transition: all 0.2s;
+      white-space: nowrap;
     }
 
     .nav-btn.active {
@@ -131,7 +132,7 @@
       font-weight: 700;
       padding: 8px;
       border-radius: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       transition: all 0.3s;
     }
 
@@ -145,61 +146,6 @@
       background: rgba(244, 63, 94, 0.15);
       border: 1px solid var(--danger);
       color: #fda4af;
-    }
-
-    /* Direction Mode Switcher */
-    .mode-switch-box {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 8px 10px;
-      margin-bottom: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .mode-switch-label {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .mode-btn-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .mode-toggle-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      border-radius: 8px;
-      padding: 7px 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: all 0.2s;
-    }
-
-    .mode-toggle-btn.active-higher {
-      background: rgba(56, 189, 248, 0.2);
-      border-color: var(--accent-primary);
-      color: var(--accent-primary);
-    }
-
-    .mode-toggle-btn.active-lower {
-      background: rgba(245, 158, 11, 0.2);
-      border-color: var(--highlight);
-      color: var(--highlight);
     }
 
     /* Compact Playing Card */
@@ -252,7 +198,6 @@
       flex-shrink: 0;
     }
 
-    /* Flavour Box on Card */
     .card-flavour-box {
       padding: 8px 12px;
       background: rgba(9, 13, 22, 0.35);
@@ -351,9 +296,9 @@
       margin-top: 2px;
     }
 
-    /* Bot Turn Manual Controls */
+    /* Bot Controls */
     .bot-controls-box {
-      margin-top: 10px;
+      margin-top: 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -392,9 +337,177 @@
       gap: 5px;
     }
 
-    .skip-bot-btn:hover {
+    /* WAGER MODAL (Pop-up zur Richtungswahl) */
+    .wager-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(9, 13, 22, 0.92);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      padding: 14px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wager-box {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 460px;
+      padding: 16px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: popIn 0.2s ease-out;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .wager-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .wager-cat-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-icon-btn {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-primary);
+      color: var(--accent-primary);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .info-tooltip {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 0;
+      width: 260px;
+      background: #0f172a;
+      border: 1px solid var(--accent-primary);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 0.74rem;
+      color: #e2e8f0;
+      line-height: 1.35;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+      z-index: 10;
+    }
+
+    .info-icon-btn:hover .info-tooltip,
+    .info-icon-btn:active .info-tooltip,
+    .info-icon-btn.open .info-tooltip {
+      display: block;
+    }
+
+    .wager-card-stat-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .wager-val-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .wager-val-big {
+      font-size: 1.3rem;
+      font-weight: 900;
       color: #fff;
-      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .wager-scale-info {
+      background: rgba(9, 13, 22, 0.5);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      line-height: 1.3;
+      border-left: 3px solid var(--accent-secondary);
+    }
+
+    .wager-question {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-align: center;
+      color: #f8fafc;
+      margin: 4px 0;
+    }
+
+    .wager-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .wager-action-btn {
+      border: none;
+      padding: 12px 10px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .wager-action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .wager-btn-higher {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #090d16;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    }
+
+    .wager-btn-lower {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      color: #090d16;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .wager-btn-subtext {
+      font-size: 0.68rem;
+      font-weight: 600;
+      opacity: 0.9;
     }
 
     /* Comparison Battle Modal */
@@ -494,44 +607,25 @@
       cursor: pointer;
     }
 
-    /* Round History */
-    .history-section {
-      margin-top: 16px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 10px;
-    }
-
-    .history-header {
-      font-size: 0.78rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      cursor: pointer;
-    }
-
+    /* HISTORIE VIEW */
     .history-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 200px;
-      overflow-y: auto;
+      gap: 8px;
     }
 
     .history-item {
-      background: var(--bg-card);
-      border-radius: 8px;
-      padding: 6px 8px;
-      font-size: 0.72rem;
-      border-left: 3px solid var(--border-color);
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      border-left: 4px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 4px;
+      border-top: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
     }
 
     .history-item.win { border-left-color: var(--success); }
@@ -541,10 +635,10 @@
     .history-top-row {
       display: flex;
       justify-content: space-between;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    /* CARD COLLECTION VIEW */
+    /* DECK VIEW */
     .search-bar {
       width: 100%;
       padding: 9px 12px;
@@ -586,7 +680,7 @@
       border-color: var(--accent-primary);
     }
 
-    .collection-list {
+    .deck-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -669,12 +763,13 @@
 
   <!-- Top Navigation -->
   <nav class="nav-bar">
-    <button class="nav-btn active" onclick="switchTab('game')">🎮 Quartett-Duell</button>
-    <button class="nav-btn" onclick="switchTab('collection')">📖 Sammlung (27)</button>
+    <button class="nav-btn active" onclick="switchTab('game')">🎮 Aktives Spiel</button>
+    <button class="nav-btn" onclick="switchTab('history')">📜 Historie (<span id="navHistCount">0</span>)</button>
+    <button class="nav-btn" onclick="switchTab('deck')">🃏 Deck (27)</button>
     <button class="nav-btn" onclick="openIdeaModal()">💡 Idee einreichen</button>
   </nav>
 
-  <!-- ==================== TAB 1: GAME VIEW ==================== -->
+  <!-- ==================== TAB 1: AKTIVES SPIEL ==================== -->
   <section id="gameView" class="view-section active">
     
     <div class="game-header">
@@ -689,24 +784,8 @@
       </div>
     </div>
 
-    <!-- Direction / Mode Switcher -->
-    <div class="mode-switch-box" id="modeSwitchContainer">
-      <div class="mode-switch-label">
-        <span>🏆 Vergleichsmodus wählen:</span>
-        <span id="activeModeText" style="color: var(--accent-primary);">⬆️ Höher sticht</span>
-      </div>
-      <div class="mode-btn-group">
-        <button id="modeHigherBtn" class="mode-toggle-btn active-higher" onclick="setDirection('higher')">
-          ⬆️ Höher gewinnt
-        </button>
-        <button id="modeLowerBtn" class="mode-toggle-btn" onclick="setDirection('lower')">
-          ⬇️ Niedriger gewinnt
-        </button>
-      </div>
-    </div>
-
     <div id="turnBanner" class="turn-banner turn-player">
-      👉 Du bist am Zug! Wähle deinen Trumpf-Wert:
+      👉 Du bist am Zug! Tippe auf einen Wert, um dein Duell zu starten:
     </div>
 
     <!-- Active Player Card Area -->
@@ -722,28 +801,26 @@
       </button>
     </div>
 
-    <!-- Round History Section -->
-    <div class="history-section">
-      <div class="history-header" onclick="toggleHistory()">
-        <span>📜 Runden-Historie (<span id="historyCount">0</span>)</span>
-        <span id="historyToggleIcon">▼</span>
-      </div>
-      <div class="history-list" id="historyList">
-        <div style="font-size:0.72rem; color:var(--text-muted); text-align:center; padding:6px;">
-          Noch keine Duelle gespielt. Wähle deinen ersten Wert!
-        </div>
-      </div>
-    </div>
-
-    <div style="text-align: center; margin-top: 14px;">
+    <div style="text-align: center; margin-top: 16px;">
       <button onclick="restartGame()" style="background: none; border: none; color: var(--text-muted); font-size: 0.75rem; text-decoration: underline; cursor: pointer;">
         🔄 Neues Spiel starten (Karten neu mischen)
       </button>
     </div>
   </section>
 
-  <!-- ==================== TAB 2: COLLECTION VIEW ==================== -->
-  <section id="collectionView" class="view-section">
+  <!-- ==================== TAB 2: HISTORIE ==================== -->
+  <section id="historyView" class="view-section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <h2 style="font-size: 1.05rem; font-weight: 800;">📜 Runden-Historie</h2>
+      <button onclick="clearHistory()" style="background: none; border: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; cursor: pointer;">
+        Leeren
+      </button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </section>
+
+  <!-- ==================== TAB 3: DECK ==================== -->
+  <section id="deckView" class="view-section">
     <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rolle, Fähigkeit oder Tier suchen..." autocomplete="off">
     
     <div class="sort-scroll" id="sortContainer">
@@ -757,8 +834,54 @@
       <button class="sort-btn" data-sort="salary">💰 Reallohn</button>
     </div>
 
-    <div class="collection-list" id="collectionList"></div>
+    <div class="deck-list" id="deckList"></div>
   </section>
+
+  <!-- ==================== WAGER / POPUP RICHTUNGSWAHL ==================== -->
+  <div id="wagerModal" class="wager-overlay">
+    <div class="wager-box">
+      
+      <div class="wager-header">
+        <div class="wager-cat-title" id="wagerCatTitle">
+          <span>👔 Management-Attention</span>
+        </div>
+        <div class="info-icon-btn" onclick="toggleTooltip(event)" title="Erklärung">
+          ℹ️
+          <div class="info-tooltip" id="wagerTooltipText"></div>
+        </div>
+      </div>
+
+      <div class="wager-card-stat-card">
+        <div class="wager-val-row">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">Dein aktueller Wert:</span>
+          <span class="wager-val-big" id="wagerValBig">Liebling (100%)</span>
+        </div>
+        <div class="wager-scale-info" id="wagerScaleInfo"></div>
+      </div>
+
+      <div class="wager-question">
+        Möchtest du darauf wetten, dass du den niedrigsten oder höchsten Wert hast?
+      </div>
+
+      <div class="wager-btn-group">
+        <button class="wager-action-btn wager-btn-higher" onclick="confirmWager('higher')">
+          <span>⬆️ Höchster Wert</span>
+          <span class="wager-btn-subtext">(Überbieten)</span>
+        </button>
+        <button class="wager-action-btn wager-btn-lower" onclick="confirmWager('lower')">
+          <span>⬇️ Niedrigster Wert</span>
+          <span class="wager-btn-subtext">(Unterbieten)</span>
+        </button>
+      </div>
+
+      <div style="text-align: center; margin-top: 2px;">
+        <button onclick="closeWagerModal()" style="background: none; border: none; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; text-decoration: underline;">
+          ✖️ Anderen Wert wählen
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ==================== BATTLE MODAL ==================== -->
   <div id="battleModal" class="battle-overlay">
@@ -858,6 +981,44 @@
       "Reporting-Issue": { rank: 1, pct: 5 }
     };
 
+    const STAT_META = {
+      mgmt: {
+        name: "👔 Management-Attention",
+        info: "Gibt an, wie viel Sichtbarkeit und Wohlwollen die Rolle im Top-Management genießt. 'Liebling' sticht alles im oberen Bereich, 'Wer bist du?' ist das unsichtbare Schlusslicht.",
+        scale: "Stufen: Liebling (100%) > Andere Manager (80%) > Arschkriecher (60%) > Aufstreber (40%) > Fleißiges Bienchen (20%) > Wer bist du? (5%)"
+      },
+      blast: {
+        name: "💥 Blast Radius",
+        info: "Der Schadensradius bei einem Ausfall oder Fehler. 'Ich hab's doch gesagt!' bedeutet weltweiten Produktionsstillstand, 'Reporting-Issue' ist ein reiner Darstellungsfehler.",
+        scale: "Stufen: „Ich hab's doch gesagt!“ (100%) > „Das gibt Ärger...“ (80%) > Problem-Ticket (60%) > Morgen wieder vergessen... (40%) > Einzeluserprobleme (20%) > Reporting-Issue (5%)"
+      },
+      meeting: {
+        name: "⏱️ Durchschn. Meetingdauer",
+        info: "Dauer typischer Termine in Minuten. Der SME-Wal hält mit 240 min den Spitzenwert, während Kakerlake oder Sysadmin mit 0–2 min Meetings fast völlig meiden.",
+        scale: "Skala: 0 min (Min: Legacy-Kakerlake, Sysadmin) — 240 min (Max: SME-Wal)"
+      },
+      salary: {
+        name: "💰 Reallohn",
+        info: "Jahresgehalt in Tausend Euro (k€). Sales und Vorstandsberater sahnen bis zu 210 k€ ab, während uralte Legacy-Systeme mit 0 k€ laufen.",
+        scale: "Skala: 0 k€ (Min: Legacy-Kakerlake) — 210 k€ (Max: Kuckuck-Sales)"
+      },
+      teamplay: {
+        name: "🤝 IT-Team-Play",
+        info: "Teamfähigkeit und Kollegialität unter IT-Kollegen (1–100). Hohe Werte halten dem Team den Rücken frei (Capybara 98), niedrige treiben Kollegen in den Wahnsinn (AI-Evangelist 2, Auditor 5).",
+        scale: "Skala: 1 / 100 (Gering: AI-Evangelist) — 100 / 100 (Max: Capybara-Owner)"
+      },
+      ux: {
+        name: "😊 Enduser-Freude",
+        info: "Nutzerfreundlichkeit und Beliebtheit bei den Endanwendern (1–100). Der Service-Desk-Otter (98) und UX-Designer (92) sind Publikumslieblinge, SOC-Analysten (2) sperren lieber alles.",
+        scale: "Skala: 1 / 100 (Min: Kugelfisch-SOC) — 100 / 100 (Max: Service-Desk-Otter)"
+      },
+      security: {
+        name: "🛡️ Sicherheitsniveau",
+        info: "Sicherheitsbewusstsein und Cyber-Resilienz (1–100). Kugelfisch & Pentester bieten maximale Sicherheit (98–100), während Schatten-IT und Key-User massive Risiken bergen (5).",
+        scale: "Skala: 0 / 100 (Min: Kakerlake, Key-User) — 100 / 100 (Max: SOC-Analyst, Pentester)"
+      }
+    };
+
     const CARDS = [
       { id: 1, name: "Gans-Eskalationsmanager", emoji: "🪿", image: "images/01_gans_eskalationsmanager.jpg", mgmt: "Liebling", meeting: 15, blast: "Problem-Ticket", teamplay: 10, ux: 20, security: 40, salary: 85, quote: "„HONK. Das ist jetzt Prio 1.“", ability: "Wandelt Lautstärke zuverlässig in Priorität um.", flavour: "Beißt in jede Ursachenanalyse.\nLebt von Chaos. Verhandelt nicht." },
       { id: 2, name: "Papagei-Auditor", emoji: "🦜", image: "images/02_papagei_auditor.jpg", mgmt: "Andere Manager", meeting: 60, blast: "Morgen wieder vergessen...", teamplay: 5, ux: 5, security: 95, salary: 92, quote: "„Ja, das habe ich gesehen. Haben Sie das auch dokumentiert?“", ability: "Fordert dieselbe Evidenz als Excel, PDF, Screenshot und nochmals als Excel.", flavour: "Hat die Evidenz bereits gesehen.\nMöchte sie trotzdem noch einmal." },
@@ -888,25 +1049,14 @@
       { id: 27, name: "Kuckuck-Vendor-Sales", emoji: "🐦", image: "images/27_kuckuck_vendor_sales.jpg", mgmt: "Liebling", meeting: 120, blast: "Problem-Ticket", teamplay: 5, ux: 40, security: 30, salary: 210, quote: "„Das ist Out-of-the-box in 5 Minuten integriert.“", ability: "Verkauft Enterprise-Suite, die alles kann – außer das Benötigte.", flavour: "Taucht ungeladen in Budget-Meetings auf." }
     ];
 
-    const CAT_NAMES = {
-      mgmt: "👔 Management-Attention",
-      blast: "💥 Blast Radius",
-      meeting: "⏱️ Durchschn. Meetingdauer",
-      salary: "💰 Reallohn",
-      teamplay: "🤝 IT-Team-Play",
-      ux: "😊 Enduser-Freude",
-      security: "🛡️ Sicherheitsniveau"
-    };
-
     // GAME STATE
     let playerDeck = [];
     let botDeck = [];
     let pottDeck = [];
     let isPlayerTurn = true;
-    let currentDirection = 'higher'; // 'higher' | 'lower'
+    let selectedWagerCat = null;
     let roundHistory = [];
     let roundCounter = 1;
-    let isHistoryExpanded = false;
 
     function shuffle(arr) {
       const a = [...arr];
@@ -923,37 +1073,18 @@
       botDeck = shuffled.slice(14);
       pottDeck = [];
       isPlayerTurn = true;
-      currentDirection = 'higher';
+      selectedWagerCat = null;
       roundHistory = [];
       roundCounter = 1;
-      setDirection('higher');
       renderGameUI();
       renderHistory();
-    }
-
-    function setDirection(dir) {
-      currentDirection = dir;
-      const hBtn = document.getElementById('modeHigherBtn');
-      const lBtn = document.getElementById('modeLowerBtn');
-      const text = document.getElementById('activeModeText');
-
-      if (dir === 'higher') {
-        hBtn.className = 'mode-toggle-btn active-higher';
-        lBtn.className = 'mode-toggle-btn';
-        text.textContent = '⬆️ Höher sticht';
-        text.style.color = 'var(--accent-primary)';
-      } else {
-        hBtn.className = 'mode-toggle-btn';
-        lBtn.className = 'mode-toggle-btn active-lower';
-        text.textContent = '⬇️ Niedriger / Weniger sticht';
-        text.style.color = 'var(--highlight)';
-      }
     }
 
     function renderGameUI() {
       document.getElementById('playerDeckCount').textContent = playerDeck.length;
       document.getElementById('botDeckCount').textContent = botDeck.length;
       document.getElementById('pottPill').textContent = `⚔️ POTT: ${pottDeck.length}`;
+      document.getElementById('navHistCount').textContent = roundHistory.length;
 
       const banner = document.getElementById('turnBanner');
       const botControls = document.getElementById('botActionContainer');
@@ -970,7 +1101,7 @@
         botControls.style.display = 'none';
       } else {
         banner.className = 'turn-banner turn-bot';
-        banner.textContent = '🤖 KI-Vorstand ist am Zug (Klicke unten zum Ausführen):';
+        banner.textContent = '🤖 KI-Vorstand ist am Zug:';
         botControls.style.display = 'flex';
       }
 
@@ -1000,7 +1131,7 @@
 
           <div class="game-stats">
             
-            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('mgmt')">
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('mgmt')">
               <div class="stat-btn-left">
                 <span class="stat-btn-name">👔 Management-Attention</span>
                 <span class="stat-btn-val">${card.mgmt}</span>
@@ -1009,7 +1140,7 @@
               <div class="stat-mini-bar" style="width: ${mgmtInfo.pct}%"></div>
             </button>
 
-            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('blast')">
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('blast')">
               <div class="stat-btn-left">
                 <span class="stat-btn-name">💥 Blast Radius</span>
                 <span class="stat-btn-val">${card.blast}</span>
@@ -1018,7 +1149,7 @@
               <div class="stat-mini-bar" style="width: ${blastInfo.pct}%; background:#ef4444;"></div>
             </button>
 
-            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('meeting')">
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('meeting')">
               <div class="stat-btn-left">
                 <span class="stat-btn-name">⏱️ Durchschn. Meetingdauer</span>
                 <span class="stat-btn-val">${card.meeting} min</span>
@@ -1027,7 +1158,7 @@
               <div class="stat-mini-bar" style="width: ${meetingPct}%; background:#c084fc;"></div>
             </button>
 
-            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('salary')">
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('salary')">
               <div class="stat-btn-left">
                 <span class="stat-btn-name">💰 Reallohn</span>
                 <span class="stat-btn-val">${card.salary} k€</span>
@@ -1036,7 +1167,7 @@
               <div class="stat-mini-bar" style="width: ${salaryPct}%; background:#10b981;"></div>
             </button>
 
-            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('teamplay')">
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('teamplay')">
               <div class="stat-btn-left">
                 <span class="stat-btn-name">🤝 IT-Team-Play</span>
                 <span class="stat-btn-val">${card.teamplay} / 100</span>
@@ -1045,7 +1176,7 @@
               <div class="stat-mini-bar" style="width: ${card.teamplay}%; background:#38bdf8;"></div>
             </button>
 
-            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('ux')">
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('ux')">
               <div class="stat-btn-left">
                 <span class="stat-btn-name">😊 Enduser-Freude</span>
                 <span class="stat-btn-val">${card.ux} / 100</span>
@@ -1054,7 +1185,7 @@
               <div class="stat-mini-bar" style="width: ${card.ux}%; background:#f43f5e;"></div>
             </button>
 
-            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="playTurn('security')">
+            <button class="stat-row-btn ${isPlayerTurn ? 'clickable' : 'disabled'}" onclick="openWagerModal('security')">
               <div class="stat-btn-left">
                 <span class="stat-btn-name">🛡️ Sicherheitsniveau</span>
                 <span class="stat-btn-val">${card.security} / 100</span>
@@ -1073,25 +1204,41 @@
       `;
     }
 
-    function getStatRankVal(card, category) {
-      if (category === 'mgmt') return (MGMT_RANK[card.mgmt] && MGMT_RANK[card.mgmt].rank) || 0;
-      if (category === 'blast') return (BLAST_RANK[card.blast] && BLAST_RANK[card.blast].rank) || 0;
-      return card[category];
-    }
-
-    function formatStatDisplay(card, category) {
-      if (category === 'mgmt') return `${card.mgmt} (${MGMT_RANK[card.mgmt].pct}%)`;
-      if (category === 'blast') return `${card.blast} (${BLAST_RANK[card.blast].pct}%)`;
-      if (category === 'meeting') return `${card.meeting} min`;
-      if (category === 'salary') return `${card.salary} k€`;
-      return `${card[category]} / 100`;
-    }
-
-    function playTurn(category) {
+    // ==================== POPUP RICHTUNGSWAHL ====================
+    function openWagerModal(category) {
       if (!isPlayerTurn) return;
-      resolveDuel(category, currentDirection, 'player');
+      selectedWagerCat = category;
+      const meta = STAT_META[category];
+      const card = playerDeck[0];
+
+      document.getElementById('wagerCatTitle').textContent = meta.name;
+      document.getElementById('wagerTooltipText').textContent = meta.info;
+      document.getElementById('wagerValBig').textContent = formatStatDisplay(card, category);
+      document.getElementById('wagerScaleInfo').textContent = meta.scale;
+
+      document.getElementById('wagerModal').style.display = 'flex';
+      playBeep(480, 'sine', 0.08);
     }
 
+    function toggleTooltip(e) {
+      e.stopPropagation();
+      const btn = e.currentTarget;
+      btn.classList.toggle('open');
+    }
+
+    function closeWagerModal() {
+      document.getElementById('wagerModal').style.display = 'none';
+      selectedWagerCat = null;
+    }
+
+    function confirmWager(direction) {
+      if (!selectedWagerCat) return;
+      const cat = selectedWagerCat;
+      closeWagerModal();
+      resolveDuel(cat, direction, 'player');
+    }
+
+    // ==================== BOT LOGIC ====================
     function executeBotTurn() {
       if (isPlayerTurn || botDeck.length === 0) return;
       const { cat, dir } = chooseBotCategory();
@@ -1115,13 +1262,11 @@
       let bestAdvantage = -1;
 
       for (const [cat, val] of Object.entries(scoresHigh)) {
-        // High advantage
         if (val > bestAdvantage) {
           bestAdvantage = val;
           bestCat = cat;
           bestDir = 'higher';
         }
-        // Low advantage (1 - val)
         const lowAdv = 1 - val;
         if (lowAdv > bestAdvantage) {
           bestAdvantage = lowAdv;
@@ -1138,12 +1283,27 @@
       while (!isPlayerTurn && playerDeck.length > 0 && botDeck.length > 0 && turnsSimulated < 50) {
         turnsSimulated++;
         const { cat, dir } = chooseBotCategory();
-        resolveDuel(cat, dir, 'bot', true); // silent duel without modal
+        resolveDuel(cat, dir, 'bot', true);
       }
 
       renderGameUI();
       renderHistory();
       playBeep(520, 'triangle', 0.15);
+    }
+
+    // ==================== DUEL RESOLUTION ====================
+    function getStatRankVal(card, category) {
+      if (category === 'mgmt') return (MGMT_RANK[card.mgmt] && MGMT_RANK[card.mgmt].rank) || 0;
+      if (category === 'blast') return (BLAST_RANK[card.blast] && BLAST_RANK[card.blast].rank) || 0;
+      return card[category];
+    }
+
+    function formatStatDisplay(card, category) {
+      if (category === 'mgmt') return `${card.mgmt} (${MGMT_RANK[card.mgmt].pct}%)`;
+      if (category === 'blast') return `${card.blast} (${BLAST_RANK[card.blast].pct}%)`;
+      if (category === 'meeting') return `${card.meeting} min`;
+      if (category === 'salary') return `${card.salary} k€`;
+      return `${card[category]} / 100`;
     }
 
     function resolveDuel(category, direction, initiator, silent = false) {
@@ -1159,7 +1319,6 @@
         if (valP > valB) winner = 'player';
         else if (valB > valP) winner = 'bot';
       } else {
-        // lower wins!
         if (valP < valB) winner = 'player';
         else if (valB < valP) winner = 'bot';
       }
@@ -1167,10 +1326,9 @@
       const dirLabel = direction === 'higher' ? '⬆️ Höher gewinnt' : '⬇️ Niedriger gewinnt';
       const initiatorLabel = initiator === 'player' ? 'Du' : 'KI-Vorstand';
 
-      // History Record
       const histItem = {
         round: roundCounter++,
-        category: CAT_NAMES[category],
+        category: STAT_META[category].name,
         direction: dirLabel,
         initiator: initiatorLabel,
         pName: `${pCard.emoji} ${pCard.name}`,
@@ -1196,7 +1354,6 @@
         pottDeck = [];
         isPlayerTurn = false;
       } else {
-        // Tie
         pottDeck.push(pCard, bCard);
         playerDeck.shift();
         botDeck.shift();
@@ -1260,14 +1417,15 @@
       renderGameUI();
     }
 
+    // ==================== HISTORIE VIEW ====================
     function renderHistory() {
-      document.getElementById('historyCount').textContent = roundHistory.length;
+      document.getElementById('navHistCount').textContent = roundHistory.length;
       const listEl = document.getElementById('historyList');
 
       if (roundHistory.length === 0) {
         listEl.innerHTML = `
-          <div style="font-size:0.72rem; color:var(--text-muted); text-align:center; padding:6px;">
-            Noch keine Duelle gespielt. Wähle deinen ersten Wert!
+          <div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:20px;">
+            Noch keine Duelle gespielt. Starte dein erstes Duell im Tab „🎮 Aktives Spiel“!
           </div>
         `;
         return;
@@ -1276,20 +1434,20 @@
       listEl.innerHTML = roundHistory.map(h => {
         let winClass = 'tie';
         let winText = '⚔️ Unentschieden ➔ Pott';
-        if (h.winner === 'player') { winClass = 'win'; winText = '🎉 Du gewinnst!'; }
-        else if (h.winner === 'bot') { winClass = 'loss'; winText = '💥 KI gewinnt!'; }
+        if (h.winner === 'player') { winClass = 'win'; winText = '🎉 Du hast gewonnen!'; }
+        else if (h.winner === 'bot') { winClass = 'loss'; winText = '💥 KI-Vorstand hat gewonnen!'; }
 
         return `
           <div class="history-item ${winClass}">
             <div class="history-top-row">
               <span style="color:#fff;">Runde ${h.round}: ${h.category}</span>
-              <span style="color:var(--text-muted); font-size:0.65rem;">(${h.direction} • ${h.initiator})</span>
+              <span style="color:var(--text-muted); font-size:0.7rem;">(${h.direction} • ${h.initiator})</span>
             </div>
-            <div style="display:flex; justify-content:space-between; margin-top:2px;">
+            <div style="display:flex; justify-content:space-between; margin-top:3px;">
               <span>👤 ${h.pName}: <b>${h.pVal}</b></span>
               <span>🤖 ${h.bName}: <b>${h.bVal}</b></span>
             </div>
-            <div style="font-weight:700; color:${h.winner === 'player' ? 'var(--success)' : (h.winner === 'bot' ? 'var(--danger)' : 'var(--highlight)')}; font-size:0.68rem; margin-top:1px;">
+            <div style="font-weight:700; color:${h.winner === 'player' ? 'var(--success)' : (h.winner === 'bot' ? 'var(--danger)' : 'var(--highlight)')}; font-size:0.72rem; margin-top:2px;">
               ➔ ${winText}
             </div>
           </div>
@@ -1297,12 +1455,11 @@
       }).join('');
     }
 
-    function toggleHistory() {
-      isHistoryExpanded = !isHistoryExpanded;
-      const list = document.getElementById('historyList');
-      const icon = document.getElementById('historyToggleIcon');
-      list.style.display = isHistoryExpanded ? 'none' : 'flex';
-      icon.textContent = isHistoryExpanded ? '▲' : '▼';
+    function clearHistory() {
+      if (confirm('Historie leeren?')) {
+        roundHistory = [];
+        renderHistory();
+      }
     }
 
     function renderGameOver() {
@@ -1336,30 +1493,34 @@
       if (tab === 'game') {
         document.querySelector("button[onclick=\"switchTab('game')\"]").classList.add('active');
         document.getElementById('gameView').classList.add('active');
-      } else {
-        document.querySelector("button[onclick=\"switchTab('collection')\"]").classList.add('active');
-        document.getElementById('collectionView').classList.add('active');
-        renderCollection();
+      } else if (tab === 'history') {
+        document.querySelector("button[onclick=\"switchTab('history')\"]").classList.add('active');
+        document.getElementById('historyView').classList.add('active');
+        renderHistory();
+      } else if (tab === 'deck') {
+        document.querySelector("button[onclick=\"switchTab('deck')\"]").classList.add('active');
+        document.getElementById('deckView').classList.add('active');
+        renderDeck();
       }
     }
 
-    // ==================== COLLECTION VIEW ====================
-    let collSort = 'default';
-    function renderCollection() {
+    // ==================== DECK VIEW ====================
+    let deckSort = 'default';
+    function renderDeck() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
       let list = CARDS.filter(c => !q || c.name.toLowerCase().includes(q) || c.ability.toLowerCase().includes(q));
 
-      if (collSort !== 'default') {
+      if (deckSort !== 'default') {
         list.sort((a, b) => {
           let va, vb;
-          if (collSort === 'mgmt') { va = MGMT_RANK[a.mgmt].rank; vb = MGMT_RANK[b.mgmt].rank; }
-          else if (collSort === 'blast') { va = BLAST_RANK[a.blast].rank; vb = BLAST_RANK[b.blast].rank; }
-          else { va = a[collSort]; vb = b[collSort]; }
+          if (deckSort === 'mgmt') { va = MGMT_RANK[a.mgmt].rank; vb = MGMT_RANK[b.mgmt].rank; }
+          else if (deckSort === 'blast') { va = BLAST_RANK[a.blast].rank; vb = BLAST_RANK[b.blast].rank; }
+          else { va = a[deckSort]; vb = b[deckSort]; }
           return vb - va;
         });
       }
 
-      document.getElementById('collectionList').innerHTML = list.map(c => `
+      document.getElementById('deckList').innerHTML = list.map(c => `
         <div class="coll-card">
           <div class="coll-header">
             <div style="display:flex; align-items:center; gap:8px;">
@@ -1389,11 +1550,11 @@
       if (!btn) return;
       document.querySelectorAll('#sortContainer .sort-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      collSort = btn.dataset.sort;
-      renderCollection();
+      deckSort = btn.dataset.sort;
+      renderDeck();
     });
 
-    document.getElementById('searchInput').addEventListener('input', renderCollection);
+    document.getElementById('searchInput').addEventListener('input', renderDeck);
 
     // ==================== MODALS ====================
     function openImg(src) {
