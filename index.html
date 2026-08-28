@@ -19,6 +19,8 @@
       --success: #10b981;
       --danger: #ef4444;
       --gold: #fbbf24;
+      --silver: #cbd5e1;
+      --bronze: #b45309;
     }
 
     * {
@@ -48,23 +50,28 @@
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-around;
-      padding: 6px 6px;
+      padding: 6px 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
+
+    .nav-bar::-webkit-scrollbar { display: none; }
 
     .nav-btn {
       background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 700;
-      padding: 8px 10px;
-      border-radius: 12px;
+      padding: 7px 8px;
+      border-radius: 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       transition: all 0.2s;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .nav-btn.active {
@@ -83,6 +90,32 @@
 
     .view-section.active {
       display: block;
+    }
+
+    /* Player Profile Bar */
+    .profile-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 5px 10px;
+      margin-bottom: 10px;
+      font-size: 0.74rem;
+    }
+
+    .player-name-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-main);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .player-name-chip:hover {
+      color: var(--accent-primary);
     }
 
     /* GAME VIEW */
@@ -337,9 +370,7 @@
       gap: 5px;
     }
 
-    /* ==========================================================================
-       PREMIUM WAGER POPUP & INTERACTIVE SCALES
-       ========================================================================== */
+    /* PREMIUM WAGER POPUP */
     .wager-overlay {
       display: none;
       position: fixed;
@@ -436,7 +467,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Primary Stat Highlight Display */
     .wager-stat-display {
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid var(--border-color);
@@ -467,7 +497,7 @@
       letter-spacing: -0.5px;
     }
 
-    /* --- TIER LADDER SCALE (For Mgmt-Attention & Blast Radius) --- */
+    /* Tier Ladder */
     .tier-ladder-container {
       display: flex;
       flex-direction: column;
@@ -517,7 +547,7 @@
       font-weight: 900;
     }
 
-    /* --- CONTINUOUS GAUGE SPECTRUM (For Meeting, Reallohn, Teamplay, UX, Security) --- */
+    /* Spectrum Gauge */
     .spectrum-container {
       display: flex;
       flex-direction: column;
@@ -566,7 +596,6 @@
       font-weight: 600;
     }
 
-    /* Tactical Recommendation Pill */
     .tactical-hint-pill {
       border-radius: 8px;
       padding: 6px 10px;
@@ -604,7 +633,6 @@
       margin-top: 2px;
     }
 
-    /* Big Tactical Action Buttons */
     .wager-btn-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -780,6 +808,75 @@
       font-weight: 800;
     }
 
+    /* ==========================================================================
+       HALL OF FAME VIEW
+       ========================================================================== */
+    .hof-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hof-podium {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      align-items: flex-end;
+      margin-bottom: 8px;
+      padding-top: 10px;
+    }
+
+    .podium-slot {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .podium-1 {
+      border-color: var(--gold);
+      background: linear-gradient(180deg, rgba(251, 191, 36, 0.15) 0%, rgba(19, 29, 49, 0.9) 100%);
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+      transform: translateY(-8px);
+    }
+
+    .podium-2 { border-color: var(--silver); }
+    .podium-3 { border-color: var(--bronze); }
+
+    .podium-rank-icon { font-size: 1.5rem; margin-bottom: 2px; }
+    .podium-name { font-weight: 800; font-size: 0.8rem; color: #fff; line-height: 1.2; word-break: break-word; }
+    .podium-score { font-size: 0.72rem; color: var(--gold); font-weight: 800; margin-top: 4px; }
+
+    .hof-table {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .hof-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.78rem;
+    }
+
+    .hof-row:last-child { border-bottom: none; }
+    .hof-row.current-player { background: rgba(56, 189, 248, 0.12); font-weight: 800; }
+
+    .hof-rank-badge {
+      width: 24px;
+      font-weight: 900;
+      color: var(--text-muted);
+    }
+
     /* DECK VIEW */
     .search-bar {
       width: 100%;
@@ -905,18 +1002,31 @@
 
   <!-- Top Navigation -->
   <nav class="nav-bar">
-    <button class="nav-btn active" onclick="switchTab('game')">🎮 Aktives Spiel</button>
+    <button class="nav-btn active" onclick="switchTab('game')">🎮 Spiel</button>
     <button class="nav-btn" onclick="switchTab('history')">📜 Historie (<span id="navHistCount">0</span>)</button>
+    <button class="nav-btn" onclick="switchTab('hof')">🏆 Hall of Fame</button>
     <button class="nav-btn" onclick="switchTab('deck')">🃏 Deck (27)</button>
-    <button class="nav-btn" onclick="openIdeaModal()">💡 Idee einreichen</button>
+    <button class="nav-btn" onclick="openIdeaModal()">💡 Ideen</button>
   </nav>
 
   <!-- ==================== TAB 1: AKTIVES SPIEL ==================== -->
   <section id="gameView" class="view-section active">
     
+    <!-- Player Handle Banner -->
+    <div class="profile-bar">
+      <div class="player-name-chip" onclick="openNamePrompt()" title="Klicke hier, um deinen Namen zu ändern">
+        <span>👤 Spieler:</span>
+        <span id="activePlayerNameDisplay" style="color: var(--accent-primary);">Nils</span>
+        <span style="font-size: 0.7rem;">✏️</span>
+      </div>
+      <div style="color: var(--text-muted); font-size: 0.7rem;" onclick="switchTab('hof')">
+        🏆 Rangliste anzeigen ➔
+      </div>
+    </div>
+
     <div class="game-header">
       <div class="score-badge">
-        <span class="score-label">Du</span>
+        <span class="score-label" id="playerDeckLabel">Du</span>
         <span class="score-num" id="playerDeckCount">14</span>
       </div>
       <div class="vs-pill" id="pottPill">⚔️ POTT: 0</div>
@@ -927,7 +1037,7 @@
     </div>
 
     <div id="turnBanner" class="turn-banner turn-player">
-      👉 Du bist am Zug! Tippe auf einen Wert, um dein Duell zu starten:
+      👉 Du bist am Zug! Wähle deinen Trumpf-Wert:
     </div>
 
     <!-- Active Player Card Area -->
@@ -961,7 +1071,31 @@
     <div class="history-list" id="historyList"></div>
   </section>
 
-  <!-- ==================== TAB 3: DECK ==================== -->
+  <!-- ==================== TAB 3: HALL OF FAME ==================== -->
+  <section id="hofView" class="view-section">
+    <div style="text-align: center; margin-bottom: 12px;">
+      <h2 style="font-size: 1.2rem; font-weight: 900; color: #fff;">🏆 Hall of Fame</h2>
+      <p style="font-size: 0.74rem; color: var(--text-muted);">Die legendärsten IT-Quartett Duelle aller Zeiten</p>
+    </div>
+
+    <div class="hof-container">
+      
+      <!-- Top 3 Podium -->
+      <div class="hof-podium" id="hofPodium"></div>
+
+      <!-- Full Leaderboard Table -->
+      <div class="hof-table" id="hofTable"></div>
+
+      <div style="text-align: center; margin-top: 8px;">
+        <button onclick="clearHof()" style="background: none; border: none; color: var(--text-muted); font-size: 0.7rem; text-decoration: underline; cursor: pointer;">
+          Leaderboard zurücksetzen
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== TAB 4: DECK ==================== -->
   <section id="deckView" class="view-section">
     <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Rolle, Fähigkeit oder Tier suchen..." autocomplete="off">
     
@@ -978,6 +1112,24 @@
 
     <div class="deck-list" id="deckList"></div>
   </section>
+
+  <!-- ==================== PLAYER NAME PROMPT MODAL ==================== -->
+  <div id="namePromptModal" class="modal">
+    <div class="modal-content" style="text-align: center;">
+      <div style="font-size: 2.5rem; margin-bottom: 6px;">👑</div>
+      <h3 style="font-size: 1.15rem; font-weight: 900; margin-bottom: 4px;">Dein Spielername</h3>
+      <p style="font-size: 0.76rem; color: var(--text-muted); margin-bottom: 14px;">
+        Wird für deine Spielzüge und deinen Platz in der <b>Hall of Fame</b> gespeichert.
+      </p>
+
+      <form onsubmit="handleNameSubmit(event)">
+        <input type="text" id="playerNameInput" class="form-control" placeholder="z. B. Nils, Hacker_007, RootAdmin" maxlength="20" required style="text-align: center; font-size: 1.05rem; font-weight: 800;">
+        <button type="submit" style="width: 100%; background: var(--accent-primary); color: #090d16; border: none; padding: 12px; border-radius: 10px; font-weight: 900; font-size: 0.95rem; cursor: pointer;">
+          💾 Namen speichern & losspielen
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- ==================== PREMIUM WAGER POPUP ==================== -->
   <div id="wagerModal" class="wager-overlay">
@@ -1054,7 +1206,7 @@
 
       <div class="battle-duel-cards">
         <div class="mini-duel-card" id="playerDuelCard">
-          <span class="duel-owner-tag duel-owner-player">Deine Karte</span>
+          <span class="duel-owner-tag duel-owner-player" id="playerDuelOwnerTag">Deine Karte</span>
           <div id="playerDuelEmoji" style="font-size: 2rem; margin: 4px 0;"></div>
           <div id="playerDuelName" style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;"></div>
           <div id="playerDuelStat" style="font-size: 0.95rem; font-weight: 900; color: var(--accent-primary); margin-top: 6px;"></div>
@@ -1121,6 +1273,49 @@
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
       } catch (e) {}
+    }
+
+    // Player Cookie & LocalStorage Management
+    function setCookie(name, value, days = 365) {
+      const d = new Date();
+      d.setTime(d.getTime() + (days*24*60*60*1000));
+      document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/;SameSite=Lax`;
+      localStorage.setItem(name, value);
+    }
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return decodeURIComponent(match[2]);
+      return localStorage.getItem(name);
+    }
+
+    let playerName = getCookie('it_quartett_player_name') || 'Nils';
+
+    function updatePlayerNameDisplay() {
+      document.getElementById('activePlayerNameDisplay').textContent = playerName;
+      document.getElementById('playerDeckLabel').textContent = playerName;
+    }
+
+    function openNamePrompt() {
+      document.getElementById('playerNameInput').value = playerName;
+      document.getElementById('namePromptModal').style.display = 'flex';
+    }
+
+    function handleNameSubmit(e) {
+      e.preventDefault();
+      const val = document.getElementById('playerNameInput').value.trim();
+      if (val) {
+        playerName = val;
+        setCookie('it_quartett_player_name', playerName);
+        updatePlayerNameDisplay();
+      }
+      document.getElementById('namePromptModal').style.display = 'none';
+      playBeep(580, 'triangle', 0.12);
+    }
+
+    // Check first visit
+    if (!getCookie('it_quartett_player_name')) {
+      setTimeout(openNamePrompt, 400);
     }
 
     const MGMT_RANK = {
@@ -1277,8 +1472,10 @@
       selectedWagerCat = null;
       roundHistory = [];
       roundCounter = 1;
+      updatePlayerNameDisplay();
       renderGameUI();
       renderHistory();
+      renderHof();
     }
 
     function renderGameUI() {
@@ -1298,7 +1495,7 @@
 
       if (isPlayerTurn) {
         banner.className = 'turn-banner turn-player';
-        banner.textContent = '👉 Du bist am Zug! Wähle deinen Trumpf-Wert:';
+        banner.textContent = `👉 ${playerName}, du bist am Zug! Wähle deinen Trumpf:`;
         botControls.style.display = 'none';
       } else {
         banner.className = 'turn-banner turn-bot';
@@ -1412,17 +1609,14 @@
       const meta = STAT_META[category];
       const card = playerDeck[0];
 
-      // Update Card Context & Title
-      document.getElementById('wagerCardContext').textContent = `🃏 Deine Karte: ${card.emoji} ${card.name}`;
+      document.getElementById('wagerCardContext').textContent = `🃏 ${playerName}s Karte: ${card.emoji} ${card.name}`;
       document.getElementById('wagerCatTitle').innerHTML = `<span>${meta.name}</span>`;
       document.getElementById('wagerInfoPanel').innerHTML = `<b>💡 Hintergrund:</b> ${meta.info}`;
       document.getElementById('wagerInfoPanel').style.display = 'none';
 
-      // Big Val Display
       const formattedVal = formatStatDisplay(card, category);
       document.getElementById('wagerValBig').textContent = formattedVal;
 
-      // Calculate Percentage Position for Tactical Rating & Scale
       let relativePct = 50;
       if (category === 'mgmt') relativePct = MGMT_RANK[card.mgmt].pct;
       else if (category === 'blast') relativePct = BLAST_RANK[card.blast].pct;
@@ -1430,10 +1624,8 @@
       else if (category === 'salary') relativePct = Math.round((card.salary / 210) * 100);
       else relativePct = card[category];
 
-      // Render Dynamic Scale
       const scaleContainer = document.getElementById('wagerScaleContent');
       if (meta.type === 'tier') {
-        // Tier Ladder (Segmented steps)
         scaleContainer.innerHTML = `
           <div class="tier-ladder-container">
             <div style="font-size:0.68rem; font-weight:700; color:var(--text-muted); margin-bottom:2px; display:flex; justify-content:space-between;">
@@ -1454,7 +1646,6 @@
           </div>
         `;
       } else {
-        // Continuous Gauge Spectrum with pin
         scaleContainer.innerHTML = `
           <div class="spectrum-container">
             <div style="font-size:0.68rem; font-weight:700; color:var(--text-muted); display:flex; justify-content:space-between;">
@@ -1473,7 +1664,6 @@
         `;
       }
 
-      // Tactical Recommendation
       const hintEl = document.getElementById('wagerTacticalHint');
       if (relativePct >= 75) {
         hintEl.className = 'tactical-hint-pill hint-higher';
@@ -1593,7 +1783,7 @@
       }
 
       const dirLabel = direction === 'higher' ? '⬆️ Höher gewinnt' : '⬇️ Niedriger gewinnt';
-      const initiatorLabel = initiator === 'player' ? 'Du' : 'KI-Vorstand';
+      const initiatorLabel = initiator === 'player' ? playerName : 'KI-Vorstand';
 
       const histItem = {
         round: roundCounter++,
@@ -1637,6 +1827,7 @@
 
     function showDuelModal(hist, pCard, bCard) {
       document.getElementById('duelResultCategory').textContent = `Kriterium: ${hist.category} (${hist.direction})`;
+      document.getElementById('playerDuelOwnerTag').textContent = `${playerName}s Karte`;
 
       document.getElementById('playerDuelEmoji').textContent = pCard.emoji;
       document.getElementById('playerDuelName').textContent = pCard.name;
@@ -1661,7 +1852,7 @@
 
       if (hist.winner === 'player') {
         playBeep(660, 'triangle', 0.2);
-        resTitle.textContent = "Du gewinnst die Runde! 🎉";
+        resTitle.textContent = `${playerName} gewinnt die Runde! 🎉`;
         resTitle.style.color = "var(--success)";
         pDuelCard.classList.add('win-card');
         bDuelCard.classList.add('lose-card');
@@ -1694,7 +1885,7 @@
       if (roundHistory.length === 0) {
         listEl.innerHTML = `
           <div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:20px;">
-            Noch keine Duelle gespielt. Starte dein erstes Duell im Tab „🎮 Aktives Spiel“!
+            Noch keine Duelle gespielt. Starte dein erstes Duell im Tab „🎮 Spiel“!
           </div>
         `;
         return;
@@ -1703,8 +1894,8 @@
       listEl.innerHTML = roundHistory.map(h => {
         let winClass = 'tie';
         let winText = '⚔️ Unentschieden ➔ Pott';
-        if (h.winner === 'player') { winClass = 'win'; winText = '🎉 Du hast gewonnen!'; }
-        else if (h.winner === 'bot') { winClass = 'loss'; winText = '💥 KI-Vorstand hat gewonnen!'; }
+        if (h.winner === 'player') { winClass = 'win'; winText = `🎉 ${playerName} gewinnt!`; }
+        else if (h.winner === 'bot') { winClass = 'loss'; winText = '💥 KI-Vorstand gewinnt!'; }
 
         return `
           <div class="history-item ${winClass}">
@@ -1731,19 +1922,120 @@
       }
     }
 
+    // ==================== HALL OF FAME LEADERBOARD ====================
+    const DEFAULT_HOF = [
+      { name: "Ada Lovelace", score: 2850, rounds: 11, result: "Sieg", date: "2026-08-20" },
+      { name: "Linus Torvalds", score: 2400, rounds: 14, result: "Sieg", date: "2026-08-22" },
+      { name: "RootAdmin", score: 1950, rounds: 18, result: "Sieg", date: "2026-08-25" },
+      { name: "Grace Hopper", score: 1700, rounds: 21, result: "Sieg", date: "2026-08-26" },
+      { name: "Helpdesk Hero", score: 1200, rounds: 26, result: "Sieg", date: "2026-08-27" }
+    ];
+
+    function getHofList() {
+      const saved = localStorage.getItem('it_quartett_hof_v1');
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) {}
+      }
+      return DEFAULT_HOF;
+    }
+
+    function saveHofList(list) {
+      localStorage.setItem('it_quartett_hof_v1', JSON.stringify(list));
+    }
+
+    function recordGameResult(won, rounds) {
+      const list = getHofList();
+      const score = won ? Math.max(500, (60 - rounds) * 100 + 1000) : Math.max(100, rounds * 25);
+      
+      const newEntry = {
+        name: playerName,
+        score: score,
+        rounds: rounds,
+        result: won ? "Sieg" : "Niederlage",
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      list.push(newEntry);
+      list.sort((a, b) => b.score - a.score);
+      saveHofList(list);
+      renderHof();
+    }
+
+    function renderHof() {
+      const list = getHofList();
+      const podiumEl = document.getElementById('hofPodium');
+      const tableEl = document.getElementById('hofTable');
+
+      const p1 = list[0] || { name: "-", score: 0 };
+      const p2 = list[1] || { name: "-", score: 0 };
+      const p3 = list[2] || { name: "-", score: 0 };
+
+      podiumEl.innerHTML = `
+        <div class="podium-slot podium-2">
+          <div class="podium-rank-icon">🥈</div>
+          <div class="podium-name">${p2.name}</div>
+          <div class="podium-score">${p2.score} Pkt.</div>
+        </div>
+
+        <div class="podium-slot podium-1">
+          <div class="podium-rank-icon">👑</div>
+          <div class="podium-name">${p1.name}</div>
+          <div class="podium-score">${p1.score} Pkt.</div>
+        </div>
+
+        <div class="podium-slot podium-3">
+          <div class="podium-rank-icon">🥉</div>
+          <div class="podium-name">${p3.name}</div>
+          <div class="podium-score">${p3.score} Pkt.</div>
+        </div>
+      `;
+
+      tableEl.innerHTML = list.map((item, idx) => {
+        const isCurrent = item.name === playerName;
+        return `
+          <div class="hof-row ${isCurrent ? 'current-player' : ''}">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="hof-rank-badge">#${idx + 1}</span>
+              <span><b>${item.name}</b> <span style="font-size:0.68rem; color:var(--text-muted);">(${item.result} in ${item.rounds} Runden)</span></span>
+            </div>
+            <div style="font-weight:900; color:${item.result === 'Sieg' ? 'var(--gold)' : 'var(--text-muted)'};">
+              ${item.score} Pkt.
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function clearHof() {
+      if (confirm('Hall of Fame wirklich zurücksetzen?')) {
+        saveHofList(DEFAULT_HOF);
+        renderHof();
+      }
+    }
+
     function renderGameOver() {
       const won = playerDeck.length > 0;
+      const roundsPlayed = roundCounter - 1;
+      recordGameResult(won, roundsPlayed);
+
       if (won) playBeep(880, 'sine', 0.4);
       document.getElementById('gameCardArea').innerHTML = `
         <div style="background:var(--bg-card); border-radius:18px; border:2px solid ${won ? 'var(--success)' : 'var(--danger)'}; padding:24px 16px; text-align:center;">
           <div style="font-size: 3rem; margin-bottom: 8px;">${won ? '🏆👑' : '💀💥'}</div>
-          <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 6px;">${won ? 'SIEG! Du beherrschst die IT!' : 'GAME OVER! Vorstand hat dich wegrationalisiert.'}</h2>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">
-            ${won ? 'Du hast alle 27 Karten erobert!' : 'Deine Karten sind alle weg.'}
+          <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 6px;">
+            ${won ? `SIEG! ${playerName} beherrscht die IT!` : `GAME OVER! Vorstand hat ${playerName} wegrationalisiert.`}
+          </h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+            ${won ? `Du hast alle 27 Karten in ${roundsPlayed} Runden erobert!` : `Deine Karten sind alle weg.`}
           </p>
-          <button onclick="initGame()" style="background:var(--accent-primary); color:#090d16; border:none; padding:12px 24px; border-radius:12px; font-weight:800; font-size:1rem; cursor:pointer;">
-            🔄 Nochmal spielen
-          </button>
+          <div style="display:flex; gap:8px; justify-content:center;">
+            <button onclick="initGame()" style="background:var(--accent-primary); color:#090d16; border:none; padding:10px 18px; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer;">
+              🔄 Nochmal spielen
+            </button>
+            <button onclick="switchTab('hof')" style="background:var(--bg-secondary); border:1px solid var(--border-color); color:#fff; padding:10px 18px; border-radius:10px; font-weight:800; font-size:0.9rem; cursor:pointer;">
+              🏆 Hall of Fame
+            </button>
+          </div>
         </div>
       `;
     }
@@ -1766,6 +2058,10 @@
         document.querySelector("button[onclick=\"switchTab('history')\"]").classList.add('active');
         document.getElementById('historyView').classList.add('active');
         renderHistory();
+      } else if (tab === 'hof') {
+        document.querySelector("button[onclick=\"switchTab('hof')\"]").classList.add('active');
+        document.getElementById('hofView').classList.add('active');
+        renderHof();
       } else if (tab === 'deck') {
         document.querySelector("button[onclick=\"switchTab('deck')\"]").classList.add('active');
         document.getElementById('deckView').classList.add('active');
@@ -1853,7 +2149,7 @@
       e.preventDefault();
       const role = document.getElementById('propRole').value;
       const ability = document.getElementById('propAbility').value;
-      const author = document.getElementById('propAuthor').value || 'Anonym';
+      const author = document.getElementById('propAuthor').value || playerName;
 
       const suggestions = JSON.parse(localStorage.getItem('it_quartett_suggestions') || '[]');
       suggestions.push({ role, ability, author, time: new Date().toISOString() });
