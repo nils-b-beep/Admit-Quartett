@@ -1698,11 +1698,10 @@
       <!-- Chart Type Switcher -->
       <div>
         <label style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Diagramm-Typ:</label>
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:4px; margin-top:3px;">
-          <button id="chartType_pie" class="preset-chip" onclick="setChartType('pie')">🍰 Torte</button>
-          <button id="chartType_bar" class="preset-chip active" onclick="setChartType('bar')">📊 Stufen</button>
-          <button id="chartType_stack" class="preset-chip" onclick="setChartType('stack')">📏 Säule</button>
-          <button id="chartType_list" class="preset-chip" onclick="setChartType('list')">📋 Liste</button>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; margin-top:3px;">
+          <button id="chartType_bar" class="preset-chip active" onclick="setChartType('bar')">📊 Stufen-Balken</button>
+          <button id="chartType_stack" class="preset-chip" onclick="setChartType('stack')">📏 Säulendiagramm</button>
+          <button id="chartType_list" class="preset-chip" onclick="setChartType('list')">📋 Rangliste</button>
         </div>
       </div>
     </div>
@@ -1714,11 +1713,11 @@
         <span class="metric-summary-label" id="kpiAvgLabel">Mittelwert</span>
       </div>
       <div class="metric-summary-card">
-        <span class="metric-summary-val" id="kpiMaxVal" style="color: var(--gold); font-size: 0.92rem; line-height: 1.2;">-</span>
+        <span class="metric-summary-val" id="kpiMaxVal" style="color: var(--gold); font-size: 0.88rem; line-height: 1.2;">-</span>
         <span class="metric-summary-label" id="kpiMaxLabel">Höchster Wert</span>
       </div>
       <div class="metric-summary-card">
-        <span class="metric-summary-val" id="kpiMinVal" style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.2;">-</span>
+        <span class="metric-summary-val" id="kpiMinVal" style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.2;">-</span>
         <span class="metric-summary-label" id="kpiMinLabel">Niedrigster Wert</span>
       </div>
     </div>
@@ -1727,25 +1726,11 @@
     <div class="chart-container-box">
       <div class="chart-title-row">
         <span class="chart-title-text" id="chartMainTitle">Verteilung</span>
-        <span style="font-size: 0.7rem; color: var(--text-muted);" id="chartSubtitleText">Kartenanzahl</span>
-      </div>
-
-      <!-- Tier / Level Overlay Legend -->
-      <div class="tier-overlay-guide">
-        <span class="tier-guide-cell tier-c-max">🔥 Max (91-100%)</span>
-        <span class="tier-guide-cell tier-c-high">⚡ Hoch (71-90%)</span>
-        <span class="tier-guide-cell tier-c-mid">⚖️ Mittel (31-70%)</span>
-        <span class="tier-guide-cell tier-c-low">🔻 Niedrig (0-30%)</span>
-      </div>
-
-      <!-- Interactive Highlight / Hover Inspection Card -->
-      <div id="chartHoverInspector" style="background: rgba(9,13,22,0.85); border:1px solid var(--border-color); border-radius:10px; padding:8px 12px; font-size:0.75rem; display:none; flex-direction:column; gap:4px; transition:all 0.2s;">
-        <div id="inspectorTitle" style="font-weight:900; color:#fff;"></div>
-        <div id="inspectorCards" style="color:var(--text-muted); font-size:0.72rem; line-height:1.35;"></div>
+        <span style="font-size: 0.72rem; color: var(--accent-primary); font-weight:700;" id="chartSubtitleText">Klick auf eine Stufe zum Aufklappen 👇</span>
       </div>
 
       <!-- Dynamic Chart Content Area -->
-      <div id="metricChartRenderArea" style="min-height: 220px; display:flex; flex-direction:column; justify-content:center;"></div>
+      <div id="metricChartRenderArea" style="min-height: 200px; display:flex; flex-direction:column; gap:8px;"></div>
     </div>
 
   </section>
@@ -2201,10 +2186,10 @@
         info: "Die typische Zeit in Minuten, die täglich oder pro Sitzung in Abstimmungsrunden und Calls verbracht wird.",
         type: "numeric",
         min: 0,
-        max: 240,
+        max: 150,
         unit: "min",
         minLabel: "Minimum (0 min)",
-        maxLabel: "Maximum (240 min)"
+        maxLabel: "Maximum (150 min)"
       },
       salary: {
         name: "💰 Reallohn",
@@ -2351,7 +2336,7 @@
         emoji: "🐋",
         image: "images/07_subject_matter_expert_wal.jpg",
         mgmt: "Aufstreber",
-        meeting: 240,
+        meeting: 150,
         blast: "Morgen wieder vergessen...",
         teamplay: 40,
         ux: 15,
@@ -2688,7 +2673,7 @@
       if (category === 'blast') return (BLAST_RANK[card.blast] && BLAST_RANK[card.blast].level) || "Mittel";
       
       let pct = 50;
-      if (category === 'meeting') pct = (card.meeting / 240) * 100;
+      if (category === 'meeting') pct = (card.meeting / 150) * 100;
       else if (category === 'salary') pct = (card.salary / 210) * 100;
       else pct = card[category]; // 0–100
 
@@ -3564,14 +3549,15 @@
 
     // ==================== METRICS & ANALYTICS SUITE ====================
     let metricScope = 'active'; // 'active' | 'all'
-    let currentChartType = 'bar'; // 'bar' | 'pie' | 'stack' | 'list'
+    let currentChartType = 'bar'; // 'bar' | 'stack' | 'list'
+    let openTierAccordionIds = new Set(); // Stores expanded tier IDs
 
     const TIER_COLORS = {
       "Maximum": "#fbbf24",       // Gold
       "Hoch": "#818cf8",          // Indigo
       "Mittel-hoch": "#38bdf8",   // Sky Blue
       "Mittel-niedrig": "#34d399",// Emerald Green
-      "Niedrig": "#94a3b8",       // Slate / Muted
+      "Niedrig": "#94a3b8",       // Slate
       "Minimum": "#f43f5e"        // Rose / Danger
     };
 
@@ -3585,23 +3571,21 @@
 
     function setChartType(type) {
       currentChartType = type;
-      ['pie', 'bar', 'stack', 'list'].forEach(t => {
+      ['bar', 'stack', 'list'].forEach(t => {
         const btn = document.getElementById(`chartType_${t}`);
         if (btn) btn.className = `preset-chip ${t === type ? 'active' : ''}`;
       });
       renderMetricsView();
     }
 
-    function showChartHoverInfo(title, cardsListHtml) {
-      const inspector = document.getElementById('chartHoverInspector');
-      if (!inspector) return;
-      document.getElementById('inspectorTitle').innerHTML = title;
-      document.getElementById('inspectorCards').innerHTML = cardsListHtml;
-      inspector.style.display = 'flex';
-    }
-
-    function hideChartHoverInfo() {
-      // Optional: keep last selected or hide
+    function toggleTierAccordion(tierKey) {
+      if (openTierAccordionIds.has(tierKey)) {
+        openTierAccordionIds.delete(tierKey);
+      } else {
+        openTierAccordionIds.add(tierKey);
+      }
+      playBeep(520, 'sine', 0.05);
+      renderMetricsView();
     }
 
     function renderMetricsView() {
@@ -3616,46 +3600,40 @@
       document.getElementById('metricActiveCount').textContent = activeDeckCardIds.length;
 
       document.getElementById('chartMainTitle').textContent = `Verteilung: ${meta.name}`;
-      document.getElementById('chartSubtitleText').textContent = `Basis: ${totalCount} Karten (${metricScope === 'active' ? 'Aktives Deck' : 'Gesamte Sammlung'})`;
-
       const renderArea = document.getElementById('metricChartRenderArea');
 
-      // TIER ORDER (From Top to Bottom)
-      const TIER_ORDER = ["Maximum", "Hoch", "Mittel-hoch", "Mittel-niedrig", "Niedrig", "Minimum"];
-      const tierBuckets = {};
-      TIER_ORDER.forEach(t => {
-        tierBuckets[t] = { level: t, label: t, cards: [], count: 0, color: TIER_COLORS[t] };
-      });
+      let buckets = [];
 
       if (meta.type === 'tier') {
-        // Map Tier labels to bucket
-        meta.tiers.forEach(t => {
-          if (tierBuckets[t.level]) {
-            tierBuckets[t.level].label = t.label;
-          }
+        // Management-Attention or Blast Radius
+        buckets = meta.tiers.map((t, idx) => {
+          const colorList = ["#fbbf24", "#818cf8", "#38bdf8", "#34d399", "#94a3b8", "#f43f5e"];
+          const cardsInTier = cardsToAnalyze
+            .filter(c => c[cat] === t.label)
+            .map(c => ({ name: c.name, emoji: c.emoji, val: c[cat] }));
+
+          return {
+            id: `tier_${idx}`,
+            label: t.label,
+            sublabel: t.level,
+            color: colorList[idx % colorList.length],
+            cards: cardsInTier,
+            count: cardsInTier.length
+          };
         });
 
-        cardsToAnalyze.forEach(c => {
-          const val = c[cat];
-          const level = getStatLevel(c, cat);
-          if (tierBuckets[level]) {
-            tierBuckets[level].count++;
-            tierBuckets[level].cards.push({ name: c.name, emoji: c.emoji, val: val });
-          }
-        });
-
-        // Specific KPIs for Tier categories (showing actual highest/lowest present category labels)
-        const presentTiers = meta.tiers.filter(t => (tierBuckets[t.level] && tierBuckets[t.level].count > 0));
-        const highestCategoryPresent = presentTiers[0] ? presentTiers[0].label : "-";
-        const lowestCategoryPresent = presentTiers.length > 0 ? presentTiers[presentTiers.length - 1].label : "-";
+        // KPIs
+        const presentTiers = buckets.filter(b => b.count > 0);
+        const maxTier = presentTiers[0] ? presentTiers[0].label : "-";
+        const minTier = presentTiers.length > 0 ? presentTiers[presentTiers.length - 1].label : "-";
 
         document.getElementById('kpiAvgVal').textContent = `${totalCount} Karten`;
-        document.getElementById('kpiAvgLabel').textContent = "Umfang";
+        document.getElementById('kpiAvgLabel').textContent = "Kartenumfang";
 
-        document.getElementById('kpiMaxVal').textContent = highestCategoryPresent;
+        document.getElementById('kpiMaxVal').textContent = maxTier;
         document.getElementById('kpiMaxLabel').textContent = "Höchste Stufe";
 
-        document.getElementById('kpiMinVal').textContent = lowestCategoryPresent;
+        document.getElementById('kpiMinVal').textContent = minTier;
         document.getElementById('kpiMinLabel').textContent = "Niedrigste Stufe";
 
       } else {
@@ -3665,15 +3643,6 @@
         const avg = totalCount > 0 ? (sum / totalCount).toFixed(1) : 0;
         const maxVal = values.length > 0 ? Math.max(...values) : 0;
         const minVal = values.length > 0 ? Math.min(...values) : 0;
-
-        cardsToAnalyze.forEach(c => {
-          const val = c[cat];
-          const level = getStatLevel(c, cat);
-          if (tierBuckets[level]) {
-            tierBuckets[level].count++;
-            tierBuckets[level].cards.push({ name: c.name, emoji: c.emoji, val: `${val} ${meta.unit || ''}` });
-          }
-        });
 
         const topCard = cardsToAnalyze.find(c => c[cat] === maxVal);
         const minCard = cardsToAnalyze.find(c => c[cat] === minVal);
@@ -3686,124 +3655,145 @@
 
         document.getElementById('kpiMinVal').textContent = `${minVal} ${meta.unit || ''} ${minCard ? `(${minCard.emoji})` : ''}`;
         document.getElementById('kpiMinLabel').textContent = "Niedrigster Wert";
+
+        const numericLevels = [
+          { key: "Maximum", label: "Maximum", range: "91–100%", color: TIER_COLORS["Maximum"] },
+          { key: "Hoch", label: "Hoch", range: "71–90%", color: TIER_COLORS["Hoch"] },
+          { key: "Mittel-hoch", label: "Mittel-hoch", range: "51–70%", color: TIER_COLORS["Mittel-hoch"] },
+          { key: "Mittel-niedrig", label: "Mittel-niedrig", range: "31–50%", color: TIER_COLORS["Mittel-niedrig"] },
+          { key: "Niedrig", label: "Niedrig", range: "11–30%", color: TIER_COLORS["Niedrig"] },
+          { key: "Minimum", label: "Minimum", range: "0–10%", color: TIER_COLORS["Minimum"] }
+        ];
+
+        buckets = numericLevels.map((lvl, idx) => {
+          const cardsInLvl = cardsToAnalyze
+            .filter(c => getStatLevel(c, cat) === lvl.key)
+            .sort((a, b) => b[cat] - a[cat])
+            .map(c => ({ name: c.name, emoji: c.emoji, val: `${c[cat]} ${meta.unit || ''}` }));
+
+          return {
+            id: `num_${idx}`,
+            label: lvl.label,
+            sublabel: lvl.range,
+            color: lvl.color,
+            cards: cardsInLvl,
+            count: cardsInLvl.length
+          };
+        });
       }
 
-      // Default inspector content
-      const firstActiveBucket = TIER_ORDER.map(t => tierBuckets[t]).find(b => b.count > 0);
-      if (firstActiveBucket) {
-        showChartHoverInfo(
-          `🔍 ${firstActiveBucket.label} (${firstActiveBucket.level}) – ${firstActiveBucket.count} Karten`,
-          firstActiveBucket.cards.map(c => `<b>${c.emoji} ${c.name}</b>: <span style="color:#fff;">${c.val}</span>`).join(' • ')
-        );
-      }
+      // ==================== RENDER CHART MODES ====================
 
-      // ==================== RENDER SELECTED CHART ====================
-
-      if (currentChartType === 'pie') {
-        // 🍰 DONUT PIE CHART (SVG)
-        const size = 220;
-        const center = size / 2;
-        const radius = 80;
-        const strokeWidth = 32;
-        const circumference = 2 * Math.PI * radius;
-        let cumulativeAngle = 0;
-
-        const activeBuckets = TIER_ORDER.map(t => tierBuckets[t]).filter(b => b.count > 0);
-
-        const slicesSvg = activeBuckets.map((b, idx) => {
-          const pct = b.count / totalCount;
-          const strokeDasharray = `${pct * circumference} ${circumference}`;
-          const strokeDashoffset = -cumulativeAngle * circumference;
-          cumulativeAngle += pct;
-
-          const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b> (${c.val})`).join(' • ');
+      if (currentChartType === 'bar') {
+        // 📊 STUFEN-BALKENDIAGRAMM (mit Klick-Ausklappmenü)
+        renderArea.innerHTML = buckets.map(b => {
+          const pct = totalCount > 0 ? ((b.count / totalCount) * 100).toFixed(0) : 0;
+          const isOpen = openTierAccordionIds.has(b.id);
 
           return `
-            <circle cx="${center}" cy="${center}" r="${radius}"
-              fill="transparent"
-              stroke="${b.color}"
-              stroke-width="${strokeWidth}"
-              stroke-dasharray="${strokeDasharray}"
-              stroke-dashoffset="${strokeDashoffset}"
-              style="cursor:pointer; transition: stroke-width 0.2s, filter 0.2s;"
-              onmouseenter="this.style.strokeWidth='38'; showChartHoverInfo('🍰 ${b.label} (${b.level}): ${b.count} Karten (${(pct*100).toFixed(0)}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
-              onmouseleave="this.style.strokeWidth='32';"
-              onclick="showChartHoverInfo('🍰 ${b.label} (${b.level}): ${b.count} Karten (${(pct*100).toFixed(0)}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
-            />
+            <div style="background:var(--bg-secondary); border:1px solid ${isOpen ? b.color : 'var(--border-color)'}; border-radius:10px; overflow:hidden; transition:all 0.2s;">
+              
+              <!-- Accordion Header / Clickable Bar -->
+              <div onclick="toggleTierAccordion('${b.id}')" style="padding:9px 12px; cursor:pointer; display:flex; flex-direction:column; gap:5px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="display:flex; align-items:center; gap:7px;">
+                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${b.color};"></span>
+                    <span style="font-weight:800; font-size:0.82rem; color:#fff;">${b.label}</span>
+                    <span style="font-size:0.68rem; color:var(--text-muted);">(${b.sublabel})</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-weight:900; font-size:0.75rem; color:${b.count > 0 ? '#fff' : 'var(--text-muted)'};">
+                      ${b.count} ${b.count === 1 ? 'Karte' : 'Karten'} (${pct}%)
+                    </span>
+                    <span style="font-size:0.75rem; color:var(--accent-primary); font-weight:900;">${isOpen ? '▲' : '▼'}</span>
+                  </div>
+                </div>
+
+                <!-- Progress Track -->
+                <div class="bar-track" style="height:8px; background:#090d16;">
+                  <div class="bar-fill" style="width: ${Math.max(b.count > 0 ? 3 : 0, pct)}%; background: ${b.color}; height:100%; border-radius:4px;"></div>
+                </div>
+              </div>
+
+              <!-- Collapsible Structured Card List -->
+              ${isOpen ? `
+                <div style="background:rgba(9,13,22,0.6); border-top:1px solid var(--border-color); padding:6px 12px;">
+                  ${b.cards.length === 0 ? `
+                    <div style="font-size:0.72rem; color:var(--text-muted); padding:6px 0; text-align:center; font-style:italic;">
+                      Keine Karten in dieser Stufe im aktuellen Deck.
+                    </div>
+                  ` : b.cards.map(c => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.76rem;">
+                      <span>${c.emoji} <b>${c.name}</b></span>
+                      <span style="font-weight:900; color:var(--accent-primary); background:rgba(56,189,248,0.1); padding:2px 7px; border-radius:6px; border:1px solid rgba(56,189,248,0.2);">
+                        ${c.val}
+                      </span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+
+            </div>
           `;
         }).join('');
 
-        renderArea.innerHTML = `
-          <div style="display:flex; flex-direction:column; align-items:center; gap:12px; padding:8px 0;">
-            <div style="position:relative; width:${size}px; height:${size}px;">
-              <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform: rotate(-90deg); overflow:visible;">
-                ${slicesSvg}
-              </svg>
-              <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align:center; pointer-events:none;">
-                <div style="font-size:1.4rem; font-weight:900; color:#fff;">${totalCount}</div>
-                <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Karten</div>
-              </div>
-            </div>
-
-            <!-- Mini Legend Grid -->
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:6px; max-width:440px;">
-              ${TIER_ORDER.map(t => {
-                const b = tierBuckets[t];
-                if (b.count === 0) return '';
-                const pct = ((b.count / totalCount) * 100).toFixed(0);
-                const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b>: ${c.val}`).join(' • ');
-                return `
-                  <div class="preset-chip" style="border-left: 4px solid ${b.color}; cursor:pointer;" 
-                       onmouseenter="showChartHoverInfo('🍰 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
-                       onclick="showChartHoverInfo('🍰 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');">
-                    <span style="color:#fff; font-weight:800;">${b.label}</span>
-                    <span style="color:var(--text-muted); font-size:0.68rem;">(${b.count} | ${pct}%)</span>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        `;
-
       } else if (currentChartType === 'stack') {
-        // 📏 GESTAPELTE SÄULE (100% Continuous Multi-Segment Bar)
-        const activeBuckets = TIER_ORDER.map(t => tierBuckets[t]).filter(b => b.count > 0);
+        // 📏 GESTAPELTE SÄULE (100% Bar + Accordion)
+        const activeBuckets = buckets.filter(b => b.count > 0);
 
         const segmentsHtml = activeBuckets.map(b => {
           const pct = ((b.count / totalCount) * 100).toFixed(1);
-          const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b>: ${c.val}`).join(' • ');
-
           return `
-            <div style="width: ${pct}%; height: 100%; background: ${b.color}; position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#090d16; font-weight:900; font-size:0.72rem; overflow:hidden; transition:opacity 0.15s;"
-                 title="${b.label}: ${b.count} Karten (${pct}%)"
-                 onmouseenter="this.style.opacity='0.8'; showChartHoverInfo('📏 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
-                 onmouseleave="this.style.opacity='1';"
-                 onclick="showChartHoverInfo('📏 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');">
+            <div onclick="toggleTierAccordion('${b.id}')"
+                 style="width: ${pct}%; height: 100%; background: ${b.color}; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#090d16; font-weight:900; font-size:0.72rem; overflow:hidden;"
+                 title="${b.label}: ${b.count} Karten (${pct}%)">
               ${pct > 8 ? `${b.count}` : ''}
             </div>
           `;
         }).join('');
 
         renderArea.innerHTML = `
-          <div style="display:flex; flex-direction:column; gap:12px; padding:10px 0;">
-            <div style="width:100%; height:32px; border-radius:10px; background:#090d16; border:1px solid var(--border-color); display:flex; overflow:hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="width:100%; height:32px; border-radius:10px; background:#090d16; border:1px solid var(--border-color); display:flex; overflow:hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
               ${segmentsHtml}
             </div>
 
-            <!-- Segment details list -->
+            <!-- List with click-to-expand details -->
             <div style="display:flex; flex-direction:column; gap:6px;">
-              ${activeBuckets.map(b => {
-                const pct = ((b.count / totalCount) * 100).toFixed(0);
-                const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b>: ${c.val}`).join(' • ');
+              ${buckets.map(b => {
+                const pct = totalCount > 0 ? ((b.count / totalCount) * 100).toFixed(0) : 0;
+                const isOpen = openTierAccordionIds.has(b.id);
+
                 return `
-                  <div class="stat-row-btn clickable" style="border-left: 4px solid ${b.color};"
-                       onmouseenter="showChartHoverInfo('📏 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
-                       onclick="showChartHoverInfo('📏 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');">
-                    <div class="stat-btn-left">
-                      <span class="stat-btn-name" style="color:${b.color};">${b.level}</span>
-                      <span class="stat-btn-val" style="font-size:0.82rem;">${b.label}</span>
+                  <div style="background:var(--bg-secondary); border:1px solid ${isOpen ? b.color : 'var(--border-color)'}; border-radius:8px; overflow:hidden;">
+                    <div onclick="toggleTierAccordion('${b.id}')" style="padding:8px 12px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${b.color};"></span>
+                        <span style="font-weight:800; font-size:0.8rem; color:#fff;">${b.label}</span>
+                        <span style="font-size:0.68rem; color:var(--text-muted);">(${b.sublabel})</span>
+                      </div>
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-weight:900; font-size:0.75rem; color:${b.count > 0 ? '#fff' : 'var(--text-muted)'};">
+                          ${b.count} Karten (${pct}%)
+                        </span>
+                        <span style="font-size:0.75rem; color:var(--accent-primary); font-weight:900;">${isOpen ? '▲' : '▼'}</span>
+                      </div>
                     </div>
-                    <div class="stat-btn-right" style="color:#fff; background:rgba(255,255,255,0.08);">${b.count} Karten (${pct}%)</div>
+
+                    ${isOpen ? `
+                      <div style="background:rgba(9,13,22,0.6); border-top:1px solid var(--border-color); padding:6px 12px;">
+                        ${b.cards.length === 0 ? `
+                          <div style="font-size:0.72rem; color:var(--text-muted); padding:4px 0; text-align:center; font-style:italic;">
+                            Keine Karten in dieser Stufe.
+                          </div>
+                        ` : b.cards.map(c => `
+                          <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.75rem;">
+                            <span>${c.emoji} <b>${c.name}</b></span>
+                            <span style="font-weight:900; color:var(--accent-primary);">${c.val}</span>
+                          </div>
+                        `).join('')}
+                      </div>
+                    ` : ''}
                   </div>
                 `;
               }).join('')}
@@ -3811,39 +3801,8 @@
           </div>
         `;
 
-      } else if (currentChartType === 'bar') {
-        // 📊 STUFEN-BALKENDIAGRAMM (Grouped Tier Histogram with exact values on hover)
-        renderArea.innerHTML = TIER_ORDER.map(t => {
-          const b = tierBuckets[t];
-          const pct = totalCount > 0 ? ((b.count / totalCount) * 100).toFixed(0) : 0;
-          const cardsHtml = b.cards.map(c => `<b>${c.emoji} ${c.name}</b>: <span style="color:#fff;">${c.val}</span>`).join(' • ');
-
-          return `
-            <div class="bar-chart-row" style="cursor:pointer;"
-                 onmouseenter="showChartHoverInfo('📊 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');"
-                 onclick="showChartHoverInfo('📊 ${b.label} (${b.level}): ${b.count} Karten (${pct}%)', '${cardsHtml.replace(/'/g, "\\'")}');">
-              <div class="bar-row-label-wrap">
-                <span><b style="color:${b.color};">■</b> <b>${b.label}</b> <span style="color:var(--text-muted); font-size:0.68rem;">(${b.level})</span></span>
-                <span><b>${b.count} Karten</b> (${pct}%)</span>
-              </div>
-              <div class="bar-track">
-                <div class="bar-fill" style="width: ${Math.max(b.count > 0 ? 3 : 0, pct)}%; background: ${b.color};"></div>
-              </div>
-              ${b.cards.length > 0 ? `
-                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:2px;">
-                  ${b.cards.map(c => `
-                    <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); padding:1px 6px; border-radius:4px; font-size:0.66rem; color:#cbd5e1;">
-                      ${c.emoji} ${c.name}: <b>${c.val}</b>
-                    </span>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          `;
-        }).join('');
-
       } else {
-        // 📋 EINZELKARTEN-RANGLISTE (Full Card Sorted List)
+        // 📋 VOLLSTÄNDIGE SORTIERTE RANGLISTE
         const sortedCards = [...cardsToAnalyze].sort((a, b) => {
           const va = (meta.type === 'tier') ? getStatRankVal(a, cat) : a[cat];
           const vb = (meta.type === 'tier') ? getStatRankVal(b, cat) : b[cat];
@@ -3856,14 +3815,14 @@
           const color = TIER_COLORS[level] || 'var(--accent-primary)';
 
           return `
-            <div class="hof-row" style="border-left: 3px solid ${color}; padding: 6px 8px; margin-bottom: 3px; background: rgba(9,13,22,0.4); border-radius: 6px;">
+            <div class="hof-row" style="border-left: 3px solid ${color}; padding: 7px 10px; margin-bottom: 4px; background: rgba(9,13,22,0.5); border-radius: 8px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-weight:900; color:var(--text-muted); font-size:0.72rem;">#${idx + 1}</span>
-                <span>${c.emoji} <b>${c.name}</b></span>
+                <span style="font-weight:900; color:var(--text-muted); font-size:0.74rem;">#${idx + 1}</span>
+                <span style="font-size:0.85rem;">${c.emoji} <b>${c.name}</b></span>
               </div>
               <div style="display:flex; align-items:center; gap:6px;">
-                <span style="font-size:0.65rem; padding:1px 6px; border-radius:4px; background:rgba(255,255,255,0.08); color:${color}; font-weight:800;">${level}</span>
-                <span style="font-weight:900; color:#fff;">${val}</span>
+                <span style="font-size:0.65rem; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.08); color:${color}; font-weight:800;">${level}</span>
+                <span style="font-weight:900; font-size:0.85rem; color:#fff;">${val}</span>
               </div>
             </div>
           `;
